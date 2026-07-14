@@ -5,6 +5,13 @@ namespace BgRecorder.Core.Data;
 public sealed record MatchRecord
 {
     public long Id { get; init; }
+    /// <summary>
+    /// Stable staging-session identity (the staging folder name). Persisted with a UNIQUE
+    /// constraint so a re-run of the same recording — e.g. a crash between the DB commit and the
+    /// staging delete, then a startup-recovery pass — is an idempotent no-op rather than a
+    /// duplicate row. Null for rows created without a session (e.g. manual imports/tests).
+    /// </summary>
+    public string? SessionId { get; init; }
     public required DateTimeOffset StartedAt { get; init; }
     public DateTimeOffset? EndedAt { get; init; }
     public required BgGameType GameType { get; init; }
@@ -48,7 +55,15 @@ public interface IMatchRepository
     /// <summary>Creates/migrates the schema. Idempotent.</summary>
     Task InitializeAsync(CancellationToken ct = default);
 
+    /// <summary>
+    /// Inserts the match and its markers. Idempotent on <see cref="MatchRecord.SessionId"/>: when a
+    /// row with the same non-null SessionId already exists, no new row is written and the existing
+    /// id is returned, so crash-recovery re-runs cannot duplicate a match.
+    /// </summary>
     Task<long> InsertMatchAsync(MatchRecord match, IReadOnlyList<MarkerRecord> markers, CancellationToken ct = default);
+
+    /// <summary>True when a match with the given staging SessionId is already recorded.</summary>
+    Task<bool> MatchExistsBySessionAsync(string sessionId, CancellationToken ct = default);
 
     Task UpdateVideoStatusAsync(long matchId, VideoStatus status, CancellationToken ct = default);
 
