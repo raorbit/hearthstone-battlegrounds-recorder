@@ -6,7 +6,7 @@ The recorder tails the Hearthstone game log to detect matches and combats, captu
 
 ## Status
 
-Design + planning stage. No app code yet.
+M1 spike sprint done (pending a few live-play measurements). The four de-risking spikes in [`spikes/`](spikes/) are built and verified against the real game: log discovery/parsing/tailing (17 real matches, GO), window capture with NVENC + fragmented MP4 (GO on feasibility), the dependency licensing gate + read-only attach probe (HearthMirror NO-GO as-is), and game-only process-loopback audio (GO). Verdicts and measured numbers live in [`spikes/DECISIONS.md`](spikes/DECISIONS.md). Next: M2 walking skeleton.
 
 - `design/` contains an interactive UI prototype of the Library and Settings screens — clone the repo and open [`design/BG Recorder - Library.dc.html`](<design/BG Recorder - Library.dc.html>) locally in a browser (GitHub shows only the source).
 - [`docs/technical-notes.md`](docs/technical-notes.md) — verified facts constraining the implementation: Power.log lives in per-session timestamped subfolders; hero/placement/turns/combats/final board are log-derivable; **rating (MMR) is not in any log** and is read from game memory via HearthMirror (HDT's approach), so it's designed as an optional, degradable subsystem.
