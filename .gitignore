@@ -1,0 +1,21 @@
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Build output (stack TBD)
+dist/
+build/
+out/
+node_modules/
+__pycache__/
+*.pyc
+
+# Local recordings / test output
+recordings/
+*.mp4
+*.mkv

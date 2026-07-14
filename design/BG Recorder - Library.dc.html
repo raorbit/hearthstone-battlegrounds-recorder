@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&amp;family=Barlow:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body, #root { height: 100%; margin: 0; }
+  body { background: #0e0f12; color: #e6e8ee; font-family: Barlow, 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: #dd8129; text-decoration: none; }
+  a:hover { color: #e6a35c; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #23262f; border-radius: 5px; border: 2px solid #0e0f12; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  input[type='range'] { accent-color: #dd8129; }
+  select:focus, input:focus { outline: none; }
+  @keyframes recpulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(221, 129, 41, 0.6); } 50% { opacity: 0.55; box-shadow: 0 0 0 6px rgba(221, 129, 41, 0); } }
+  @keyframes idlepulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+</style>
+</helmet>
+<div data-screen-label="App" style="display: flex; flex-direction: column; height: 100vh; min-height: 620px; background: #0e0f12; font-family: Barlow, 'Segoe UI', system-ui, sans-serif; color: #e6e8ee; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; gap: 10px; height: 38px; flex: 0 0 38px; padding: 0 14px; background: #101115; border-bottom: 1px solid #20232b; user-select: none;">
+    <div style="display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 4px; background: linear-gradient(150deg, #dd8129, #9c5a12);">
+      <div style="width: 6px; height: 6px; background: #fff; transform: rotate(45deg); border-radius: 1px;"></div>
+    </div>
+    <div style="font-family: Rajdhani, 'Segoe UI', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.05em; color: #e6e8ee;">BATTLEGROUNDS RECORDER</div>
+    <div style="flex: 1;"></div>
+    <div style="font-family: 'JetBrains Mono', Consolas, monospace; font-size: 10px; color: #5a606c; margin-right: 16px;">v0.1.0</div>
+    <div style="display: flex; gap: 16px; color: #5a606c; font-size: 15px;">
+      <span style="line-height: 1;">─</span><span style="line-height: 1;">▢</span><span style="line-height: 1;">✕</span>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 230px 1fr; min-height: 0; background: #0e0f12;">
+
+    <aside style="width: 230px; height: 100%; overflow-y: auto; padding: 14px 12px; background: #101115; border-right: 1px solid #1b1e25; display: flex; flex-direction: column;">
+
+      <div style="border-left: 3px solid {{ statusEdge }}; background: #15171c; border-radius: 6px; padding: 8px 12px; margin-bottom: 22px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="font-family: 'JetBrains Mono', Consolas, monospace; font-size: 10px; color: #6a7080; letter-spacing: 0.1em;">{{ statusTitle }}</div>
+          <sc-if value="{{ isRecording }}" hint-placeholder-val="{{ true }}">
+            <div style="width: 7px; height: 7px; border-radius: 50%; background: #dd8129; animation: recpulse 1.8s infinite;"></div>
+          </sc-if>
+        </div>
+        <div style="font-weight: 600; font-size: 14px; color: {{ statusColor }};">{{ statusText }}</div>
+        <sc-if value="{{ isRecording }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px;">
+            <button onClick="{{ stopRecording }}" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #dd8129; background: rgba(221, 129, 41, 0.14); color: #dd8129; font-family: Barlow, sans-serif; font-weight: 600; font-size: 12.5px; cursor: pointer;" style-hover="background: #dd8129; color: #e6e8ee;">Stop recording</button>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.14em; color: #5a606c; margin: 0 0 8px 6px;">LOBBIES</div>
+      <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px;">
+        <sc-for list="{{ primaryBuckets }}" as="b" hint-placeholder-count="2">
+          <button onClick="{{ b.pick }}" style="{{ b.style }}" style-hover="background: rgba(255, 255, 255, 0.03);">
+            <div style="{{ b.diamondStyle }}"></div>
+            <span style="font-weight: 600; font-size: 14.5px; color: {{ b.labelColor }};">{{ b.label }}</span>
+            <span style="flex: 1;"></span>
+            <span style="{{ b.badgeStyle }}">{{ b.count }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.14em; color: #5a606c; margin: 0 0 8px 6px;">LIBRARY</div>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <sc-for list="{{ secondaryBuckets }}" as="b" hint-placeholder-count="2">
+          <button onClick="{{ b.pick }}" style="{{ b.style }}" style-hover="background: rgba(255, 255, 255, 0.03);">
+            <div style="{{ b.diamondStyle }}"></div>
+            <span style="font-weight: 600; font-size: 14px; color: {{ b.labelColor }};">{{ b.label }}</span>
+            <span style="flex: 1;"></span>
+            <span style="{{ b.badgeStyle }}">{{ b.count }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="margin-top: 20px; background: #15171c; border: 1px solid #21242c; border-radius: 8px; padding: 12px;">
+        <div style="display: flex; align-items: baseline; gap: 8px;">
+          <div style="font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.14em; color: #5a606c;">RATING</div>
+          <span style="flex: 1;"></span>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: {{ mmrDeltaColor }};">{{ mmrDelta }}</div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 500; color: #e6e8ee; margin: 2px 0 6px;">{{ mmrNow }}</div>
+        <svg viewBox="0 0 182 40" style="display: block; width: 100%; height: 40px;">
+          <polyline points="{{ sparkPoints }}" fill="none" stroke="#dd8129" stroke-width="1.5"></polyline>
+          <circle cx="{{ sparkEndX }}" cy="{{ sparkEndY }}" r="2.5" fill="#dd8129"></circle>
+        </svg>
+        <div style="display: flex; align-items: flex-end; gap: 4px; height: 26px; margin-top: 10px;">
+          <sc-for list="{{ distBars }}" as="d" hint-placeholder-count="8">
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;" title="{{ d.tip }}">
+              <div style="{{ d.style }}"></div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; color: #5a606c; line-height: 1;">{{ d.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #5a606c; margin-top: 6px;">placements · last 12</div>
+      </div>
+
+      <div style="font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.14em; color: #5a606c; margin: 18px 0 8px 6px;">SETTINGS</div>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <sc-for list="{{ settingsNav }}" as="n" hint-placeholder-count="3">
+          <button onClick="{{ n.pick }}" style="{{ n.style }}" style-hover="background: rgba(255, 255, 255, 0.03);">{{ n.label }}</button>
+        </sc-for>
+      </div>
+
+      <div style="margin-top: auto; padding-top: 18px; padding-left: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #444a55;">v0.1.0 · bg-recorder</div>
+    </aside>
+
+    <main style="display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; overflow: hidden;">
+
+      <sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Library" style="display: flex; flex-direction: column; min-height: 0; height: 100%;">
+      <div style="position: relative; height: 300px; flex: 0 0 300px; display: flex; align-items: center; justify-content: center; background: radial-gradient(120% 140% at 50% 10%, #251f18, #0c0d11); border-bottom: 1px solid #1b1e25; overflow: hidden;">
+        <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.018) 0 12px, transparent 12px 24px);"></div>
+
+        <div style="position: relative; z-index: 1; text-align: center; color: #3f4451;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em;">VOD PREVIEW — DROP FRAME HERE</div>
+          <div style="margin-top: 6px; font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 15px; color: #5a606c;">{{ selSub }}</div>
+        </div>
+
+        <div style="position: absolute; top: 12px; left: 14px; right: 14px; z-index: 1; display: flex; align-items: center; justify-content: space-between;">
+          <div style="{{ placePillStyle }}">{{ placePill }}</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 9px; border-radius: 5px; color: #d9a441; background: rgba(30, 26, 16, 0.7);">{{ turnPill }}</div>
+        </div>
+
+        <sc-if value="{{ boardVisible }}" hint-placeholder-val="{{ true }}">
+          <div style="position: absolute; left: 0; right: 0; bottom: 64px; z-index: 2; display: flex; align-items: center; gap: 8px; padding: 6px 16px; overflow-x: auto; scrollbar-width: none; background: linear-gradient(transparent, rgba(8, 9, 11, 0.55));">
+            <div style="flex: 0 0 auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #9aa0ad;">FINAL BOARD</div>
+            <sc-for list="{{ board }}" as="m" hint-placeholder-count="7">
+              <div style="flex: 0 0 auto; display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 8px; background: rgba(20, 22, 28, 0.85); border: 1px solid #23262f;" title="{{ m.nm }}">
+                <div style="{{ m.chipStyle }}"></div>
+                <div>
+                  <div style="font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 11.5px; line-height: 1.2; color: #c4c9d4; max-width: 74px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ m.nm }}</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; line-height: 1.2; color: #d9a441;">{{ m.stats }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; padding: 12px 16px; background: linear-gradient(transparent, rgba(8, 9, 11, 0.92));">
+          <div onClick="{{ onScrub }}" style="position: relative; height: 6px; background: #23262f; border-radius: 3px; margin-bottom: 12px; cursor: pointer;">
+            <sc-if value="{{ showTurnTicks }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ ticks }}" as="t" hint-placeholder-count="12">
+                <div style="{{ t.style }}"></div>
+              </sc-for>
+            </sc-if>
+            <div style="{{ fillStyle }}"></div>
+            <sc-for list="{{ markers }}" as="mk" hint-placeholder-count="10">
+              <div onClick="{{ mk.seek }}" title="{{ mk.tip }}" style="{{ mk.style }}"></div>
+            </sc-for>
+            <div style="{{ headStyle }}"></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; color: #c4c9d4; font-size: 15px;">
+            <span style="color: #dd8129; cursor: pointer;">▶</span>
+            <span style="cursor: pointer; font-size: 13px;">⏮</span>
+            <span style="cursor: pointer; font-size: 13px;">⏭</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #9aa0ad;">{{ timeLabel }}</span>
+            <span style="flex: 1;"></span>
+            <span style="cursor: pointer; font-size: 13px;" title="Clip">✂</span>
+            <span style="cursor: pointer; font-size: 13px;" title="Fullscreen">⛶</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 14px; flex: 0 0 auto; padding: 12px 18px; background: #101115; border-bottom: 1px solid #1b1e25;">
+        <sc-if value="{{ showSegments }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; border: 1px solid #23262f; border-radius: 7px; overflow: hidden;">
+            <sc-for list="{{ segments }}" as="s" hint-placeholder-count="3">
+              <button onClick="{{ s.pick }}" style="{{ s.style }}">{{ s.label }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="flex: 1; display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: #15171c; border: 1px solid #23262f; border-radius: 7px;">
+          <span style="font-size: 13px; line-height: 1; opacity: 0.7;">⌕</span>
+          <input value="{{ search }}" onChange="{{ onSearch }}" placeholder="{{ searchHint }}" style="flex: 1; border: none; background: transparent; color: #e6e8ee; font-family: Barlow, sans-serif; font-size: 13px; outline: none;">
+        </div>
+        <div style="padding: 6px 12px; background: #15171c; border: 1px solid #23262f; border-radius: 7px; color: #9aa0ad; font-family: 'JetBrains Mono', monospace; font-size: 12.5px;">Last 30 days ▾</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+        <sc-if value="{{ isClips }}" hint-placeholder-val="{{ false }}">
+          <div style="display: grid; grid-template-columns: 2.4fr 0.8fr 0.9fr 1.2fr 36px; padding: 10px 18px; background: #0c0d10; border-bottom: 1px solid #1b1e25; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.05em; color: #6a7080;">
+            <div>CLIP</div><div>LENGTH</div><div>KIND</div><div>CREATED</div><div></div>
+          </div>
+          <div style="flex: 1; min-height: 0; overflow-y: auto;">
+            <sc-for list="{{ clipRows }}" as="c" hint-placeholder-count="4">
+              <div onClick="{{ c.select }}" style="{{ c.rowStyle }}" style-hover="background: rgba(255, 255, 255, 0.02);">
+                <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                  <div style="{{ c.thumbStyle }}"></div>
+                  <span style="font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ c.name }}</span>
+                  <span style="font-size: 12px; color: #5a606c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ c.hero }}</span>
+                </div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #c4c9d4;">{{ c.len }}</div>
+                <div style="font-size: 12.5px; color: #9aa0ad;">{{ c.kind }}</div>
+                <div style="font-size: 12.5px; color: #9aa0ad;">{{ c.created }}</div>
+                <button onClick="{{ c.toggleStar }}" title="Keep from retention sweep" style="{{ c.starStyle }}" style-hover="color: #d9a441; background: rgba(255, 255, 255, 0.05);">★</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ notClips }}" hint-placeholder-val="{{ true }}">
+          <div style="display: grid; grid-template-columns: 2.2fr 0.7fr 0.8fr 0.6fr 0.8fr 0.9fr 1.1fr 0.7fr 36px; padding: 10px 18px; background: #0c0d10; border-bottom: 1px solid #1b1e25; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.05em; color: #6a7080;">
+            <div>HERO</div><div>PLACE</div><div>MMR ±</div><div>TURNS</div><div>LENGTH</div><div>COMBATS</div><div>DATE</div><div>SIZE</div><div></div>
+          </div>
+          <div style="flex: 1; min-height: 0; overflow-y: auto;">
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+              <div onClick="{{ r.select }}" style="{{ r.rowStyle }}" style-hover="background: rgba(255, 255, 255, 0.02);">
+                <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                  <div style="{{ r.chipStyle }}">{{ r.initials }}</div>
+                  <span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ r.hero }}</span>
+                  <sc-if value="{{ r.isDuo }}" hint-placeholder-val="{{ false }}">
+                    <span style="flex: 0 0 auto; font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 1px 6px; border-radius: 8px; color: #9aa0ad; background: #23262f;">DUO</span>
+                  </sc-if>
+                </div>
+                <div style="font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 14px; color: {{ r.placeColor }};">{{ r.place }}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ r.mmrColor }};">{{ r.mmr }}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #c4c9d4;">{{ r.turns }}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #c4c9d4;">{{ r.dur }}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #9aa0ad;">{{ r.combats }}</div>
+                <div style="font-size: 12.5px; color: #9aa0ad; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ r.date }}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #5a606c;">{{ r.size }}</div>
+                <button onClick="{{ r.toggleStar }}" title="Keep from retention sweep" style="{{ r.starStyle }}" style-hover="color: #d9a441; background: rgba(255, 255, 255, 0.05);">★</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 48px 24px; text-align: center;">
+            <div style="font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 18px; color: #b3b8c4; margin-bottom: 8px;">Nothing here</div>
+            <div style="max-width: 440px; margin: 0 auto; color: #9aa0ad; font-size: 13.5px;">Play a Battlegrounds match with the recorder running, or clear the filters above.</div>
+          </div>
+        </sc-if>
+      </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Settings" style="height: 100%; overflow-y: auto; padding: 28px;">
+
+        <sc-if value="{{ tabRecording }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-direction: column; gap: 14px; max-width: 740px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 2px;">
+              <h2 style="margin: 0; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 0.02em;">Recording</h2>
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: #1c1f26; border: 1px solid #21242c; border-radius: 7px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #b3b8c4;">
+                <div style="{{ connDotStyle }}"></div>{{ connLabel }}
+              </div>
+            </div>
+
+            <div style="position: relative; width: 100%; max-width: 480px; aspect-ratio: 16 / 9; border: 1px solid #21242c; border-radius: 12px; background: #0c0d10; overflow: hidden;">
+              <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.018) 0 12px, transparent 12px 24px);"></div>
+              <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #9aa0ad;">scene preview — 1920 × 1080</div>
+              <div style="{{ previewBadgeStyle }}">{{ previewBadge }}</div>
+            </div>
+
+            <div style="background: #15171c; border: 1px solid #21242c; border-radius: 12px; padding: 4px 18px 8px;">
+              <div style="margin: 0; padding: 14px 0 4px; font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #9aa0ad;">Video</div>
+              <sc-for list="{{ videoRows }}" as="v" hint-placeholder-count="4">
+                <div style="{{ v.rowStyle }}">
+                  <div style="flex: 1 1 auto; min-width: 0;">
+                    <div style="font-weight: 500; font-size: 14px; color: #e6e8ee;">{{ v.label }}</div>
+                    <p style="margin: 2px 0 0; font-size: 12px; color: #9aa0ad; max-width: 320px; line-height: 1.45;">{{ v.desc }}</p>
+                  </div>
+                  <div style="flex: 0 0 auto;">
+                    <select style="background: #0c0d10; border: 1px solid #2a2e38; border-radius: 8px; color: #e6e8ee; font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 9px 12px; min-width: 230px; cursor: pointer; color-scheme: dark;">
+                      <option>{{ v.opt1 }}</option><option>{{ v.opt2 }}</option><option>{{ v.opt3 }}</option>
+                    </select>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="background: #15171c; border: 1px solid #21242c; border-radius: 12px; padding: 4px 18px 8px;">
+              <div style="margin: 0; padding: 14px 0 4px; font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #9aa0ad;">Audio</div>
+              <p style="margin: 0 0 2px; font-size: 12px; color: #9aa0ad; line-height: 1.45;">Mic and desktop default off so Discord and system audio stay out of your VODs.</p>
+              <sc-for list="{{ audioRows }}" as="a" hint-placeholder-count="3">
+                <div style="{{ a.rowStyle }}">
+                  <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                    <div style="{{ a.chipStyle }}">{{ a.glyph }}</div>
+                    <div style="min-width: 0;">
+                      <div style="font-weight: 500; font-size: 14px; color: #e6e8ee;">{{ a.name }}</div>
+                      <p style="margin: 2px 0 0; font-size: 12px; color: #9aa0ad; line-height: 1.45;">{{ a.desc }}</p>
+                    </div>
+                  </div>
+                  <div style="flex: 0 0 auto; display: flex; align-items: center; gap: 12px;">
+                    <div style="{{ a.volStyle }}">
+                      <input type="range" min="0" max="100" value="{{ a.vol }}" onChange="{{ a.setVol }}" style="flex: 1 1 auto; cursor: pointer; width: 120px;">
+                      <span style="min-width: 44px; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e6e8ee;">{{ a.volPct }}</span>
+                    </div>
+                    <button onClick="{{ a.toggle }}" style="{{ a.pillStyle }}" style-hover="filter: brightness(1.1);">{{ a.pillLabel }}</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="background: #15171c; border: 1px solid #21242c; border-radius: 12px; padding: 4px 18px 8px;">
+              <div style="margin: 0; padding: 14px 0 4px; font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #9aa0ad;">Storage</div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 13px 0;">
+                <div style="flex: 1 1 auto; min-width: 0;">
+                  <div style="font-weight: 500; font-size: 14px; color: #e6e8ee;">Output folder</div>
+                  <p style="margin: 2px 0 0; font-size: 12px; color: #9aa0ad; max-width: 320px; line-height: 1.45;">Where VODs and clips are written.</p>
+                </div>
+                <div style="flex: 0 0 auto; display: flex; align-items: center; gap: 10px; min-width: 360px;">
+                  <input readonly value="D:\BGRecorder\VODs" style="flex: 1 1 auto; min-width: 0; background: #0c0d10; border: 1px solid #2a2e38; border-radius: 8px; color: #b3b8c4; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; padding: 9px 12px;">
+                  <button style="flex: 0 0 auto; padding: 9px 14px; background: #1c1f26; border: 1px solid #2a2e38; border-radius: 8px; color: #e6e8ee; font-family: Barlow, sans-serif; font-weight: 500; font-size: 13px; cursor: pointer;" style-hover="border-color: #dd8129;">Browse</button>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 13px 0; border-top: 1px solid #23262f;">
+                <div style="flex: 1 1 auto; min-width: 0;">
+                  <div style="font-weight: 500; font-size: 14px; color: #e6e8ee;">Max storage</div>
+                  <p style="margin: 2px 0 0; font-size: 12px; color: #9aa0ad; max-width: 320px; line-height: 1.45;">Disk cap for the recording drive.</p>
+                </div>
+                <div style="flex: 0 0 auto; display: flex; align-items: center; gap: 10px; min-width: 240px;">
+                  <input type="range" min="50" max="2000" step="50" value="{{ maxGB }}" onChange="{{ setMaxGB }}" style="flex: 1 1 auto; cursor: pointer;">
+                  <span style="flex: 0 0 auto; min-width: 56px; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e6e8ee;">{{ maxGBLabel }}</span>
+                </div>
+              </div>
+              <p style="display: flex; align-items: flex-start; gap: 9px; margin: 0; padding: 2px 0 12px; font-size: 12.5px; line-height: 1.45; color: #b3b8c4;">
+                <span style="flex: 0 0 auto; width: 16px; height: 16px; margin-top: 1px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(217, 164, 65, 0.15); border: 1px solid rgba(217, 164, 65, 0.4); color: #d9a441; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 11px; line-height: 1;">!</span>
+                <span>Oldest unstarred recordings are removed first when the cap is hit. Starred matches and clips are always kept.</span>
+              </p>
+            </div>
+
+            <div style="background: #15171c; border: 1px solid #21242c; border-radius: 12px; padding: 4px 18px 8px;">
+              <div style="margin: 0; padding: 14px 0 4px; font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #9aa0ad;">Archive drives</div>
+              <p style="margin: 0 0 2px; font-size: 12px; color: #9aa0ad; line-height: 1.45;">Finished recordings are moved off the recording drive onto these drives, filling each up to its cap. The newest matches stay on the fast recording drive. Leave empty to keep everything on the recording drive.</p>
+              <sc-for list="{{ archiveDrives }}" as="dr" hint-placeholder-count="1">
+                <div style="{{ dr.rowStyle }}">
+                  <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 auto;">
+                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                      <input value="{{ dr.path }}" onChange="{{ dr.setPath }}" placeholder="E:\bg-archive" spellcheck="false" style="flex: 1 1 auto; min-width: 0; background: #0c0d10; border: 1px solid #2a2e38; border-radius: 8px; color: #b3b8c4; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; padding: 9px 12px;">
+                      <button style="flex: 0 0 auto; padding: 9px 14px; background: #1c1f26; border: 1px solid #2a2e38; border-radius: 8px; color: #e6e8ee; font-family: Barlow, sans-serif; font-weight: 500; font-size: 13px; cursor: pointer;" style-hover="border-color: #dd8129;">Browse</button>
+                    </div>
+                    <sc-if value="{{ dr.hasUsage }}" hint-placeholder-val="{{ true }}">
+                      <p style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #9aa0ad;">{{ dr.usage }}</p>
+                    </sc-if>
+                    <sc-if value="{{ dr.warn }}" hint-placeholder-val="{{ false }}">
+                      <p style="display: flex; align-items: flex-start; gap: 9px; margin: 0; padding: 2px 0 4px; font-size: 12.5px; line-height: 1.45; color: #d9a441;">
+                        <span style="flex: 0 0 auto; width: 16px; height: 16px; margin-top: 1px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(217, 164, 65, 0.15); border: 1px solid rgba(217, 164, 65, 0.4); color: #d9a441; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 11px; line-height: 1;">!</span>
+                        <span><strong style="font-weight: 600;">Warning:</strong> {{ dr.warnText }}</span>
+                      </p>
+                    </sc-if>
+                  </div>
+                  <div style="flex: 0 0 auto; display: flex; align-items: flex-start; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <input type="number" min="50" step="10" value="{{ dr.cap }}" onChange="{{ dr.setCap }}" style="min-width: 96px; width: 96px; text-align: right; background: #0c0d10; border: 1px solid #2a2e38; border-radius: 8px; color: #e6e8ee; font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 9px 12px;">
+                      <span style="flex: 0 0 auto; font-size: 13px; color: #b3b8c4;">GB</span>
+                    </div>
+                    <button onClick="{{ dr.remove }}" title="Remove drive" style="flex: 0 0 auto; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 8px; border: 1px solid #2a2e38; background: transparent; color: #9aa0ad; font-size: 13px; cursor: pointer;" style-hover="color: #e07a6f; border-color: #e07a6f;">✕</button>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 13px 0; border-top: 1px solid #23262f;">
+                <div style="flex: 1 1 auto; min-width: 0;">
+                  <div style="font-weight: 500; font-size: 14px; color: #e6e8ee;">Add a drive</div>
+                  <p style="margin: 2px 0 0; font-size: 12px; color: #9aa0ad; max-width: 320px; line-height: 1.45;">Use a larger drive to archive older recordings.</p>
+                </div>
+                <div style="flex: 0 0 auto;">
+                  <button onClick="{{ addDrive }}" style="padding: 9px 14px; background: #1c1f26; border: 1px solid #2a2e38; border-radius: 8px; color: #e6e8ee; font-family: Barlow, sans-serif; font-weight: 500; font-size: 13px; cursor: pointer;" style-hover="border-color: #dd8129;">+ Add drive</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 14px; padding-top: 2px;">
+              <button onClick="{{ saveSettings }}" style="padding: 11px 24px; background: #dd8129; border: none; border-radius: 8px; color: #fff; font-family: Rajdhani, sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.03em; cursor: pointer;" style-hover="filter: brightness(1.08);">Save changes</button>
+              <sc-if value="{{ saved }}" hint-placeholder-val="{{ false }}">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5bbf6a;">Settings saved</span>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tabLog }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 16px; max-width: 560px; padding: 20px; background: #101115; border: 1px solid #1b1e25; border-radius: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid #21242c;">
+              <h2 style="margin: 0; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 0.03em;">Game log</h2>
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 5px 10px; background: #15171c; border: 1px solid #21242c; border-radius: 7px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #b3b8c4;">
+                <div style="{{ connDotStyle }}"></div>{{ logConnLabel }}
+              </div>
+            </div>
+            <p style="margin: 0; color: #b3b8c4; font-size: 13.5px; line-height: 1.7;">Battlegrounds has no live API. The recorder tails <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #e8a99f;">Power.log</span> — the game's own event log — to detect matches, turns, and combat results. Advanced logging must be enabled once.</p>
+            <div style="padding: 16px; background: #15171c; border: 1px solid #21242c; border-left: 3px solid #d9a441; border-radius: 8px;">
+              <div style="font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #d9a441; margin-bottom: 10px;">One-time setup</div>
+              <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 9px; color: #b3b8c4; font-size: 13.5px; line-height: 1.6;">
+                <li>Click <strong style="color: #e6e8ee; font-weight: 600;">Write log.config</strong> below — it enables the Power logger in <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #e8a99f;">%LocalAppData%\Blizzard\Hearthstone</span>.</li>
+                <li>Restart Hearthstone if it's running.</li>
+                <li>The recorder tails <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #e8a99f;">Logs\Power.log</span> in the install folder below.</li>
+              </ol>
+              <p style="margin: 12px 0 0; color: #9aa0ad; font-size: 12.5px;">Takes effect the next time Hearthstone launches.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input readonly value="C:\Program Files (x86)\Hearthstone" style="flex: 1 1 auto; min-width: 0; background: #0c0d10; border: 1px solid #2a2e38; border-radius: 8px; color: #b3b8c4; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; padding: 9px 12px;">
+              <button style="flex: 0 0 auto; padding: 9px 14px; background: #1c1f26; border: 1px solid #2a2e38; border-radius: 8px; color: #e6e8ee; font-family: Barlow, sans-serif; font-weight: 500; font-size: 13px; cursor: pointer;" style-hover="border-color: #dd8129;">Browse</button>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+              <button onClick="{{ writeCfg }}" style="padding: 9px 18px; background: linear-gradient(135deg, #dd8129, #9c5a12); border: none; border-radius: 8px; color: #fff; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.04em; cursor: pointer;" style-hover="filter: brightness(1.08);">Write log.config</button>
+              <button onClick="{{ testFeed }}" style="padding: 9px 18px; background: #15171c; border: 1px solid #21242c; border-radius: 8px; color: #b3b8c4; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.04em; cursor: pointer;" style-hover="filter: brightness(1.15);">Test feed</button>
+              <sc-if value="{{ cfgWritten }}" hint-placeholder-val="{{ false }}">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5bbf6a;">log.config written — restart Hearthstone</span>
+              </sc-if>
+            </div>
+            <sc-if value="{{ logTested }}" hint-placeholder-val="{{ false }}">
+              <pre style="margin: 0; padding: 12px 14px; max-height: 200px; overflow: auto; background: #0e0f12; border: 1px solid #21242c; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.5; color: #b3b8c4; white-space: pre;">D 21:44:02 PowerTaskList.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=TURN value=9
+D 21:44:02 GameState.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[id=214]
+D 21:44:03 GameState.DebugPrintPower() - TAG_CHANGE Entity=BobsTavern tag=STEP value=MAIN_COMBAT
+D 21:44:05 GameState.DebugPrintPower() - TAG_CHANGE Entity=[id=64] tag=DAMAGE value=12</pre>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tabGeneral }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 16px; max-width: 560px; padding: 20px; background: #101115; border: 1px solid #1b1e25; border-radius: 12px;">
+            <div style="padding-bottom: 14px; border-bottom: 1px solid #21242c;">
+              <h2 style="margin: 0; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 0.03em;">General</h2>
+            </div>
+            <sc-for list="{{ generalRows }}" as="g" hint-placeholder-count="2">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;">
+                <div style="min-width: 0;">
+                  <div style="margin-bottom: 4px; font-size: 14px; font-weight: 600; color: #e6e8ee;">{{ g.title }}</div>
+                  <p style="margin: 0; color: #b3b8c4; font-size: 13px; line-height: 1.6;">{{ g.desc }}</p>
+                </div>
+                <button onClick="{{ g.toggle }}" role="switch" style="{{ g.switchStyle }}">
+                  <span style="{{ g.knobStyle }}"></span>
+                </button>
+              </div>
+            </sc-for>
+            <div style="padding: 14px; background: #15171c; border: 1px solid #21242c; border-radius: 12px;">
+              <div style="margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #e6e8ee;">Closing the window</div>
+              <p style="margin: 0; color: #b3b8c4; font-size: 13px; line-height: 1.6;">Closing the window keeps Battlegrounds Recorder running in the system tray so it can keep auto-recording. Right-click the tray icon and choose <strong style="color: #e6e8ee;">Quit Battlegrounds Recorder</strong> to exit completely.</p>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+      </sc-if>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1440, &quot;height&quot;: 900}, &quot;status&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;recording&quot;, &quot;idle&quot;, &quot;disconnected&quot;], &quot;default&quot;: &quot;recording&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;App state&quot;}, &quot;showFinalBoard&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Player&quot;}, &quot;showTurnTicks&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Player&quot;}}">
+class Component extends DCLogic {
+  state = {
+    view: 'library', tab: 'recording', bucket: 'solo', seg: 'all', search: '',
+    selectedId: 1, selectedClipId: 1, playPct: 0.42, stars: null, clipStars: null, stopped: false,
+    audio: { game: true, mic: false, desk: false }, vols: { game: 100, mic: 80, desk: 60 },
+    maxGB: 400, saved: false, cfgWritten: false, logTested: false,
+    drives: [{ id: 1, path: 'E:\\bg-archive', capGb: 500, usedGb: 212, freeGb: 1650, totalGb: 1863 }], nextDriveId: 2,
+    toggles: { launch: true, notify: false },
+  };
+
+  buildMatches() {
+    const specs = [
+      ['Reno Jackson', 28, 'solo', 1, 62, 17, 1495, 'Today, 21:44', '1.4 GB', true],
+      ['A. F. Kay', 210, 'solo', 5, -18, 14, 1210, 'Today, 20:58', '1.1 GB', false],
+      ['Yogg-Saron', 282, 'solo', 3, 31, 16, 1382, 'Today, 20:12', '1.3 GB', false],
+      ['Patchwerk', 95, 'duos', 2, 44, 15, 1618, 'Yesterday, 23:05', '1.5 GB', false],
+      ['The Curator', 152, 'solo', 7, -41, 11, 918, 'Yesterday, 22:19', '0.9 GB', false],
+      ['Millificent Manastorm', 330, 'solo', 2, 48, 18, 1704, 'Yesterday, 21:26', '1.6 GB', true],
+      ["Kael'thas Sunstrider", 12, 'duos', 4, -37, 13, 1231, 'Jul 11, 23:40', '1.2 GB', false],
+      ['Ragnaros the Firelord', 22, 'solo', 4, 9, 15, 1355, 'Jul 11, 22:51', '1.2 GB', false],
+      ['Sire Denathrius', 350, 'duos', 1, 58, 16, 1546, 'Jul 11, 21:37', '1.4 GB', true],
+      ['Onyxia', 2, 'solo', 8, -55, 9, 742, 'Jul 10, 23:58', '0.7 GB', false],
+      ['Tavish Stormpike', 105, 'duos', 3, -12, 14, 1318, 'Jul 10, 22:44', '1.2 GB', false],
+      ['Elise Starseeker', 48, 'solo', 6, 24, 12, 1054, 'Jul 10, 21:50', '1.0 GB', false],
+    ];
+    return specs.map((s, i) => {
+      const [hero, hue, mode, place, mmr, turns, dur, date, size, starred] = s;
+      const id = i + 1;
+      let seed = id * 9973;
+      const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+      const top = place <= (mode === 'duos' ? 2 : 4);
+      const markers = [];
+      let w = 0, l = 0;
+      for (let t = 4; t <= turns; t++) {
+        const pct = t / (turns + 0.5);
+        const r = rnd();
+        const pw = top ? 0.66 : 0.4;
+        let kind, verb;
+        if (r < pw) { kind = 'cwin'; verb = 'Combat won'; w++; }
+        else if (r < pw + 0.14) { kind = 'tie'; verb = 'Combat tied'; }
+        else { kind = 'closs'; verb = 'Combat lost'; l++; }
+        markers.push({ t: pct, kind, tip: 'T' + t + ' · ' + verb });
+        if (kind === 'closs' && rnd() < 0.4) markers.push({ t: pct + 0.012, kind: 'dmg', tip: 'T' + t + ' · Took ' + Math.round(8 + rnd() * 14) + ' damage' });
+      }
+      markers.push(place === 1
+        ? { t: 0.985, kind: 'end', tip: 'T' + turns + ' · Victory' }
+        : { t: 0.985, kind: 'death', tip: 'T' + turns + ' · Eliminated — ' + this.ord(place) });
+      return { id, hero, hue, mode, place, mmr, turns, dur, date, size, starred, markers, combats: w + 'W ' + l + 'L' };
+    });
+  }
+
+  buildClips() {
+    return [
+      { id: 1, name: 'Leapfrog lethal', hero: 'Reno Jackson', hue: 28, len: '0:24', lenSec: 24, kind: 'Manual', created: 'Today, 21:58', starred: true },
+      { id: 2, name: 'Triple into Denathrius', hero: 'Sire Denathrius', hue: 350, len: '0:41', lenSec: 41, kind: 'Manual', created: 'Jul 11, 21:52', starred: false },
+      { id: 3, name: 'Turn 12 comeback', hero: 'Millificent Manastorm', hue: 330, len: '1:05', lenSec: 65, kind: 'Manual', created: 'Yesterday, 21:40', starred: false },
+      { id: 4, name: '30-dmg combat', hero: 'Yogg-Saron', hue: 282, len: '0:18', lenSec: 18, kind: 'Manual', created: 'Today, 20:26', starred: false },
+    ];
+  }
+
+  ord(p) { return p + (['ST', 'ND', 'RD'][p - 1] || 'TH'); }
+  fmt(sec) { const s = Math.max(0, Math.round(sec)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  placeColor(m) { return m.place === 1 ? '#d9a441' : (m.place <= (m.mode === 'duos' ? 2 : 4) ? '#5bbf6a' : '#e07a6f'); }
+
+  bucketBtn(key, label, count, small) {
+    const active = this.state.bucket === key && this.state.view === 'library';
+    return {
+      label, count: String(count),
+      pick: () => this.setState({ bucket: key, view: 'library' }),
+      style: 'display:flex;align-items:center;gap:10px;width:100%;padding:' + (small ? '8px 12px' : '9px 12px') + ';border-radius:7px;border:1px solid ' + (active ? 'rgba(221,129,41,0.3)' : 'transparent') + ';background:' + (active ? 'rgba(221,129,41,0.14)' : 'transparent') + ';color:#e6e8ee;font-family:Barlow,sans-serif;cursor:pointer;text-align:left;',
+      diamondStyle: 'width:7px;height:7px;flex:0 0 7px;transform:rotate(45deg);background:' + (active ? '#dd8129' : '#5a606c') + ';',
+      labelColor: active ? '#e6e8ee' : '#c4c9d4',
+      badgeStyle: 'font-family:JetBrains Mono,monospace;font-size:11px;padding:1px 7px;border-radius:9px;' + (active ? 'color:#0e0f12;background:#dd8129;' : 'color:#9aa0ad;background:#23262f;'),
+    };
+  }
+
+  switchStyles(on) {
+    return {
+      switchStyle: 'flex:none;position:relative;width:42px;height:24px;padding:0;border:1px solid ' + (on ? '#dd8129' : '#21242c') + ';border-radius:999px;background:' + (on ? '#dd8129' : '#15171c') + ';cursor:pointer;transition:background 120ms ease,border-color 120ms ease;',
+      knobStyle: 'position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform 120ms ease;transform:translateX(' + (on ? 18 : 0) + 'px);display:block;',
+    };
+  }
+
+  renderVals() {
+    if (!this.matchData) { this.matchData = this.buildMatches(); this.clipData = this.buildClips(); }
+    const M = this.matchData, C = this.clipData;
+    const st = this.state;
+    const stars = st.stars || Object.fromEntries(M.map(m => [m.id, m.starred]));
+    const clipStars = st.clipStars || Object.fromEntries(C.map(c => [c.id, c.starred]));
+    const status = st.stopped ? 'idle' : (this.props.status ?? 'recording');
+    const isClips = st.bucket === 'clips';
+    const isLibrary = st.view === 'library';
+
+    const inBucket = m => st.bucket === 'starred' ? stars[m.id] : m.mode === st.bucket;
+    const visible = isClips ? [] : M.filter(m => inBucket(m)
+      && (st.seg === 'all' || (st.seg === 'top' ? m.place <= (m.mode === 'duos' ? 2 : 4) : m.place > (m.mode === 'duos' ? 2 : 4)))
+      && m.hero.toLowerCase().includes(st.search.toLowerCase()));
+    const visClips = !isClips ? [] : C.filter(c => (c.name + ' ' + c.hero).toLowerCase().includes(st.search.toLowerCase()));
+
+    const sel = M.find(m => m.id === st.selectedId) || M[0];
+    const selClip = C.find(c => c.id === st.selectedClipId) || C[0];
+
+    const rows = visible.map((m, i) => {
+      const selOn = m.id === sel.id;
+      return {
+        hero: m.hero, isDuo: m.mode === 'duos' && st.bucket !== 'duos',
+        initials: m.hero.split(' ').map(x => x[0]).join('').slice(0, 2).toUpperCase(),
+        chipStyle: 'width:30px;height:20px;flex:0 0 30px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;font-size:9px;color:rgba(255,255,255,0.72);background:linear-gradient(135deg,hsl(' + m.hue + ' 32% 30%),hsl(' + m.hue + ' 34% 14%));',
+        place: this.ord(m.place), placeColor: this.placeColor(m),
+        mmr: (m.mmr > 0 ? '+' : '') + m.mmr, mmrColor: m.mmr > 0 ? '#5bbf6a' : '#e07a6f',
+        turns: String(m.turns), dur: this.fmt(m.dur), combats: m.combats, date: m.date, size: m.size,
+        select: () => this.setState({ selectedId: m.id, playPct: 0.42 }),
+        toggleStar: (e) => { e.stopPropagation(); this.setState({ stars: { ...stars, [m.id]: !stars[m.id] } }); },
+        starStyle: 'flex:0 0 auto;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:none;border-radius:4px;background:transparent;font-size:15px;line-height:1;cursor:pointer;color:' + (stars[m.id] ? '#d9a441' : '#3a3f4a') + ';',
+        rowStyle: 'display:grid;grid-template-columns:2.2fr 0.7fr 0.8fr 0.6fr 0.8fr 0.9fr 1.1fr 0.7fr 36px;align-items:center;width:100%;padding:13px 18px;border-bottom:1px solid #15171c;border-left:2px solid ' + (selOn ? '#dd8129' : 'transparent') + ';background:' + (selOn ? 'rgba(221,129,41,0.06)' : (i % 2 ? '#0d0e12' : 'transparent')) + ';color:#e6e8ee;cursor:pointer;user-select:none;',
+      };
+    });
+
+    const clipRows = visClips.map((c, i) => {
+      const selOn = isClips && c.id === selClip.id;
+      return {
+        name: c.name, hero: c.hero, len: c.len, kind: c.kind, created: c.created,
+        thumbStyle: 'width:44px;height:26px;flex:0 0 44px;border-radius:6px;background:linear-gradient(135deg,hsl(' + c.hue + ' 32% 30%),hsl(' + c.hue + ' 34% 14%));',
+        select: () => this.setState({ selectedClipId: c.id, playPct: 0.3 }),
+        toggleStar: (e) => { e.stopPropagation(); this.setState({ clipStars: { ...clipStars, [c.id]: !clipStars[c.id] } }); },
+        starStyle: 'flex:0 0 auto;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:none;border-radius:4px;background:transparent;font-size:15px;line-height:1;cursor:pointer;color:' + (clipStars[c.id] ? '#d9a441' : '#3a3f4a') + ';',
+        rowStyle: 'display:grid;grid-template-columns:2.4fr 0.8fr 0.9fr 1.2fr 36px;align-items:center;width:100%;padding:13px 18px;border-bottom:1px solid #15171c;border-left:2px solid ' + (selOn ? '#dd8129' : 'transparent') + ';background:' + (selOn ? 'rgba(221,129,41,0.06)' : (i % 2 ? '#0d0e12' : 'transparent')) + ';color:#e6e8ee;cursor:pointer;user-select:none;',
+      };
+    });
+
+    const markerBg = { cwin: '#5bbf6a', closs: '#e07a6f', tie: '#6a7080', dmg: '#d9a441', death: '#e07a6f', end: '#dd8129' };
+    const markers = (isClips ? [] : sel.markers).map(mk => ({
+      tip: mk.tip,
+      seek: (e) => { e.stopPropagation(); this.setState({ playPct: mk.t }); },
+      style: 'position:absolute;top:' + (mk.kind === 'death' || mk.kind === 'end' ? '-5px;height:16px' : '-3px;height:12px') + ';width:' + (mk.kind === 'dmg' ? '5px' : '8px') + ';border-radius:2px;cursor:pointer;z-index:2;left:calc(' + (mk.t * 100).toFixed(2) + '% - 4px);background:' + markerBg[mk.kind] + ';',
+    }));
+    const ticks = isClips ? [] : Array.from({ length: sel.turns - 1 }, (_, i) => ({
+      style: 'position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.12);left:' + (((i + 1) / (sel.turns + 0.5)) * 100).toFixed(2) + '%;',
+    }));
+
+    let bseed = sel.id * 7717;
+    const brnd = () => { bseed = (bseed * 1103515245 + 12345) % 2147483648; return bseed / 2147483648; };
+    const pool = ['Bristleback Knight', 'Leapfrogger', 'Baron Rivendare', 'Ghastcoiler', 'Foe Reaper 4000', 'Amalgadon', 'Zapp Slywick', 'Mama Bear', 'Murozond', 'Lightfang Enforcer', 'Brann Bronzebeard', 'Titus Rivendare'];
+    const board = Array.from({ length: 7 }, () => {
+      const nm = pool[Math.floor(brnd() * pool.length)];
+      const scale = sel.turns * (sel.place <= 2 ? 3.4 : 2.2);
+      return { nm, stats: Math.round(4 + brnd() * scale) + '/' + Math.round(4 + brnd() * scale), chipStyle: 'width:34px;height:24px;flex:0 0 34px;border-radius:4px;background:linear-gradient(135deg,hsl(' + Math.floor(brnd() * 360) + ' 26% 28%),hsl(' + Math.floor(brnd() * 360) + ' 28% 13%));' };
+    });
+
+    const mmrSeries = [6120, 6102, 6157, 6141, 6203, 6250, 6212, 6289, 6341, 6318, 6357, 6412];
+    const lo = Math.min(...mmrSeries), hi = Math.max(...mmrSeries);
+    const pts = mmrSeries.map((v, i) => (4 + i * (174 / (mmrSeries.length - 1))).toFixed(1) + ',' + (36 - ((v - lo) / (hi - lo)) * 32).toFixed(1));
+    const dist = Array(8).fill(0);
+    M.forEach(m => { if (m.mode === 'solo') dist[m.place - 1]++; });
+    const dmax = Math.max(...dist, 1);
+
+    const thresh = st.bucket === 'duos' ? 2 : 4;
+    const segDefs = [['all', 'All'], ['top', thresh === 2 ? 'Top 2' : 'Top 4'], ['bot', thresh === 2 ? 'Bottom 2' : 'Bottom 4']];
+    const statusMap = {
+      recording: { title: 'LOG FEED · LIVE', text: 'Recording — Turn 9', color: '#dd8129', edge: '#dd8129', conn: 'RECORDING', dot: '#dd8129', logConn: 'Power.log · streaming' },
+      idle: { title: 'LOG FEED · CONNECTED', text: 'Waiting for match', color: '#9aa0ad', edge: '#5bbf6a', conn: 'READY', dot: '#5bbf6a', logConn: 'Power.log · connected' },
+      disconnected: { title: 'LOG FEED · NOT FOUND', text: 'Hearthstone not detected', color: '#e07a6f', edge: '#e07a6f', conn: 'GAME NOT FOUND', dot: '#e07a6f', logConn: 'Power.log · not found' },
+    };
+    const sinfo = statusMap[status] || statusMap.idle;
+
+    const dur = isClips ? selClip.lenSec : sel.dur;
+    const recRow = (i) => 'display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px 0;' + (i > 0 ? 'border-top:1px solid #23262f;' : '');
+    const audioDefs = [
+      { k: 'game', glyph: 'G', name: 'Game audio', desc: 'Hearthstone application capture.', tint: '#dd8129', tintBg: 'rgba(221,129,41,0.1)' },
+      { k: 'mic', glyph: 'M', name: 'Microphone', desc: 'Default input device.', tint: '#d9a441', tintBg: 'rgba(217,164,65,0.08)' },
+      { k: 'desk', glyph: 'D', name: 'Desktop audio', desc: 'System output.', tint: '#5bbf6a', tintBg: 'rgba(91,191,106,0.08)' },
+    ];
+    const toggleDefs = [
+      { k: 'launch', title: 'Launch at login', desc: 'Start Battlegrounds Recorder when you sign in to Windows, hidden in the tray so it\u2019s ready to record.' },
+      { k: 'notify', title: 'Match saved notifications', desc: 'Show a desktop notification with your placement when a recording is saved.' },
+    ];
+
+    return {
+      statusTitle: sinfo.title, statusText: sinfo.text, statusColor: sinfo.color, statusEdge: sinfo.edge,
+      isRecording: status === 'recording',
+      stopRecording: () => this.setState({ stopped: true }),
+      primaryBuckets: [
+        this.bucketBtn('solo', 'Solo', M.filter(m => m.mode === 'solo').length),
+        this.bucketBtn('duos', 'Duos', M.filter(m => m.mode === 'duos').length),
+      ],
+      secondaryBuckets: [
+        this.bucketBtn('starred', 'Starred', M.filter(m => stars[m.id]).length, true),
+        this.bucketBtn('clips', 'Clips', C.length, true),
+      ],
+      settingsNav: [['recording', 'Recording'], ['log', 'Game log'], ['general', 'General']].map(([k, label]) => {
+        const active = st.view === 'settings' && st.tab === k;
+        return {
+          label, pick: () => this.setState({ view: 'settings', tab: k }),
+          style: 'width:100%;padding:8px 12px;border:none;border-radius:7px;background:' + (active ? 'rgba(221,129,41,0.14)' : 'transparent') + ';color:' + (active ? '#e6e8ee' : '#9aa0ad') + ';font-family:Barlow,sans-serif;font-size:14px;text-align:left;cursor:pointer;',
+        };
+      }),
+      mmrNow: '6,412', mmrDelta: '+292 / 12', mmrDeltaColor: '#5bbf6a',
+      sparkPoints: pts.join(' '), sparkEndX: pts[pts.length - 1].split(',')[0], sparkEndY: pts[pts.length - 1].split(',')[1],
+      distBars: dist.map((c, i) => ({
+        label: String(i + 1), tip: c + ' finishes at ' + this.ord(i + 1).toLowerCase(),
+        style: 'width:100%;border-radius:2px 2px 0 0;height:' + Math.max(2, (c / dmax) * 18) + 'px;background:' + (i === 0 ? '#d9a441' : i < 4 ? '#4a7d54' : '#7a4640') + ';',
+      })),
+      isLibrary, isSettings: st.view === 'settings',
+      tabRecording: st.tab === 'recording', tabLog: st.tab === 'log', tabGeneral: st.tab === 'general',
+      isClips, notClips: !isClips, showSegments: !isClips,
+      searchHint: isClips ? 'Search clips…' : 'Search hero…',
+      selSub: isClips
+        ? selClip.name + ' — ' + selClip.hero + ' · ' + selClip.len
+        : sel.hero + ' — ' + this.ord(sel.place).toLowerCase() + ' · ' + (sel.mode === 'duos' ? 'Duos' : 'Solo') + ' · ' + sel.turns + ' turns',
+      placePill: isClips ? 'CLIP' : this.ord(sel.place) + ' PLACE',
+      placePillStyle: 'font-family:JetBrains Mono,monospace;font-size:11px;padding:3px 9px;border-radius:5px;color:' + (isClips ? '#d9a441' : this.placeColor(sel)) + ';background:rgba(15,20,16,0.7);',
+      turnPill: isClips ? selClip.kind.toUpperCase() + ' · ' + selClip.len : 'TURN ' + sel.turns + ' · ' + this.fmt(sel.dur),
+      showFinalBoard: this.props.showFinalBoard ?? true,
+      boardVisible: (this.props.showFinalBoard ?? true) && !isClips,
+      showTurnTicks: this.props.showTurnTicks ?? true,
+      board, markers, ticks,
+      fillStyle: 'position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:#dd8129;width:' + (st.playPct * 100).toFixed(2) + '%;',
+      headStyle: 'position:absolute;top:-3px;width:12px;height:12px;border-radius:50%;background:#fff;z-index:3;left:calc(' + (st.playPct * 100).toFixed(2) + '% - 6px);',
+      onScrub: (e) => { const r = e.currentTarget.getBoundingClientRect(); this.setState({ playPct: Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) }); },
+      timeLabel: this.fmt(dur * st.playPct) + ' / ' + this.fmt(dur),
+      segments: segDefs.map(([k, label]) => ({
+        label, pick: () => this.setState({ seg: k }),
+        style: 'padding:6px 12px;border:none;cursor:pointer;font-family:Barlow,sans-serif;font-size:12.5px;' + (st.seg === k ? 'background:#dd8129;color:#fff;font-weight:600;' : 'background:transparent;color:#9aa0ad;'),
+      })),
+      search: st.search,
+      onSearch: (e) => this.setState({ search: e.target.value }),
+      rows, clipRows,
+      empty: isLibrary && (isClips ? clipRows.length === 0 : rows.length === 0),
+
+      connDotStyle: 'width:8px;height:8px;border-radius:50%;background:' + sinfo.dot + ';' + (status === 'recording' ? 'box-shadow:0 0 7px #dd8129;animation:idlepulse 1.2s ease-in-out infinite;' : status === 'idle' ? 'box-shadow:0 0 7px #5bbf6a;' : ''),
+      connLabel: sinfo.conn, logConnLabel: sinfo.logConn,
+      previewBadge: sinfo.conn,
+      previewBadgeStyle: 'position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;padding:5px 11px;background:#1c1f26;border:1px solid ' + (status === 'recording' ? '#dd8129' : status === 'idle' ? 'rgba(91,191,106,0.4)' : '#e07a6f') + ';border-radius:7px;font-family:JetBrains Mono,monospace;font-size:12px;color:' + (status === 'recording' ? '#dd8129' : status === 'idle' ? '#5bbf6a' : '#e07a6f') + ';',
+      videoRows: [
+        { label: 'Canvas resolution', desc: 'Recording canvas; game is scaled to fit.', opt1: '1920 × 1080', opt2: '2560 × 1440', opt3: 'Native window' },
+        { label: 'Frame rate', desc: 'Battlegrounds is turn-based — 30 fps keeps files small.', opt1: '30 fps', opt2: '60 fps', opt3: '24 fps' },
+        { label: 'Encoder', desc: 'Hardware encoder probed at startup.', opt1: 'NVENC H.264 (detected)', opt2: 'AMD HW H.264', opt3: 'x264 (software)' },
+        { label: 'Quality', desc: 'Bitrate preset for the encoder.', opt1: 'Medium — 12 Mbps', opt2: 'High — 20 Mbps', opt3: 'Low — 6 Mbps' },
+      ].map((v, i) => ({ ...v, rowStyle: recRow(i) })),
+      audioRows: audioDefs.map((a, i) => {
+        const on = st.audio[a.k];
+        return {
+          glyph: a.glyph, name: a.name, desc: a.desc, rowStyle: recRow(i),
+          chipStyle: 'flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;font-family:Rajdhani,sans-serif;font-weight:700;font-size:14px;line-height:1;background:' + a.tintBg + ';border:1px solid ' + a.tint + ';color:' + a.tint + ';',
+          vol: String(st.vols[a.k]), volPct: st.vols[a.k] + '%',
+          volStyle: 'display:flex;align-items:center;gap:10px;min-width:180px;' + (on ? '' : 'opacity:0.5;'),
+          setVol: (e) => this.setState({ vols: { ...st.vols, [a.k]: Number(e.target.value) } }),
+          toggle: () => this.setState({ audio: { ...st.audio, [a.k]: !on } }),
+          pillLabel: on ? 'On' : 'Off',
+          pillStyle: 'flex:0 0 auto;min-width:58px;padding:7px 12px;border-radius:8px;font-family:JetBrains Mono,monospace;font-size:12px;cursor:pointer;' + (on ? 'color:#5bbf6a;border:1px solid rgba(91,191,106,0.4);background:rgba(91,191,106,0.1);' : 'color:#9aa0ad;border:1px solid #2a2e38;background:#1c1f26;'),
+        };
+      }),
+      archiveDrives: st.drives.map((d, i) => ({
+        path: d.path, cap: String(d.capGb),
+        rowStyle: 'display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:13px 0;' + (i > 0 ? 'border-top:1px solid #23262f;' : ''),
+        hasUsage: d.totalGb != null,
+        usage: d.totalGb != null ? d.usedGb + ' GB used · ' + d.freeGb.toLocaleString() + ' GB free of ' + d.totalGb.toLocaleString() + ' GB' : '',
+        warn: d.totalGb != null && d.capGb > d.totalGb,
+        warnText: 'Cap ' + d.capGb + ' GB exceeds this drive — it will fill before the cap is reached.',
+        setPath: (e) => { const drives = st.drives.slice(); drives[i] = { ...d, path: e.target.value }; this.setState({ drives, saved: false }); },
+        setCap: (e) => { const v = Number(e.target.value); const drives = st.drives.slice(); drives[i] = { ...d, capGb: Number.isFinite(v) ? v : 0 }; this.setState({ drives, saved: false }); },
+        remove: () => this.setState({ drives: st.drives.filter((_, j) => j !== i), saved: false }),
+      })),
+      addDrive: () => this.setState({ drives: [...st.drives, { id: st.nextDriveId, path: '', capGb: 200, usedGb: null, freeGb: null, totalGb: null }], nextDriveId: st.nextDriveId + 1, saved: false }),
+      maxGB: String(st.maxGB), maxGBLabel: st.maxGB + ' GB',
+      setMaxGB: (e) => this.setState({ maxGB: Number(e.target.value), saved: false }),
+      saveSettings: () => this.setState({ saved: true }),
+      saved: st.saved,
+      writeCfg: () => this.setState({ cfgWritten: true }),
+      testFeed: () => this.setState({ logTested: !st.logTested }),
+      cfgWritten: st.cfgWritten, logTested: st.logTested,
+      generalRows: toggleDefs.map(t => {
+        const on = st.toggles[t.k];
+        return { title: t.title, desc: t.desc, toggle: () => this.setState({ toggles: { ...st.toggles, [t.k]: !on } }), ...this.switchStyles(on) };
+      }),
+    };
+  }
+}
+</script>
+</body>
+</html>
