@@ -17,7 +17,7 @@ Derivable from the log:
 | Hero | player HERO entities |
 | Placement | `PLAYER_LEADERBOARD_PLACE` tag changes |
 | Turns | `TURN` tag — **displayed tavern turn = `(TURN + 1) / 2`** (raw tag counts both halves of each round; see HDT `GameV2.GetTurnNumber()`) |
-| Combat boundaries | `TURN` parity / `STEP` tag changes (`MAIN_COMBAT`) |
+| Combat boundaries | even `TURN` transitions on GameEntity (verified against 17 real matches, 2026-07-14: coincides to the same log line-time with `BOARD_VISUAL_STATE=2`, usable as a cross-check; `STEP value=MAIN_COMBAT` does **not** appear in current BG logs despite older documentation) |
 | Solo vs duos | GameType (`GT_BATTLEGROUNDS_DUO = 37`) |
 | Final board | board-state entities at match end (HDT `BattlegroundsBoardState` pattern) |
 
