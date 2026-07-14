@@ -6,13 +6,18 @@ The recorder tails the Hearthstone game log to detect lobbies and combats, captu
 
 ## Status
 
-Early design stage. The `design/` folder contains an interactive UI prototype of the Library and Settings screens — open [`design/BG Recorder - Library.dc.html`](<design/BG Recorder - Library.dc.html>) in a browser to view it.
+Design + planning stage. No app code yet.
+
+- `design/` contains an interactive UI prototype of the Library and Settings screens — clone the repo and open [`design/BG Recorder - Library.dc.html`](<design/BG Recorder - Library.dc.html>) locally in a browser (GitHub shows only the source).
+- [`docs/technical-notes.md`](docs/technical-notes.md) — verified facts constraining the implementation: Power.log lives in per-session timestamped subfolders; hero/placement/turns/combats/final board are log-derivable; **rating (MMR) is not in any log** and is read from game memory via HearthMirror (HDT's approach), so it's designed as an optional, degradable subsystem.
+- [`docs/implementation-plan.md`](docs/implementation-plan.md) — stack decision (.NET 8 + WPF tray shell + WebView2 UI, ScreenRecorderLib capture), architecture, the resolved storage/retention policy, and six milestones starting with a de-risking spike sprint.
 
 ## Planned features
 
-- Automatic recording per lobby and per combat, no manual start/stop
+- Automatic recording per match with combat markers on the timeline, no manual start/stop
 - Library with filtering by hero, placement, rating, and date
-- Storage management: max storage cap, output folder selection, archive drives
+- Rating (MMR) tracking per mode (solo/duos) via memory reading, degrading gracefully when game patches break it
+- Storage management: max storage cap, output folder selection, archive drives, starred matches never auto-deleted
 - Game log parsing for match metadata
 
 ## License
