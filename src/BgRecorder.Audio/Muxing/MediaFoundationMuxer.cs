@@ -175,7 +175,17 @@ public sealed class MediaFoundationMuxer : IMuxer
             long newTime = t + shiftHns;
             if (newTime < 0)
             {
-                // Negative offset: audio started before video — trim these leading samples.
+                // Negative offset: the audio started before the video's first frame. Only the
+                // sub-zero portion should be dropped — NOT the whole buffer. Since the caller's
+                // offset (audioClock - videoClock) is commonly a small fraction of a reader
+                // buffer, dropping the whole buffer would open a leading A/V gap and discard
+                // real audio. Trim just the frames before output time 0 and rebase the
+                // remainder to 0; a buffer that lies entirely before 0 is genuinely dropped.
+                if (TryTrimLeadingToZero(sample, newTime, out IMFSample? trimmed))
+                {
+                    Check(sink.WriteSample(sinkStream, trimmed!), "WriteSample(audio-trimmed)");
+                    Release(trimmed);
+                }
                 Release(sample);
                 continue;
             }
@@ -183,6 +193,49 @@ public sealed class MediaFoundationMuxer : IMuxer
             Check(sample.SetSampleTime(newTime), "SetSampleTime");
             Check(sink.WriteSample(sinkStream, sample), "WriteSample(audio)");
             Release(sample);
+        }
+    }
+
+    /// <summary>
+    /// For a straddling audio buffer whose shifted start time is negative, builds a new PCM sample
+    /// containing only the frames at/after output time 0 (rebased to time 0). Returns false — with
+    /// no output sample — when the entire buffer lies before 0 and nothing should be kept. Because
+    /// the trimmed remainder starts exactly at 0 and the next source buffer's shifted time equals
+    /// this buffer's original end, playback stays gapless and contiguous.
+    /// </summary>
+    private static bool TryTrimLeadingToZero(IMFSample source, long newTimeHns, out IMFSample? trimmed)
+    {
+        trimmed = null;
+
+        long framesToTrim = (-newTimeHns) * AudioSampleRate / 10_000_000L;
+        long bytesToTrim = framesToTrim * AudioBlockAlign;
+
+        Check(source.ConvertToContiguousBuffer(out IMFMediaBuffer buffer), "ConvertToContiguousBuffer");
+        try
+        {
+            Check(buffer.Lock(out IntPtr ptr, out _, out uint currentLength), "trim buffer.Lock");
+            try
+            {
+                if (bytesToTrim >= currentLength)
+                    return false; // whole buffer is before output time 0 — genuinely dropped
+
+                int keepBytes = (int)(currentLength - bytesToTrim);
+                var kept = new byte[keepBytes];
+                Marshal.Copy(IntPtr.Add(ptr, (int)bytesToTrim), kept, 0, keepBytes);
+
+                long keepFrames = keepBytes / AudioBlockAlign;
+                long durationHns = keepFrames * 10_000_000L / AudioSampleRate;
+                trimmed = CreatePcmSample(kept, keepBytes, 0, durationHns);
+                return true;
+            }
+            finally
+            {
+                Check(buffer.Unlock(), "trim buffer.Unlock");
+            }
+        }
+        finally
+        {
+            Release(buffer);
         }
     }
 

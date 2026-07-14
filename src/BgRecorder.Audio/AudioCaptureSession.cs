@@ -67,6 +67,15 @@ public sealed class AudioCaptureSession : IAudioSession
 
             _mic.Stop();
 
+            // Release the recorder file handles before the mixer opens the same WAVs for
+            // reading. NAudio's WaveFileWriter keeps its file open with write access and
+            // FileShare.Read, so a reader would hit a sharing violation while the recorder
+            // is still alive — which previously forced every mix onto the salvage path and
+            // leaked the mic staging WAV. Dispose is idempotent, so DisposeAsync re-disposing
+            // later is a harmless no-op. The captured durations were already read from Stop().
+            _game.Dispose();
+            _mic.Dispose();
+
             // Mix mic into game audio. If mixing fails for any reason, fall back to the
             // raw game WAV so the recording still yields usable audio.
             try

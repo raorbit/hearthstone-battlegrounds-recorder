@@ -1,67 +1,73 @@
 using System.Diagnostics;
 using System.Text.Json;
 using BgRecorder.Audio.Muxing;
+using NAudio.Wave;
 
 namespace BgRecorder.Audio.Tests;
 
 /// <summary>
-/// Integration tests for the finalize muxer against the real Spike B/D scratchpad
-/// assets. Verified with ffprobe — a verification-only tool that is never a runtime
-/// dependency of the shipped app.
+/// Integration tests for the finalize muxer. They need a real H.264 MP4 to remux and ffprobe to
+/// verify the output; the audio WAV is synthesized in-test. When the video fixture or ffprobe is
+/// missing the tests report a VISIBLE SKIP (via <see cref="MuxerAssetsFactAttribute"/>) rather than
+/// a silent pass, so the only coverage of the hand-rolled MF/COM muxer can never go falsely green.
+///
+/// Supply the video fixture by either setting BG_SCRATCHPAD to a folder containing
+/// <c>spikeB-capture.mp4</c>, or placing an H.264 MP4 at
+/// <c>tests/BgRecorder.Audio.Tests/fixtures/sample-h264.mp4</c>.
 /// </summary>
-public class MediaFoundationMuxerTests
+public class MediaFoundationMuxerTests : IDisposable
 {
-    // Real M2 test assets staged by the earlier spikes.
-    private static readonly string Scratchpad =
-        Environment.GetEnvironmentVariable("BG_SCRATCHPAD")
-        ?? @"C:\Users\raorb\AppData\Local\Temp\claude\C--Users-raorb-Projects-hearthstone-battlegrounds-recorder\4db57b15-f4e1-4676-b4f3-2e908ff61ea9\scratchpad";
+    private readonly string _dir;
 
-    private static string VideoAsset => Path.Combine(Scratchpad, "spikeB-capture.mp4");
-    private static string AudioAsset => Path.Combine(Scratchpad, "spikeD-hearthstone.wav");
+    public MediaFoundationMuxerTests()
+    {
+        _dir = Path.Combine(Path.GetTempPath(), "bg-muxer-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(_dir);
+    }
 
-    [Fact]
+    public void Dispose()
+    {
+        try { Directory.Delete(_dir, recursive: true); } catch { /* best effort */ }
+    }
+
+    [MuxerAssetsFact]
     public async Task Mux_ZeroOffset_ProducesOneH264AndOneAacStream()
     {
-        if (!PrerequisitesPresent())
-            return;
+        string video = MuxerAssets.ResolveVideo()!;
+        string audio = WriteSyntheticWav(Path.Combine(_dir, "audio.wav"), seconds: 10.0);
+        string output = Path.Combine(_dir, "muxtest-offset0.mp4");
 
-        string output = Path.Combine(Scratchpad, "muxtest-offset0.mp4");
-        TryDelete(output);
-
-        await new MediaFoundationMuxer().MuxAsync(VideoAsset, AudioAsset, TimeSpan.Zero, output, CancellationToken.None);
+        await new MediaFoundationMuxer().MuxAsync(video, audio, TimeSpan.Zero, output, CancellationToken.None);
 
         var probe = Ffprobe(output);
-        var video = probe.Streams.Where(s => s.CodecType == "video").ToList();
-        var audio = probe.Streams.Where(s => s.CodecType == "audio").ToList();
+        var videoStreams = probe.Streams.Where(s => s.CodecType == "video").ToList();
+        var audioStreams = probe.Streams.Where(s => s.CodecType == "audio").ToList();
 
-        Assert.Single(video);
-        Assert.Equal("h264", video[0].CodecName);
-        Assert.Single(audio);
-        Assert.Equal("aac", audio[0].CodecName);
+        Assert.Single(videoStreams);
+        Assert.Equal("h264", videoStreams[0].CodecName);
+        Assert.Single(audioStreams);
+        Assert.Equal("aac", audioStreams[0].CodecName);
 
         // Container duration is driven by the ~14.5 s video.
         Assert.InRange(probe.FormatDuration, 13.5, 16.0);
 
-        // Audio (~10 s WAV) sits inside the video and starts at the top.
-        Assert.InRange(audio[0].Duration, 9.0, 11.0);
+        // Audio (10 s WAV) sits inside the video and starts at the top.
+        Assert.InRange(audioStreams[0].Duration, 9.0, 11.0);
     }
 
-    [Fact]
+    [MuxerAssetsFact]
     public async Task Mux_PositiveOffset_DelaysAudioByLeadingSilence()
     {
-        if (!PrerequisitesPresent())
-            return;
-
-        string zeroOut = Path.Combine(Scratchpad, "muxtest-offset0.mp4");
-        string offsetOut = Path.Combine(Scratchpad, "muxtest-offset1500ms.mp4");
-        TryDelete(zeroOut);
-        TryDelete(offsetOut);
+        string video = MuxerAssets.ResolveVideo()!;
+        string audio = WriteSyntheticWav(Path.Combine(_dir, "audio.wav"), seconds: 10.0);
+        string zeroOut = Path.Combine(_dir, "muxtest-offset0.mp4");
+        string offsetOut = Path.Combine(_dir, "muxtest-offset1500ms.mp4");
 
         var muxer = new MediaFoundationMuxer();
         var offset = TimeSpan.FromMilliseconds(1500);
 
-        await muxer.MuxAsync(VideoAsset, AudioAsset, TimeSpan.Zero, zeroOut, CancellationToken.None);
-        await muxer.MuxAsync(VideoAsset, AudioAsset, offset, offsetOut, CancellationToken.None);
+        await muxer.MuxAsync(video, audio, TimeSpan.Zero, zeroOut, CancellationToken.None);
+        await muxer.MuxAsync(video, audio, offset, offsetOut, CancellationToken.None);
 
         var zeroProbe = Ffprobe(zeroOut);
         var offsetProbe = Ffprobe(offsetOut);
@@ -81,43 +87,68 @@ public class MediaFoundationMuxerTests
         Assert.InRange(offsetProbe.FormatDuration, 13.5, 16.0);
     }
 
-    [Fact]
+    [MuxerAssetsFact]
+    public async Task Mux_NegativeOffset_KeepsAudioStartingNearZeroWithoutDroppingABuffer()
+    {
+        string video = MuxerAssets.ResolveVideo()!;
+        string audio = WriteSyntheticWav(Path.Combine(_dir, "audio.wav"), seconds: 10.0);
+        string zeroOut = Path.Combine(_dir, "muxtest-offset0.mp4");
+        string negOut = Path.Combine(_dir, "muxtest-negoffset.mp4");
+
+        var muxer = new MediaFoundationMuxer();
+        // A small negative offset is the common case (audioClock - videoClock). The muxer must trim
+        // only the sub-zero slice of the first buffer, not drop the whole buffer — so the audio
+        // stays essentially as long as the un-offset mux (no leading buffer-sized gap / loss).
+        var offset = TimeSpan.FromMilliseconds(-40);
+
+        await muxer.MuxAsync(video, audio, TimeSpan.Zero, zeroOut, CancellationToken.None);
+        await muxer.MuxAsync(video, audio, offset, negOut, CancellationToken.None);
+
+        var zeroAudio = Assert.Single(Ffprobe(zeroOut).Streams, s => s.CodecType == "audio");
+        var negAudio = Assert.Single(Ffprobe(negOut).Streams, s => s.CodecType == "audio");
+
+        Assert.Equal("aac", negAudio.CodecName);
+
+        // Only ~40 ms trimmed, not a whole reader buffer: durations stay within ~150 ms.
+        double delta = Math.Abs(zeroAudio.Duration - negAudio.Duration);
+        Assert.True(delta < 0.15, $"negative-offset audio lost {delta:0.###}s vs zero-offset; a dropped buffer would be far larger");
+    }
+
+    [MuxerAssetsFact]
     public async Task Mux_EmptyAudioPath_ProducesVideoOnlyOutput()
     {
         // The session convention (SessionCoordinator/StartupRecovery): an empty audio path
         // means the audio capture died or never started — remux the video alone.
-        if (!File.Exists(VideoAsset) || !FfprobeAvailable())
-            return;
+        string video = MuxerAssets.ResolveVideo()!;
+        string output = Path.Combine(_dir, "muxtest-videoonly.mp4");
 
-        string output = Path.Combine(Scratchpad, "muxtest-videoonly.mp4");
-        TryDelete(output);
-
-        await new MediaFoundationMuxer().MuxAsync(VideoAsset, string.Empty, TimeSpan.Zero, output, CancellationToken.None);
+        await new MediaFoundationMuxer().MuxAsync(video, string.Empty, TimeSpan.Zero, output, CancellationToken.None);
 
         var probe = Ffprobe(output);
-        var video = Assert.Single(probe.Streams, s => s.CodecType == "video");
-        Assert.Equal("h264", video.CodecName);
+        var videoStream = Assert.Single(probe.Streams, s => s.CodecType == "video");
+        Assert.Equal("h264", videoStream.CodecName);
         Assert.DoesNotContain(probe.Streams, s => s.CodecType == "audio");
         Assert.InRange(probe.FormatDuration, 13.5, 16.0);
     }
 
-    private static bool PrerequisitesPresent()
-        => File.Exists(VideoAsset) && File.Exists(AudioAsset) && FfprobeAvailable();
-
-    private static bool FfprobeAvailable()
+    private static string WriteSyntheticWav(string path, double seconds)
     {
-        try
+        // Canonical 44.1 kHz / 16-bit / stereo PCM, a quiet 440 Hz tone (non-silent so the AAC
+        // encoder has real signal). The muxer resamples/encodes this to AAC.
+        var format = new WaveFormat(44100, 16, 2);
+        using var writer = new WaveFileWriter(path, format);
+        int frames = (int)(format.SampleRate * seconds);
+        var frame = new byte[format.Channels * 2];
+        for (int i = 0; i < frames; i++)
         {
-            using var p = Process.Start(new ProcessStartInfo("ffprobe", "-version")
-            {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-            });
-            p!.WaitForExit(5000);
-            return p.ExitCode == 0;
+            short s = (short)(3000 * Math.Sin(2 * Math.PI * 440 * i / format.SampleRate));
+            frame[0] = (byte)(s & 0xFF);
+            frame[1] = (byte)((s >> 8) & 0xFF);
+            frame[2] = frame[0];
+            frame[3] = frame[1];
+            writer.Write(frame, 0, frame.Length);
         }
-        catch { return false; }
+        return path;
     }
 
     private static ProbeResult Ffprobe(string file)
@@ -154,11 +185,68 @@ public class MediaFoundationMuxerTests
         return new ProbeResult(streams, formatDuration);
     }
 
-    private static void TryDelete(string path)
-    {
-        try { if (File.Exists(path)) File.Delete(path); } catch { /* ignore */ }
-    }
-
     private sealed record ProbeStream(string CodecType, string CodecName, double Duration);
     private sealed record ProbeResult(List<ProbeStream> Streams, double FormatDuration);
+}
+
+/// <summary>
+/// Skips (visibly) unless the muxer's real-asset prerequisites are present: an H.264 video fixture
+/// to remux and ffprobe to verify the result. Mirrors the repo's <c>HearthstoneFact</c> pattern so a
+/// missing prerequisite is a reported SKIP, never a false pass.
+/// </summary>
+public sealed class MuxerAssetsFactAttribute : FactAttribute
+{
+    public MuxerAssetsFactAttribute()
+    {
+        if (MuxerAssets.ResolveVideo() is null)
+            Skip = "Muxer video fixture not found. Set BG_SCRATCHPAD to a folder with spikeB-capture.mp4, "
+                 + "or add tests/BgRecorder.Audio.Tests/fixtures/sample-h264.mp4 (a real H.264 MP4 to remux).";
+        else if (!MuxerAssets.FfprobeAvailable())
+            Skip = "ffprobe is not on PATH; the muxer integration tests verify output streams with ffprobe.";
+    }
+}
+
+/// <summary>Resolves muxer test assets without any hardcoded per-session scratchpad path.</summary>
+internal static class MuxerAssets
+{
+    /// <summary>
+    /// Locates the H.264 video fixture: BG_SCRATCHPAD/spikeB-capture.mp4 first (locally staged
+    /// spike asset), then a repo-relative fixtures file. Returns null if neither exists.
+    /// </summary>
+    public static string? ResolveVideo()
+    {
+        var scratch = Environment.GetEnvironmentVariable("BG_SCRATCHPAD");
+        if (!string.IsNullOrEmpty(scratch))
+        {
+            string staged = Path.Combine(scratch, "spikeB-capture.mp4");
+            if (File.Exists(staged))
+                return staged;
+        }
+
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null)
+        {
+            string candidate = Path.Combine(dir.FullName, "tests", "BgRecorder.Audio.Tests", "fixtures", "sample-h264.mp4");
+            if (File.Exists(candidate))
+                return candidate;
+            dir = dir.Parent;
+        }
+        return null;
+    }
+
+    public static bool FfprobeAvailable()
+    {
+        try
+        {
+            using var p = Process.Start(new ProcessStartInfo("ffprobe", "-version")
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+            });
+            p!.WaitForExit(5000);
+            return p.ExitCode == 0;
+        }
+        catch { return false; }
+    }
 }
