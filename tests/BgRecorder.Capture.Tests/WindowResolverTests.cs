@@ -124,4 +124,48 @@ public sealed class WindowResolverTests
 
         Assert.Equal(liveSecondary.Handle, pick!.Handle);
     }
+
+    [Fact]
+    public void Returns_null_when_no_window_matches_process_or_title()
+    {
+        // The game has no eligible window; only unrelated top-level windows exist (browser, chat).
+        // None matches the main handle, the game PID, or the title hint. Recording one of these would
+        // be a privacy leak, so the resolver must return null rather than an arbitrary window.
+        var candidates = new List<WindowCandidate>
+        {
+            new(0xAAAA, "Inbox - Chrome", 4444, IsValid: true, IsMinimized: false),
+            new(0xBBBB, "Discord", 5555, IsValid: true, IsMinimized: false),
+            new(0xCCCC, null, 6666, IsValid: true, IsMinimized: false),
+        };
+
+        var pick = WindowResolver.Resolve(candidates, GamePid, GameMainHandle, "Hearthstone");
+
+        Assert.Null(pick);
+    }
+
+    [Fact]
+    public void Scores_a_window_with_no_identity_signal_as_excluded()
+    {
+        // Direct check on the scoring floor: a window matching nothing is rejected, not scored zero.
+        var unrelated = new WindowCandidate(0xDDDD, "Notepad", 7777, IsValid: true, IsMinimized: false);
+
+        int score = WindowResolver.Score(unrelated, GamePid, GameMainHandle, "Hearthstone");
+
+        Assert.Equal(int.MinValue, score);
+    }
+
+    [Fact]
+    public void Minimized_game_window_is_chosen_over_an_unrelated_window()
+    {
+        // Regression: previously the -5000 minimized penalty cancelled the identity score to zero,
+        // letting an unrelated zero-scored window win the tie. Now the unrelated window is excluded,
+        // so a present-but-minimized game window is still selected over something unrelated.
+        var minimizedGame = new WindowCandidate(GameMainHandle, "Hearthstone", GamePid, IsValid: true, IsMinimized: true);
+        var unrelated = new WindowCandidate(0xEEEE, "Some Other App", 4444, IsValid: true, IsMinimized: false);
+        var candidates = new List<WindowCandidate> { unrelated, minimizedGame };
+
+        var pick = WindowResolver.Resolve(candidates, GamePid, GameMainHandle, "Hearthstone");
+
+        Assert.Equal(GameMainHandle, pick!.Handle);
+    }
 }

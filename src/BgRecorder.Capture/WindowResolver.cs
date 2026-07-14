@@ -85,24 +85,41 @@ public static class WindowResolver
             return Exclude;
 
         int score = 0;
+        bool hasIdentityMatch = false;
 
         // The game process's own main window is the definitive target.
         if (mainWindowHandle != nint.Zero && candidate.Handle == mainWindowHandle)
+        {
             score += 4000;
+            hasIdentityMatch = true;
+        }
 
         // Any window owned by the game process beats a same-titled overlay from another process.
         if (targetProcessId != 0 && candidate.OwningProcessId == targetProcessId)
+        {
             score += 1000;
+            hasIdentityMatch = true;
+        }
 
         // Title hint is only a tie-breaker / fallback when process info is unavailable.
         if (!string.IsNullOrEmpty(titleHint) && candidate.Title is { Length: > 0 } title)
         {
-            if (title.Equals(titleHint, Ci)) score += 200;
-            else if (title.StartsWith(titleHint, Ci)) score += 60;
-            else if (title.Contains(titleHint, Ci)) score += 30;
+            if (title.Equals(titleHint, Ci)) { score += 200; hasIdentityMatch = true; }
+            else if (title.StartsWith(titleHint, Ci)) { score += 60; hasIdentityMatch = true; }
+            else if (title.Contains(titleHint, Ci)) { score += 30; hasIdentityMatch = true; }
         }
 
-        // Never prefer a minimized window: capturing it produces black frames.
+        // A window matching NO identity signal (not the game's main window, not owned by the game
+        // process, and not carrying the title hint) must never be recorded. Otherwise, when the game
+        // has no eligible window, this would return an arbitrary unrelated top-level window — a
+        // browser, chat, whatever happens to be open — and the recorder would capture it (a privacy
+        // leak). Reject it so Resolve yields null and the caller raises its "window not found" path.
+        if (!hasIdentityMatch)
+            return Exclude;
+
+        // Never prefer a minimized window: capturing it produces black frames. This penalty only
+        // ranks a minimized identity match below a live one; it can drive the score to zero or below
+        // but never re-excludes it, so a minimized-but-present game window still beats nothing at all.
         if (candidate.IsMinimized)
             score -= 5000;
 
