@@ -7,18 +7,22 @@ Desktop.ini
 .vscode/
 .idea/
 
-# Build output (stack TBD)
+# Build output
 dist/
 build/
 out/
 node_modules/
 __pycache__/
 *.pyc
+bin/
+obj/
+*.user
 
 # Local recordings / test output
 recordings/
 *.mp4
 *.mkv
+*.wav
 
 # Unsanitized game logs, local databases, dumps (sanitized fixtures are committed explicitly)
 fixtures/raw/
