@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- SQLite schema v1, match repository, and the MatchAssembler -->
+  <ItemGroup>
+    <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.9" />
+    <!-- lift the transitive SQLitePCLRaw above 2.1.11 (NU1903, GHSA-2m69-gcr7-jv3q) -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.53.3" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
+  </ItemGroup>
+</Project>
