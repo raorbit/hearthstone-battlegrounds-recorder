@@ -3,4 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="BgRecorder.Session.Tests" />
+  </ItemGroup>
 </Project>
