@@ -85,6 +85,8 @@ internal sealed class FakeAudioCapture : IAudioCapture
     public TimeSpan StopDuration = TimeSpan.FromMinutes(10);
     public int StartCount;
     public FakeAudioSession? LastSession;
+    /// <summary>When set, the session reports this as its actual mode (to simulate a downgrade); otherwise it mirrors the requested mode.</summary>
+    public AudioCaptureMode? ForceActualMode;
 
     public Task<IAudioSession> StartAsync(AudioTarget target, string stagingWavPath, CancellationToken ct)
     {
@@ -99,6 +101,7 @@ internal sealed class FakeAudioCapture : IAudioCapture
             FirstSampleWallClock = FirstSampleWallClock,
             StopThrows = StopThrows,
             StopDuration = StopDuration,
+            ActualMode = ForceActualMode ?? target.Mode,
         };
         return Task.FromResult<IAudioSession>(LastSession);
     }
@@ -107,6 +110,7 @@ internal sealed class FakeAudioCapture : IAudioCapture
 internal sealed class FakeAudioSession(string path) : IAudioSession
 {
     public DateTimeOffset? FirstSampleWallClock { get; set; }
+    public AudioCaptureMode ActualMode { get; set; } = AudioCaptureMode.ProcessLoopback;
     public bool StopThrows { get; set; }
     public TimeSpan StopDuration { get; set; }
     public bool Stopped { get; private set; }
@@ -195,6 +199,8 @@ internal sealed class FakeRepository : IMatchRepository
     public bool ThrowOnInsert;
     public readonly List<(MatchRecord Match, IReadOnlyList<MarkerRecord> Markers)> Inserted = [];
     public IReadOnlyList<MatchRecord> Matches = [];
+    /// <summary>Session ids that MatchExistsBySessionAsync should report as already present (simulates a committed row from a prior run).</summary>
+    public readonly HashSet<string> ExistingSessions = [];
 
     public Task InitializeAsync(CancellationToken ct = default) => Task.CompletedTask;
 
@@ -204,9 +210,21 @@ internal sealed class FakeRepository : IMatchRepository
         {
             throw new InvalidOperationException("insert failed");
         }
+        // Model the repository's idempotency: a re-insert of the same session returns the prior id.
+        if (match.SessionId is { } sid)
+        {
+            var existingIndex = Inserted.FindIndex(x => x.Match.SessionId == sid);
+            if (existingIndex >= 0)
+            {
+                return Task.FromResult((long)(existingIndex + 1));
+            }
+        }
         Inserted.Add((match, markers));
         return Task.FromResult((long)Inserted.Count);
     }
+
+    public Task<bool> MatchExistsBySessionAsync(string sessionId, CancellationToken ct = default)
+        => Task.FromResult(ExistingSessions.Contains(sessionId) || Inserted.Any(x => x.Match.SessionId == sessionId));
 
     public Task UpdateVideoStatusAsync(long matchId, VideoStatus status, CancellationToken ct = default) => Task.CompletedTask;
 
@@ -219,6 +237,8 @@ internal sealed class FakeDiskSafety : IDiskSafety
     public Action? LowSpaceCallback;
     public int WatchdogStartCount;
     public int WatchdogDisposeCount;
+    /// <summary>Makes the watchdog Dispose throw — an unguarded early step of FinalizeAsync — to exercise the finally-block disposal.</summary>
+    public bool WatchdogDisposeThrows;
 
     public ArmCheckResult CheckCanArm() => ArmResult;
 
@@ -231,7 +251,14 @@ internal sealed class FakeDiskSafety : IDiskSafety
 
     private sealed class Handle(FakeDiskSafety owner) : IDisposable
     {
-        public void Dispose() => owner.WatchdogDisposeCount++;
+        public void Dispose()
+        {
+            owner.WatchdogDisposeCount++;
+            if (owner.WatchdogDisposeThrows)
+            {
+                throw new InvalidOperationException("watchdog dispose failed");
+            }
+        }
     }
 }
 

@@ -4,18 +4,19 @@ namespace BgRecorder.Session;
 public static class LibraryPaths
 {
     /// <summary>
-    /// Builds a unique output path like <c>BG_2026-07-14_20-31-05.mp4</c> in the library folder,
-    /// creating the folder if needed and suffixing on collision.
+    /// Builds the library output path for a recording, e.g. <c>BG_2026-07-14_20-31-05_1a2b3c4d.mp4</c>,
+    /// creating the folder if needed. The name is DETERMINISTIC in the session id: the same session
+    /// always maps to the same path, so a startup-recovery re-mux of a crashed session overwrites its
+    /// own partial output rather than leaving an orphan copy. The session-id suffix also keeps two
+    /// different matches that share a start second from colliding.
     /// </summary>
-    public static string CreateUniqueMp4Path(string libraryDir, DateTimeOffset matchStartedAt)
+    public static string CreateSessionMp4Path(string libraryDir, DateTimeOffset matchStartedAt, string sessionId)
     {
         Directory.CreateDirectory(libraryDir);
-        var baseName = $"BG_{matchStartedAt.LocalDateTime:yyyy-MM-dd_HH-mm-ss}";
-        var path = Path.Combine(libraryDir, baseName + ".mp4");
-        for (var i = 2; File.Exists(path); i++)
-        {
-            path = Path.Combine(libraryDir, $"{baseName}_{i}.mp4");
-        }
-        return path;
+        var stamp = matchStartedAt.LocalDateTime.ToString("yyyy-MM-dd_HH-mm-ss");
+        var suffix = string.IsNullOrEmpty(sessionId)
+            ? "session"
+            : sessionId.Length > 8 ? sessionId[..8] : sessionId;
+        return Path.Combine(libraryDir, $"BG_{stamp}_{suffix}.mp4");
     }
 }

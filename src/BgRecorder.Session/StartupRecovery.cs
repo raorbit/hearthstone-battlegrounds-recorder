@@ -55,22 +55,38 @@ public sealed class StartupRecovery
     private async Task<RecoverySessionResult> RecoverSessionAsync(string sessionDir, CancellationToken ct)
     {
         var manifest = ManifestStore.TryRead(sessionDir);
+        // The staging folder name IS the recording's stable session id (StagingDir/<sessionId>),
+        // available even when the manifest is unreadable.
+        var sessionId = Path.GetFileName(sessionDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
 
         if (manifest is { FinalizedCleanly: true })
         {
-            // Clean finalize whose folder delete didn't happen; the row already exists.
-            // Deliberately untouched: never re-register, never guess about someone else's cleanup.
+            // Clean finalize whose folder delete didn't happen; the row and library file already
+            // exist, so the staged files are a pure duplicate. Reclaim them — safe now that inserts
+            // are idempotent on SessionId — instead of leaking a full staging copy forever.
+            TryDelete(sessionDir);
             return new RecoverySessionResult(sessionDir, RecoveryOutcome.SkippedFinalized,
-                "Manifest is marked finalized; left untouched.");
+                "Already finalized; staged duplicate reclaimed.");
+        }
+
+        // Idempotency: if this session's row was already committed (a crash between the DB commit
+        // and the staging delete, or a delete that failed), do not re-mux/re-insert a duplicate —
+        // just reclaim the staged copy.
+        if (!string.IsNullOrEmpty(sessionId)
+            && await _repository.MatchExistsBySessionAsync(sessionId, ct).ConfigureAwait(false))
+        {
+            TryDelete(sessionDir);
+            return new RecoverySessionResult(sessionDir, RecoveryOutcome.AlreadyRecorded,
+                "Match already recorded for this session; staged duplicate reclaimed.");
         }
 
         return manifest is not null
-            ? await RecoverOrphanAsync(sessionDir, manifest, ct).ConfigureAwait(false)
-            : await RecoverWithoutManifestAsync(sessionDir, ct).ConfigureAwait(false);
+            ? await RecoverOrphanAsync(sessionDir, sessionId, manifest, ct).ConfigureAwait(false)
+            : await RecoverWithoutManifestAsync(sessionDir, sessionId, ct).ConfigureAwait(false);
     }
 
     /// <summary>Readable manifest, not finalized: the normal crash case.</summary>
-    private async Task<RecoverySessionResult> RecoverOrphanAsync(string sessionDir, StagingManifest manifest, CancellationToken ct)
+    private async Task<RecoverySessionResult> RecoverOrphanAsync(string sessionDir, string sessionId, StagingManifest manifest, CancellationToken ct)
     {
         var video = ExistingOrFallback(manifest.VideoPath, sessionDir, "*.mp4");
         if (video is null)
@@ -84,7 +100,7 @@ public sealed class StartupRecovery
             ? a - v
             : TimeSpan.Zero;
 
-        var outputPath = LibraryPaths.CreateUniqueMp4Path(_settings.LibraryDir, manifest.StartedAt);
+        var outputPath = LibraryPaths.CreateSessionMp4Path(_settings.LibraryDir, manifest.StartedAt, sessionId);
         string? audioFallbackNote = null;
         try
         {
@@ -121,14 +137,14 @@ public sealed class StartupRecovery
             };
         }
 
-        return await InsertAndCleanUpAsync(sessionDir, match, markers, outputPath, audioFallbackNote, ct).ConfigureAwait(false);
+        return await InsertAndCleanUpAsync(sessionDir, sessionId, match, markers, outputPath, audioFallbackNote, ct).ConfigureAwait(false);
     }
 
     /// <summary>
     /// Corrupt or missing manifest. If a video exists it is still registered as Incomplete
     /// with minimal metadata rather than being lost.
     /// </summary>
-    private async Task<RecoverySessionResult> RecoverWithoutManifestAsync(string sessionDir, CancellationToken ct)
+    private async Task<RecoverySessionResult> RecoverWithoutManifestAsync(string sessionDir, string sessionId, CancellationToken ct)
     {
         var video = FindFile(sessionDir, "*.mp4");
         if (video is null)
@@ -140,7 +156,7 @@ public sealed class StartupRecovery
         var audio = FindFile(sessionDir, "*.wav");
         var startedAt = new DateTimeOffset(File.GetCreationTimeUtc(video), TimeSpan.Zero);
 
-        var outputPath = LibraryPaths.CreateUniqueMp4Path(_settings.LibraryDir, startedAt);
+        var outputPath = LibraryPaths.CreateSessionMp4Path(_settings.LibraryDir, startedAt, sessionId);
         string? audioFallbackNote = null;
         try
         {
@@ -167,17 +183,21 @@ public sealed class StartupRecovery
             VideoPath = outputPath,
             VideoSizeBytes = FileSize(outputPath),
         };
-        return await InsertAndCleanUpAsync(sessionDir, match, [], outputPath, audioFallbackNote, ct).ConfigureAwait(false);
+        return await InsertAndCleanUpAsync(sessionDir, sessionId, match, [], outputPath, audioFallbackNote, ct).ConfigureAwait(false);
     }
 
     private async Task<RecoverySessionResult> InsertAndCleanUpAsync(
         string sessionDir,
+        string sessionId,
         MatchRecord match,
         IReadOnlyList<MarkerRecord> markers,
         string outputPath,
         string? audioFallbackNote,
         CancellationToken ct)
     {
+        // Stamp the stable identity so this insert is idempotent and a later recovery pass over the
+        // same folder (if the staging delete below fails) cannot create a duplicate row.
+        match = match with { SessionId = string.IsNullOrEmpty(sessionId) ? null : sessionId };
         try
         {
             await _repository.InsertMatchAsync(match, markers, ct).ConfigureAwait(false);
@@ -237,7 +257,7 @@ public enum RecoveryOutcome
     /// <summary>Media muxed into the library and a row inserted; staging removed.</summary>
     Recovered = 0,
 
-    /// <summary>Manifest marked FinalizedCleanly; folder left untouched.</summary>
+    /// <summary>Manifest marked FinalizedCleanly; the row already exists and the staged duplicate was reclaimed.</summary>
     SkippedFinalized = 1,
 
     /// <summary>No video to save; the empty folder was removed.</summary>
@@ -245,6 +265,9 @@ public enum RecoveryOutcome
 
     /// <summary>Recovery failed; the staged files were preserved for a later attempt.</summary>
     LeftInPlace = 3,
+
+    /// <summary>A row already existed for this session id (idempotent no-op); the staged duplicate was reclaimed.</summary>
+    AlreadyRecorded = 4,
 }
 
 public sealed record RecoverySessionResult(string SessionDir, RecoveryOutcome Outcome, string? Detail = null);

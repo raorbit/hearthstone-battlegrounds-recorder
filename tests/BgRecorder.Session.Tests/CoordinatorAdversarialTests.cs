@@ -1,3 +1,4 @@
+using BgRecorder.Core.Audio;
 using BgRecorder.Core.Events;
 using BgRecorder.Core.Session;
 using Xunit;
@@ -184,5 +185,69 @@ public sealed class CoordinatorAdversarialTests
         // …and the muxed-but-unregistered library file must not be left to become a
         // duplicate when StartupRecovery re-runs the finalize from staging.
         Assert.True(!Directory.Exists(h.LibraryDir) || Directory.GetFiles(h.LibraryDir).Length == 0);
+    }
+
+    /// <summary>
+    /// Regression: an exception from an UNGUARDED finalize step (the watchdog Dispose, before any
+    /// mux/insert) must still release both capture sessions via the finally. The AssemblerFailure
+    /// test above cannot cover this because MuxAndInsertAsync swallows its own failures and returns
+    /// false, so it never propagates into the finally — disposal there runs in the try either way.
+    /// </summary>
+    [Fact]
+    public async Task UnguardedFinalizeStepThrows_StillDisposesCaptureSessions()
+    {
+        await using var h = new CoordinatorHarness();
+        h.DiskSafety.WatchdogDisposeThrows = true; // ctx.Watchdog.Dispose() is the first, unguarded step
+        await h.StartAsync();
+        await h.StartMatchAsync();
+
+        h.Source.Raise(new MatchEnded(Ev.T0.AddMinutes(12), 3, PlayState.Lost, Truncated: false));
+        await h.WaitForStateCountAsync(4); // Armed, Recording, Finalizing, Armed
+
+        // The finalize threw before muxing: nothing inserted, staging kept for recovery…
+        Assert.Empty(h.Repository.Inserted);
+        Assert.NotNull(h.SingleStagingSessionDir());
+        // …but the finally must still release both native capture sessions.
+        Assert.True(h.Recorder.LastSession!.Disposed, "video session leaked");
+        Assert.True(h.Audio.LastSession!.Disposed, "audio session leaked");
+        Assert.Contains(h.Diagnostics, d => d.Contains("Finalize failed"));
+    }
+
+    // ------------------------------------------------- idempotency & privacy surfacing
+
+    /// <summary>
+    /// A committed match carries the staging session id, so a crash-recovery re-run over the same
+    /// staging folder is an idempotent no-op rather than a duplicate row/VOD.
+    /// </summary>
+    [Fact]
+    public async Task FinalizedMatch_CarriesStagingSessionId()
+    {
+        await using var h = new CoordinatorHarness();
+        await h.StartAsync();
+        var sessionDir = default(string);
+        await h.StartMatchAsync();
+        sessionDir = h.SingleStagingSessionDir();
+        Assert.NotNull(sessionDir);
+
+        h.Source.Raise(new MatchEnded(Ev.T0.AddMinutes(12), 3, PlayState.Lost, Truncated: false));
+        await h.WaitUntilAsync(() => h.Repository.Inserted.Count == 1, what: "match row inserted");
+
+        var (match, _) = Assert.Single(h.Repository.Inserted);
+        Assert.Equal(Path.GetFileName(sessionDir!), match.SessionId);
+    }
+
+    /// <summary>
+    /// Privacy: when game-only audio is requested but the engine falls back to full system loopback,
+    /// the coordinator must surface it so the user knows other apps' audio may be captured.
+    /// </summary>
+    [Fact]
+    public async Task AudioDowngradedToSystemLoopback_IsSurfaced()
+    {
+        await using var h = new CoordinatorHarness();
+        h.Audio.ForceActualMode = AudioCaptureMode.SystemLoopback; // engine had to broaden capture
+        await h.StartAsync();
+        await h.StartMatchAsync();
+
+        Assert.Contains(h.Diagnostics, d => d.Contains("system audio", StringComparison.OrdinalIgnoreCase));
     }
 }
