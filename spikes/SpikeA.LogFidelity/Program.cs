@@ -29,7 +29,7 @@ var json = new JsonSerializerOptions
 
 if (args.Length == 0)
 {
-    Console.WriteLine("usage: SpikeA.LogFidelity <discover|extract|parse|tail> [args]");
+    Console.WriteLine("usage: SpikeA.LogFidelity <discover|extract|resanitize|parse|tail> [args]");
     return 1;
 }
 
@@ -40,6 +40,7 @@ try
     {
         case "discover": return CmdDiscover(args);
         case "extract": return CmdExtract(args);
+        case "resanitize": return CmdReSanitize(args);
         case "parse": return CmdParse(args);
         case "tail": return CmdTail(args);
         default:
@@ -113,12 +114,62 @@ int CmdExtract(string[] a)
     }
 
     // Prove no privacy leaks in the committed (sanitized) fixtures.
-    var (scanned, leaks) = LeakScan.Scan(rep.SanitizedDir);
+    var (scanned, leaks) = LeakScan.Scan(rep.SanitizedDir, projectDir);
     Console.WriteLine();
     Console.WriteLine($"leak scan : {scanned} sanitized files scanned");
     if (leaks.Count == 0)
     {
-        Console.WriteLine("  PASS — zero hits for BattleTags, non-zero GameAccountId, 'raorbit', account numbers, or user paths.");
+        Console.WriteLine("  PASS — zero hits for un-mapped BattleTags, non-zero GameAccountId, user paths, or any configured known-original.");
+        return 0;
+    }
+    Console.WriteLine("  FAIL — leaks detected:");
+    foreach (var l in leaks) Console.WriteLine($"    {l}");
+    return 3;
+}
+
+int CmdReSanitize(string[] a)
+{
+    string projectDir = ProjectDir();
+    bool full = false;
+    for (int i = 1; i < a.Length; i++)
+    {
+        if (a[i] == "--out" && i + 1 < a.Length) projectDir = a[i + 1];
+        if (a[i] == "--full") full = true;
+    }
+
+    string rawDir = Path.Combine(projectDir, "fixtures", "raw");
+    string sanitizedDir = Path.Combine(projectDir, "fixtures", "sanitized");
+    if (!Directory.Exists(rawDir))
+    {
+        Console.WriteLine($"no raw fixtures dir: {rawDir}");
+        return 1;
+    }
+    Directory.CreateDirectory(sanitizedDir);
+
+    var rawFiles = Directory.EnumerateFiles(rawDir, "match-*.log")
+        .OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
+    if (rawFiles.Count == 0)
+    {
+        Console.WriteLine($"no match-*.log under {rawDir}");
+        return 1;
+    }
+
+    Console.WriteLine($"re-sanitizing {rawFiles.Count} raw fixture(s) → {sanitizedDir}");
+    Console.WriteLine($"  sanitized = {(full ? "FULL copy" : "DISTILLED parser-relevant lines")}");
+    foreach (var rawPath in rawFiles)
+    {
+        string sanPath = Path.Combine(sanitizedDir, Path.GetFileNameWithoutExtension(rawPath) + ".txt");
+        var m = Extractor.ReSanitizeFile(rawPath, sanPath, full);
+        Console.WriteLine($"  {Path.GetFileName(rawPath),-14} → {Path.GetFileName(sanPath),-14}  raw={m.RawLineCount,7:N0}  sanitized={m.SanitizedLineCount,6:N0}  players={m.Mapping.Count}");
+    }
+
+    // Prove no privacy leaks in the regenerated (sanitized) fixtures.
+    var (scanned, leaks) = LeakScan.Scan(sanitizedDir, projectDir);
+    Console.WriteLine();
+    Console.WriteLine($"leak scan : {scanned} sanitized files scanned");
+    if (leaks.Count == 0)
+    {
+        Console.WriteLine("  PASS — zero hits for un-mapped BattleTags, non-zero GameAccountId, user paths, or any configured known-original.");
         return 0;
     }
     Console.WriteLine("  FAIL — leaks detected:");
@@ -231,11 +282,34 @@ static partial class LeakScan
     [GeneratedRegex(@"[A-Za-z]:\\Users\\")]
     private static partial Regex AnyUserPath();
 
-    // Known originals from this machine's session — explicit proof they never survive sanitization.
-    private static readonly string[] KnownOriginals = { "raorbit", "0", "0" };
-
-    public static (int scanned, List<string> leaks) Scan(string dir)
+    /// <summary>
+    /// Optional extra literal denylist, kept OUT of source so no real identifier is ever committed. Sourced
+    /// from the BG_KNOWN_ORIGINALS env var (comma/semicolon/newline separated) and/or a gitignored
+    /// "known-originals.local.txt" in the project dir. When neither is present the scan relies purely on the
+    /// structural regexes below (un-mapped BattleTag, non-zero GameAccountId, user path).
+    /// </summary>
+    private static string[] LoadKnownOriginals(string projectDir)
     {
+        var originals = new List<string>();
+        var env = Environment.GetEnvironmentVariable("BG_KNOWN_ORIGINALS");
+        if (!string.IsNullOrWhiteSpace(env))
+            originals.AddRange(env.Split(new[] { ',', ';', '\n', '\r' },
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+
+        string localFile = Path.Combine(projectDir, "known-originals.local.txt");
+        if (File.Exists(localFile))
+            foreach (var raw in File.ReadLines(localFile))
+            {
+                var t = raw.Trim();
+                if (t.Length > 0 && !t.StartsWith('#')) originals.Add(t);
+            }
+
+        return originals.Distinct(StringComparer.Ordinal).ToArray();
+    }
+
+    public static (int scanned, List<string> leaks) Scan(string dir, string projectDir)
+    {
+        var knownOriginals = LoadKnownOriginals(projectDir);
         var leaks = new List<string>();
         int scanned = 0;
         foreach (var file in Directory.EnumerateFiles(dir, "match-*.txt"))
@@ -244,7 +318,7 @@ static partial class LeakScan
             string name = Path.GetFileName(file);
             foreach (var line in File.ReadLines(file))
             {
-                foreach (var orig in KnownOriginals)
+                foreach (var orig in knownOriginals)
                     if (line.Contains(orig, StringComparison.Ordinal))
                         leaks.Add($"{name}: known-original '{orig}' → {Trunc(line)}");
 

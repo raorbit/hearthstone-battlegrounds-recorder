@@ -9,7 +9,7 @@ D 23:31:55.1977979 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
 D 23:31:55.1977979 GameState.DebugPrintGame() - FormatType=FT_WILD
 D 23:31:55.1977979 GameState.DebugPrintGame() - ScenarioID=3459
 D 23:31:55.1977979 GameState.DebugPrintGame() - PlayerID=7, PlayerName=Player1#00000
-D 23:31:55.1977979 GameState.DebugPrintGame() - PlayerID=15, PlayerName=Player
+D 23:31:55.1977979 GameState.DebugPrintGame() - PlayerID=15, PlayerName=Player2
 D 23:32:10.3749165 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
 D 23:32:15.3513228 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
 D 23:32:16.1511259 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
@@ -45,9 +45,9 @@ D 23:32:47.8521046 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=R
 D 23:33:34.7360578 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
 D 23:33:34.7360578 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
 D 23:33:34.7360578 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 23:33:34.8775657 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=658 
+D 23:33:34.8775657 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player3 tag=HERO_ENTITY value=658 
 D 23:33:35.0815964 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 23:33:35.0815964 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=81 
+D 23:33:35.0815964 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player3 tag=HERO_ENTITY value=81 
 D 23:33:35.1948418 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ragnaros the Firelord id=183 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_11 player=15] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 23:33:35.1988438 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=166 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=15] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 23:33:35.3609612 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=3 
@@ -63,9 +63,9 @@ D 23:33:35.5277403 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Z
 D 23:34:19.5536048 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
 D 23:34:19.5536048 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
 D 23:34:19.5536048 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 23:34:19.7077889 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=992 
+D 23:34:19.7077889 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player4 tag=HERO_ENTITY value=992 
 D 23:34:19.9281361 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 23:34:19.9281361 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=81 
+D 23:34:19.9281361 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player4 tag=HERO_ENTITY value=81 
 D 23:34:20.0364789 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=166 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=15] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 23:34:20.0404797 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Maiev Shadowsong id=120 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_62 player=7] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 23:34:20.0404797 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ragnaros the Firelord id=183 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_11 player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
@@ -76,9 +76,9 @@ D 23:34:20.2277704 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#0
 D 23:35:16.0085467 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
 D 23:35:16.0085467 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
 D 23:35:16.0085467 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 23:35:16.2204685 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1453 
+D 23:35:16.2204685 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player5 tag=HERO_ENTITY value=1453 
 D 23:35:16.4628789 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 23:35:16.4628789 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=81 
+D 23:35:16.4628789 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player5 tag=HERO_ENTITY value=81 
 D 23:35:16.5668378 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ragnaros the Firelord id=183 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_11 player=15] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 23:35:16.5718429 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=166 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=15] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 23:35:16.5763493 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kael'thas Sunstrider id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_60 player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
@@ -100,9 +100,9 @@ D 23:35:16.9592980 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Z
 D 23:36:28.7336569 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
 D 23:36:28.7336569 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
 D 23:36:28.7336569 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 23:36:28.9172101 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1995 
+D 23:36:28.9172101 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player6 tag=HERO_ENTITY value=1995 
 D 23:36:29.2009144 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 23:36:29.2009144 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=81 
+D 23:36:29.2009144 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player6 tag=HERO_ENTITY value=81 
 D 23:36:29.3957862 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=A. F. Kay id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_16_SKIN_J player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
 D 23:36:29.4001829 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=166 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=15] tag=PLAYER_LEADERBOARD_PLACE value=4 
 D 23:36:29.4041829 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Warden Omu id=196 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_74 player=15] tag=PLAYER_LEADERBOARD_PLACE value=5 
@@ -113,9 +113,9 @@ D 23:36:29.5587739 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#0
 D 23:37:54.6229420 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
 D 23:37:54.6229420 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
 D 23:37:54.6229420 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 23:37:54.8898287 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=2709 
+D 23:37:54.8898287 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player7 tag=HERO_ENTITY value=2709 
 D 23:37:55.3895970 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 23:37:55.3895970 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=81 
+D 23:37:55.3895970 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player7 tag=HERO_ENTITY value=81 
 D 23:37:55.3971013 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=A. F. Kay id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_16_SKIN_J player=15] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 23:37:55.4021052 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ragnaros the Firelord id=183 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_11 player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
 D 23:37:55.4056176 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Warden Omu id=196 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_74 player=15] tag=PLAYER_LEADERBOARD_PLACE value=4 

@@ -40,6 +40,9 @@ referenced — heuristics were grounded by reading the real log; MIT
   fidelity, gitignored) and `sanitized/match-NN.txt` (redacted + distilled, committed). A `git check-ignore`
   gate refuses to write raw fixtures unless they are ignored. Ends with a privacy leak scan. `--full` writes
   full (undistilled) sanitized copies — huge; only for reproducing exact raw↔sanitized equivalence.
+- **`resanitize [--out <projectDir>] [--full]`** — regenerates every committed `sanitized/match-NN.txt` in
+  place from its existing gitignored `raw/match-NN.log` (preserving the `NN` numbering), then runs the leak
+  scan. Use it to rebuild the whole corpus after a sanitizer change without re-splitting a live `Power.log`.
 - **`parse <fileOrDir> [--seed-date YYYY-MM-DD] [--report <path>]`** — parses one file (single- or
   multi-match, e.g. a whole `Power.log`) or every `match-*.txt` in a directory. Emits a human table, one
   JSON object per match, and a full JSON report (default: this spike's scratchpad `spikeA-parse-report.json`).
@@ -61,7 +64,7 @@ Heuristics, each verified against the real `Power.log`:
 |---|---|---|
 | Match boundary | GameState `CREATE_GAME` → next `CREATE_GAME`/EOF | 17 boundaries in the session log |
 | Game type | `DebugPrintGame() - GameType=GT_…` | all `GT_BATTLEGROUNDS`; duos would be `GT_BATTLEGROUNDS_DUO` |
-| **Local player** | the `DebugPrintGame` `PlayerName=` that contains **`#`** (a BattleTag) | the only `#`-tagged name in the log is the human (`Player1`, 99 213 hits); the other slot is an AI/placeholder name with no `#`. **`GameAccountId` is not used** — the sanitizer zeroes it, so raw and sanitized slices parse identically |
+| **Local player** | the `DebugPrintGame` `PlayerName=` that contains **`#`** (a BattleTag) | the only `#`-tagged name in the log is the human's BattleTag (redacted to `Player1#00000`); the nominal opponent slot and every per-combat opponent are real handles too (no `#`), all redacted to `PlayerN` — see Privacy boundary. **`GameAccountId` is not used** — the sanitizer zeroes it, so raw and sanitized slices parse identically |
 | Hero | last `TAG_CHANGE Entity=<localName> tag=HERO_ENTITY value=<id>` at/before end of tavern turn 1 (the TURN→2 transition), then resolve id→cardId from inline `[… id=… cardId=… ]` descriptors | absorbs mulligan hero swaps; cardId carried on the hero's `PLAYER_LEADERBOARD_PLACE` descriptor |
 | Tavern turns | `(max GameEntity TURN + 1) / 2` | matches HDT `GetTurnNumber()`; raw TURN counts both recruit+combat halves |
 | **Combat starts** | each **even** `GameEntity TURN` transition, timestamped | this client emits **no `STEP=MAIN_COMBAT`**; even-TURN coincides exactly (same timestamp) with `TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2` ("board switched to combat view"), which the parser counts independently as a cross-check — the two agree on every non-truncated match |
@@ -77,14 +80,24 @@ Heuristics, each verified against the real `Power.log`:
 ## Privacy boundary
 
 `raw/` (full slices) is gitignored twice over (`fixtures/raw/` **and** `*.log`) and never leaves the machine.
-Only `sanitized/*.txt` is committed. The sanitizer (per-file, stable mapping):
+Only `sanitized/*.txt` is committed. The sanitizer (per-file, stable mapping; `LearnPlayers` pre-scans the
+full raw slice, then `Sanitize` rewrites each committed line):
 
-- every BattleTag (`name#digits`) → `PlayerN#00000` (only `Player1` occurs → `Player1#00000`),
+- the local player's BattleTag (`name#digits`, e.g. `Player1#1234`) → `PlayerN#00000` (the `#` is kept so
+  the parser still recognises the local player),
+- **every opponent handle** → a bare `PlayerN`. Opponents carry no `#`: they appear as a bare
+  `Entity=<handle>` on player-scoped tag lines (`HERO_ENTITY` / `PLAYSTATE` / `TURN` — the opponent you face
+  each combat, linked to hero and win/loss) and as the nominal `PlayerID=N, PlayerName=<handle>` slot. A
+  handle is distinguished from a game construct structurally: constructs (`GameEntity`, numeric ids, and the
+  bot names `Bartender Bob` / `Kel'Thuzad`) also occur as carded `[entityName=… cardId=…]` descriptors, so
+  they are left intact; a real handle never does,
 - `GameAccountId=[hi=… lo=…]` → `[hi=0 lo=0]`,
 - Windows user paths → `<redacted-path>` (defensive; none occur in `Power.log`).
 
 `extract` proves no leaks by scanning every committed file for un-mapped BattleTags, non-zero
-`GameAccountId`, the known originals (`raorbit`, the real account hi/lo), and user paths — **0 hits**.
+`GameAccountId`, and user paths — **0 hits**. It additionally checks an optional literal denylist that is
+kept out of source (the `BG_KNOWN_ORIGINALS` env var and/or a gitignored `known-originals.local.txt`), so no
+real identifier is ever committed even as a test constant.
 
 ## Committed corpus is **distilled**, not a full copy
 

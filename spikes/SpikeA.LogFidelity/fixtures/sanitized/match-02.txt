@@ -9,7 +9,7 @@ D 22:45:16.1979778 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
 D 22:45:16.1979778 GameState.DebugPrintGame() - FormatType=FT_WILD
 D 22:45:16.1979778 GameState.DebugPrintGame() - ScenarioID=3459
 D 22:45:16.1979778 GameState.DebugPrintGame() - PlayerID=7, PlayerName=Player1#00000
-D 22:45:16.1979778 GameState.DebugPrintGame() - PlayerID=15, PlayerName=Player
+D 22:45:16.1979778 GameState.DebugPrintGame() - PlayerID=15, PlayerName=Player2
 D 22:45:31.4020175 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
 D 22:45:37.5701523 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
 D 22:45:38.6697486 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
@@ -76,9 +76,9 @@ D 22:46:16.5823752 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=G
 D 22:47:23.5668476 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
 D 22:47:23.5668476 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
 D 22:47:23.5668476 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 22:47:23.7748570 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=764 
+D 22:47:23.7748570 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player3 tag=HERO_ENTITY value=764 
 D 22:47:24.0205626 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 22:47:24.0205626 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=80 
+D 22:47:24.0205626 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player3 tag=HERO_ENTITY value=80 
 D 22:47:24.1415127 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dinotamer Brann id=181 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_43_SKIN_G player=15] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 22:47:24.1450197 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=114 zone=PLAY zonePos=0 cardId=BG31_HERO_005 player=7] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 22:47:24.1450197 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=196 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_201_SKIN_G player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
@@ -117,9 +117,9 @@ D 22:47:24.3963634 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=T
 D 22:48:10.4214463 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
 D 22:48:10.4214463 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
 D 22:48:10.4214463 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 22:48:10.6008758 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1167 
+D 22:48:10.6008758 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player4 tag=HERO_ENTITY value=1167 
 D 22:48:10.8667215 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 22:48:10.8667215 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=80 
+D 22:48:10.8667215 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player4 tag=HERO_ENTITY value=80 
 D 22:48:10.9838392 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Tavish Stormpike id=133 zone=SETASIDE zonePos=0 cardId=BG22_HERO_000 player=15] tag=PLAYER_LEADERBOARD_PLACE value=4 
 D 22:48:10.9876350 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02 player=15] tag=PLAYER_LEADERBOARD_PLACE value=6 
 D 22:48:10.9921369 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=212 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=15] tag=PLAYER_LEADERBOARD_PLACE value=7 
@@ -142,9 +142,9 @@ D 22:48:11.2045251 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Z
 D 22:49:10.4415659 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
 D 22:49:10.4415659 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
 D 22:49:10.4415659 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 22:49:10.6343415 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1684 
+D 22:49:10.6343415 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player5 tag=HERO_ENTITY value=1684 
 D 22:49:10.9556918 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 22:49:10.9556918 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=80 
+D 22:49:10.9556918 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player5 tag=HERO_ENTITY value=80 
 D 22:49:11.0721866 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=114 zone=PLAY zonePos=0 cardId=BG31_HERO_005 player=7] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 22:49:11.0721866 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=196 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_201_SKIN_G player=15] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 22:49:11.0766955 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Tavish Stormpike id=133 zone=SETASIDE zonePos=0 cardId=BG22_HERO_000 player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
@@ -156,9 +156,9 @@ D 22:49:11.3329963 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#0
 D 22:50:24.9270928 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
 D 22:50:24.9270928 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
 D 22:50:24.9270928 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 22:50:25.1143982 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=2279 
+D 22:50:25.1143982 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player6 tag=HERO_ENTITY value=2279 
 D 22:50:25.5310822 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 22:50:25.5310822 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=80 
+D 22:50:25.5310822 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player6 tag=HERO_ENTITY value=80 
 D 22:50:25.6483440 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Tavish Stormpike id=133 zone=SETASIDE zonePos=0 cardId=BG22_HERO_000 player=15] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 22:50:25.6523483 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dinotamer Brann id=181 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_43_SKIN_G player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
 D 22:50:25.6561187 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=196 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_201_SKIN_G player=15] tag=PLAYER_LEADERBOARD_PLACE value=4 
@@ -171,9 +171,9 @@ D 22:50:25.8729385 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#0
 D 22:51:51.7156838 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
 D 22:51:51.7156838 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
 D 22:51:51.7156838 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 22:51:51.9282706 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=3006 
+D 22:51:51.9282706 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player7 tag=HERO_ENTITY value=3006 
 D 22:51:52.3696025 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 22:51:52.3696025 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=80 
+D 22:51:52.3696025 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player7 tag=HERO_ENTITY value=80 
 D 22:51:52.3995086 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Tavish Stormpike id=133 zone=SETASIDE zonePos=0 cardId=BG22_HERO_000 player=15] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 22:51:52.4035084 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dinotamer Brann id=181 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_43_SKIN_G player=15] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 22:51:52.4075064 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=114 zone=PLAY zonePos=0 cardId=BG31_HERO_005 player=7] tag=PLAYER_LEADERBOARD_PLACE value=3 
@@ -186,9 +186,9 @@ D 22:51:53.8116538 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#0
 D 22:53:46.1092952 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12 
 D 22:53:46.1092952 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=6 
 D 22:53:46.1092952 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 22:53:46.3384223 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=4057 
+D 22:53:46.3384223 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player8 tag=HERO_ENTITY value=4057 
 D 22:53:47.0047110 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 22:53:47.0047110 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=80 
+D 22:53:47.0047110 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player8 tag=HERO_ENTITY value=80 
 D 22:53:47.0255445 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=114 zone=PLAY zonePos=0 cardId=BG31_HERO_005 player=7] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 22:53:47.0255445 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Master Nguyen id=165 zone=SETASIDE zonePos=0 cardId=BG20_HERO_202 player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
 D 22:53:47.0297685 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dinotamer Brann id=181 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_43_SKIN_G player=15] tag=PLAYER_LEADERBOARD_PLACE value=5 
@@ -209,9 +209,9 @@ D 22:53:47.4088374 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=V
 D 22:55:37.1978080 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=14 
 D 22:55:37.1978080 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=7 
 D 22:55:37.6395766 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
-D 22:55:37.9145817 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=5582 
+D 22:55:37.9145817 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player9 tag=HERO_ENTITY value=5582 
 D 22:55:38.8065063 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 22:55:38.8065063 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=80 
+D 22:55:38.8065063 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player9 tag=HERO_ENTITY value=80 
 D 22:55:38.8165288 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Master Nguyen id=165 zone=SETASIDE zonePos=0 cardId=BG20_HERO_202 player=15] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 22:55:38.8185279 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dinotamer Brann id=181 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_43_SKIN_G player=15] tag=PLAYER_LEADERBOARD_PLACE value=2 
 D 22:55:38.8225275 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Tavish Stormpike id=133 zone=SETASIDE zonePos=0 cardId=BG22_HERO_000 player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
@@ -246,7 +246,7 @@ D 23:00:24.2023919 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender
 D 23:00:24.2023919 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
 D 23:00:24.7807113 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=10132 
 D 23:00:26.4388881 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
-D 23:00:26.4388881 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=80 
+D 23:00:26.4388881 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player4 tag=HERO_ENTITY value=80 
 D 23:00:26.4526247 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Tavish Stormpike id=133 zone=SETASIDE zonePos=0 cardId=BG22_HERO_000 player=15] tag=PLAYER_LEADERBOARD_PLACE value=1 
 D 23:00:26.4546257 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Master Nguyen id=165 zone=SETASIDE zonePos=0 cardId=BG20_HERO_202 player=15] tag=PLAYER_LEADERBOARD_PLACE value=3 
 D 23:00:26.4601293 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=212 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=15] tag=PLAYER_LEADERBOARD_PLACE value=4 
