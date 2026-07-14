@@ -27,6 +27,13 @@ public sealed class GameEventSource : IGameEventSource
 
     public event Action<GameEvent>? EventReceived;
 
+    /// <summary>
+    /// Raised (best-effort) when the watch loop catches a non-cancellation error — a transient IO/parse failure
+    /// it recovers from by continuing to poll. Purely diagnostic: the loop keeps running whether or not anyone
+    /// subscribes, so a blip never silently ends recording. Not part of <see cref="IGameEventSource"/>.
+    /// </summary>
+    public event Action<string>? Diagnostic;
+
     public GameEventSource(string installDir, TimeSpan? pollInterval = null, TimeSpan? rediscoverInterval = null)
     {
         _installDir = installDir;
@@ -49,8 +56,11 @@ public sealed class GameEventSource : IGameEventSource
         try { _cts?.Cancel(); } catch (ObjectDisposedException) { }
         if (_loop is not null)
         {
+            // Swallow cancellation and any residual fault from the loop task — the loop is built to recover
+            // from transient errors, but disposal must never rethrow one it happened to surface.
             try { await _loop.ConfigureAwait(false); }
             catch (OperationCanceledException) { }
+            catch (Exception ex) { Diagnostic?.Invoke($"watch loop faulted on shutdown: {ex.GetType().Name}: {ex.Message}"); }
         }
         _cts?.Dispose();
         _cts = null;
@@ -61,60 +71,122 @@ public sealed class GameEventSource : IGameEventSource
 
     private void RunLoop(CancellationToken ct)
     {
-        // Wait for a Power.log to exist (game may launch after us).
-        var disc = LogSessionDiscovery.Discover(_installDir);
-        while (!ct.IsCancellationRequested && disc.PowerLogPath is null)
-        {
-            if (ct.WaitHandle.WaitOne(_rediscover)) return;
-            disc = LogSessionDiscovery.Discover(_installDir);
-        }
-        if (ct.IsCancellationRequested) return;
-
-        string currentFolder = disc.Chosen!.Name;
-        Emit(new LogSessionChanged(SeedStamp(disc), disc.Chosen.Path));
-
-        var parser = new PowerLogParser(SeedStamp(disc));
+        // Session state. `parser`/`currentFolder` identify the session in progress; `fs` is the live tail and
+        // may be momentarily null (before the first log appears, or after a transient error drops it — in
+        // which case the parser and its in-flight match state are preserved and the stream is simply reopened).
+        string? currentFolder = null;
+        string? currentPath = null;
+        PowerLogParser? parser = null;
         var decoder = Encoding.UTF8.GetDecoder();
         var partial = new StringBuilder();
-        FileStream fs = OpenAtEnd(disc.PowerLogPath!, out long pos);
+        FileStream? fs = null;
+        long pos = 0;
         long sinceRediscover = Environment.TickCount64;
 
         try
         {
             while (!ct.IsCancellationRequested)
             {
-                if (Environment.TickCount64 - sinceRediscover >= (long)_rediscover.TotalMilliseconds)
+                try
                 {
-                    sinceRediscover = Environment.TickCount64;
-                    var again = LogSessionDiscovery.Discover(_installDir);
-                    if (again.PowerLogPath is not null && again.Chosen!.Name != currentFolder)
+                    if (fs is null)
                     {
-                        // Drain the outgoing file, then close its match as truncated if still open.
-                        DrainAndParse(fs, decoder, partial, ref pos, parser);
-                        foreach (var e in parser.Flush()) Emit(e);
-                        fs.Dispose();
+                        var disc = LogSessionDiscovery.Discover(_installDir);
+                        if (disc.PowerLogPath is null)
+                        {
+                            // No live Power.log yet (game not launched, or all folders rotated away).
+                            if (ct.WaitHandle.WaitOne(_rediscover)) break;
+                            continue;
+                        }
 
-                        currentFolder = again.Chosen.Name;
-                        Emit(new LogSessionChanged(SeedStamp(again), again.Chosen.Path));
-                        parser = new PowerLogParser(SeedStamp(again));
-                        decoder = Encoding.UTF8.GetDecoder();
-                        partial.Clear();
-                        fs = OpenAtEnd(again.PowerLogPath!, out pos);
+                        if (parser is null || disc.Chosen!.Name != currentFolder)
+                        {
+                            // New or changed session: close out any interrupted match (truncated), then start
+                            // fresh. Reached both on first discovery and when a reopen finds a newer folder.
+                            if (parser is not null)
+                                foreach (var e in parser.Flush()) Emit(e);
+
+                            currentFolder = disc.Chosen!.Name;
+                            currentPath = disc.PowerLogPath;
+                            parser = new PowerLogParser(SeedStamp(disc));
+                            decoder = Encoding.UTF8.GetDecoder();
+                            partial.Clear();
+                            // Establish the tail position BEFORE announcing readiness, so nothing appended
+                            // after LogSessionChanged is missed and nothing before it is double-counted.
+                            fs = OpenAtEnd(currentPath, out pos);
+                            Emit(new LogSessionChanged(SeedStamp(disc), disc.Chosen.Path));
+                        }
+                        else
+                        {
+                            // Same session, stream lost to a transient error: reopen and resume from `pos`
+                            // (DrainAndParse re-seeks on shrink) without re-announcing or resetting the parser.
+                            fs = Open(currentPath!);
+                        }
+
+                        sinceRediscover = Environment.TickCount64;
+                        if (ct.WaitHandle.WaitOne(_poll)) break;
                         continue;
                     }
-                }
 
-                DrainAndParse(fs, decoder, partial, ref pos, parser);
-                if (ct.WaitHandle.WaitOne(_poll)) break;
+                    if (Environment.TickCount64 - sinceRediscover >= (long)_rediscover.TotalMilliseconds)
+                    {
+                        sinceRediscover = Environment.TickCount64;
+                        var again = LogSessionDiscovery.Discover(_installDir);
+                        if (again.PowerLogPath is not null && again.Chosen!.Name != currentFolder)
+                        {
+                            // Drain the outgoing file, then close its match as truncated if still open.
+                            DrainAndParse(fs, decoder, partial, ref pos, parser!);
+                            foreach (var e in parser!.Flush()) Emit(e);
+                            fs.Dispose();
+
+                            currentFolder = again.Chosen.Name;
+                            currentPath = again.PowerLogPath;
+                            parser = new PowerLogParser(SeedStamp(again));
+                            decoder = Encoding.UTF8.GetDecoder();
+                            partial.Clear();
+                            fs = OpenAtEnd(currentPath, out pos);
+                            Emit(new LogSessionChanged(SeedStamp(again), again.Chosen.Path));
+                            if (ct.WaitHandle.WaitOne(_poll)) break;
+                            continue;
+                        }
+                    }
+
+                    DrainAndParse(fs, decoder, partial, ref pos, parser!);
+                    if (ct.WaitHandle.WaitOne(_poll)) break;
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    // Transient IO/parse failure (Discover, open, fs.Length/Read, …). Report it and keep
+                    // polling — dropping the possibly-broken FileStream so the next iteration reopens cleanly.
+                    // The parser and its in-progress match state survive, so a blip never ends recording.
+                    Diagnostic?.Invoke($"watch loop error: {ex.GetType().Name}: {ex.Message}");
+                    try { fs?.Dispose(); } catch { /* already broken */ }
+                    fs = null;
+                    if (ct.WaitHandle.WaitOne(_poll)) break;
+                }
             }
 
             // Final drain + flush so an in-progress match is reported (truncated) on stop.
-            DrainAndParse(fs, decoder, partial, ref pos, parser);
-            foreach (var e in parser.Flush()) Emit(e);
+            if (parser is not null)
+            {
+                try
+                {
+                    if (fs is not null) DrainAndParse(fs, decoder, partial, ref pos, parser);
+                    foreach (var e in parser.Flush()) Emit(e);
+                }
+                catch (Exception ex)
+                {
+                    Diagnostic?.Invoke($"final drain error: {ex.GetType().Name}: {ex.Message}");
+                }
+            }
         }
         finally
         {
-            fs.Dispose();
+            fs?.Dispose();
         }
     }
 
@@ -153,9 +225,16 @@ public sealed class GameEventSource : IGameEventSource
         }
     }
 
+    /// <summary>
+    /// Opens the log read-only, sharing read+write+delete so a passive tailer never blocks the game appending
+    /// to — or rotating away — its own Power.log (FileShare.Delete lets the game rename/replace it under us).
+    /// </summary>
+    private static FileStream Open(string path) =>
+        new(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+
     private static FileStream OpenAtEnd(string path, out long pos)
     {
-        var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        var fs = Open(path);
         pos = fs.Length;
         return fs;
     }

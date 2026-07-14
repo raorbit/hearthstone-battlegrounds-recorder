@@ -55,7 +55,7 @@ public sealed partial class PowerLogParser
     private static partial Regex DescPlayerRe();
 
     private readonly DateCursor _cursor;
-    private readonly TimeSpan _offset;
+    private readonly TimeZoneInfo _timeZone;
 
     // --- per-match state (reset at every CREATE_GAME) ---
     private bool _matchOpen;
@@ -69,7 +69,6 @@ public sealed partial class PowerLogParser
     private int? _pendingHeroId;
     private DateTimeOffset _pendingHeroTime;
     private string? _lastHeroCardId;
-    private int _maxTurn;
     private int _combatStarts;
     private int _boardVisual2;
     private int? _currentPlace;
@@ -77,12 +76,18 @@ public sealed partial class PowerLogParser
 
     /// <param name="sessionStart">
     /// The session log folder's start timestamp (from its <c>Hearthstone_YYYY_MM_DD_HH_MM_SS</c> name).
-    /// Seeds the date cursor and supplies the UTC offset stamped onto reconstructed event times.
+    /// Only its date and time-of-day seed the date cursor; the offset is recomputed per reconstructed
+    /// instant (see <paramref name="timeZone"/>), so an event's stamp stays correct across a DST change.
     /// </param>
-    public PowerLogParser(DateTimeOffset sessionStart)
+    /// <param name="timeZone">
+    /// Time zone used to resolve the UTC offset for each reconstructed local instant. Defaults to
+    /// <see cref="TimeZoneInfo.Local"/>; a test seam so fixtures can pin a specific zone (e.g. to exercise
+    /// DST transitions) deterministically.
+    /// </param>
+    public PowerLogParser(DateTimeOffset sessionStart, TimeZoneInfo? timeZone = null)
     {
         _cursor = new DateCursor(DateOnly.FromDateTime(sessionStart.DateTime), sessionStart.TimeOfDay);
-        _offset = sessionStart.Offset;
+        _timeZone = timeZone ?? TimeZoneInfo.Local;
     }
 
     /// <summary>Even-TURN transitions counted for the current (or most recent) match. Test cross-check.</summary>
@@ -115,17 +120,19 @@ public sealed partial class PowerLogParser
         if (!_matchOpen)
             yield break; // noise before the first CREATE_GAME, or after a match closed
 
-        _lastLineTime = when;
-
         // A completed match is awaiting the endgame placement settle: the game reassigns final placements as
         // a burst of PLAYER_LEADERBOARD_PLACE lines right after STATE=COMPLETE (for players eliminated mid-game
         // the true placement only appears here, after COMPLETE). The first non-leaderboard line marks the burst
         // over, so emit the deferred MatchEnded — carrying the now-final placement — before processing it.
+        // NOTE: _lastLineTime is updated only AFTER this check, so the deferred end is stamped with the last
+        // settle line (the end of the placement settle) rather than the triggering teardown line.
         if (_endPending && !p.Contains("PLAYER_LEADERBOARD_PLACE", StringComparison.Ordinal))
         {
             foreach (var e in EmitPendingEnd()) yield return e;
             yield break; // match closed; the triggering (teardown) line carries nothing we consume
         }
+
+        _lastLineTime = when;
 
         // --- DebugPrintGame: game type + local player identity ---
         if (ln.IsGameStateGame)
@@ -175,7 +182,6 @@ public sealed partial class PowerLogParser
         if (turn.Success)
         {
             int v = int.Parse(turn.Groups[1].Value);
-            if (v > _maxTurn) _maxTurn = v;
             int tavern = (v + 1) / 2;
             yield return new TurnStarted(when, v, tavern);
             if (v % 2 == 0)
@@ -274,7 +280,11 @@ public sealed partial class PowerLogParser
         yield return new MatchEnded(_lastLineTime, _currentPlace, _localPlayState, Truncated: false);
     }
 
-    private DateTimeOffset Stamp(DateTime dt) => new(dt, _offset);
+    // Resolve the UTC offset for this specific reconstructed local instant (dt has Unspecified kind), rather
+    // than freezing the session-start offset — so events on either side of a DST change stamp correctly.
+    // Ambiguous fall-back times resolve to standard time and invalid spring-forward gap times to the pre-gap
+    // offset per TimeZoneInfo.GetUtcOffset; log timestamps never land in the gap, so that never bites.
+    private DateTimeOffset Stamp(DateTime dt) => new(dt, _timeZone.GetUtcOffset(dt));
 
     private static BgGameType MapGameType(string gt) => gt switch
     {
@@ -294,7 +304,6 @@ public sealed partial class PowerLogParser
         _localHeroIds.Clear();
         _pendingHeroId = null;
         _lastHeroCardId = null;
-        _maxTurn = 0;
         _combatStarts = 0;
         _boardVisual2 = 0;
         _currentPlace = null;
