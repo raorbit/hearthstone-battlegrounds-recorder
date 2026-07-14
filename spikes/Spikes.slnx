@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="SpikeA.LogFidelity/SpikeA.LogFidelity.csproj" />
+  <Project Path="SpikeB.CapturePerf/SpikeB.CapturePerf.csproj">
+    <!-- ScreenRecorderLib ships per-arch native DLLs and errors on AnyCPU -->
+    <Platform Solution="*|Any CPU" Project="x64" />
+  </Project>
+  <Project Path="SpikeC.MmrRoute/SpikeC.MmrRoute.csproj" />
+  <Project Path="SpikeD.ProcessAudio/SpikeD.ProcessAudio.csproj" />
+</Solution>
