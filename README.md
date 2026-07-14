@@ -16,7 +16,7 @@ M1 spike sprint done (pending a few live-play measurements). The four de-risking
 
 - Automatic recording per match with combat markers on the timeline, no manual start/stop
 - Library with filtering by hero, placement, rating, and date
-- Rating (MMR) tracking per mode (solo/duos) via memory reading, degrading gracefully when game patches break it
+- Rating (MMR) tracking per mode (solo/duos): manual entry in v1; automatic memory-read tracking is post-v1, pending licensing (see `spikes/SpikeC.MmrRoute/LICENSING.md`)
 - Storage management: max storage cap, output folder selection, archive drives, starred matches never auto-deleted
 - Game log parsing for match metadata
 

@@ -13,7 +13,7 @@ Plan for building the recorder described by the [design prototype](../design/) w
 | Capture | ScreenRecorderLib (MIT; Windows.Graphics.Capture + Media Foundation hardware encoders NVENC/AMF/QSV, x264 fallback), behind an `IRecorder` interface; named pivot: ffmpeg child process (`ddagrab` + `h264_nvenc`; GPL binary distributed with source offer, app stays MIT); last resort: libobs in an isolated process (GPL — never linked in-proc) |
 | Audio | Game-only WASAPI process loopback on **Windows build 20348+ (effectively Windows 11)**; on Windows 10, automatic fallback to full system loopback with the option labeled honestly; NAudio for mic/device handling |
 | Log watching | Newest-subfolder discovery + tailer; clean implementation using MIT [hslog](https://github.com/HearthSim/python-hearthstone) as the behavioral reference (HDT/HearthWatcher code is All-Rights-Reserved — pattern only, no code reuse) |
-| MMR | Optional `IRatingProvider`; implementation gated on the M1 licensing verdict (HearthSim permission → HearthMirror in-proc; else minimal clean reader for the documented field path; else ship v1 without MMR) |
+| MMR | Optional `IRatingProvider`. **Decided (M1 exit, 2026-07-14): v1 ships without MMR** — HearthMirror is licensing NO-GO (see `spikes/SpikeC.MmrRoute/LICENSING.md`); a clean-room reader for the documented field path is the planned post-v1 route (attach feasibility proven by the Spike C probe). v1 ships a null provider behind the same interface |
 | Metadata | SQLite (Microsoft.Data.Sqlite + Dapper) |
 | Packaging | Velopack — Setup.exe + delta auto-updates from GitHub Releases |
 | Logging | Serilog rolling files |
@@ -93,11 +93,11 @@ Port the prototype to the SPA; RPC bridge; buckets/search/segment filters; desig
 
 **Exit:** every recorded match browsable; smooth scrubbing on multi-GB VODs; markers within ±2 s of true combat start across 5 real matches; filters return correct subsets.
 
-### M4 — Rating provider and per-mode stats
+### M4 — Rating degradation UX and per-mode stats (shrunk by the M1 decision)
 
-`IRatingProvider` + the memory-reading implementation chosen by Spike C's licensing verdict (HearthMirror with permission, or the minimal clean reader; if the verdict was "no MMR in v1", this milestone shrinks to the degradation UX and manual-entry stub); MMR± only when start/end samples exist for the same mode; sidebar rating card strictly per-mode, **following the active solo/duos bucket**; degradation UX (null MMR renders as "—", non-blocking "MMR unavailable — recordings unaffected" banner).
+Per the M1 licensing verdict and the 2026-07-14 decision, **v1 ships without MMR**: this milestone is now the degradation UX + manual-entry stub only. `NullRatingProvider` behind `IRatingProvider`; null MMR renders as "—" with a non-blocking "MMR unavailable — recordings unaffected" note; optional manual rating entry per match; sidebar rating card strictly per-mode, **following the active solo/duos bucket**, driven by manual entries when present. The memory-reading implementation (clean-room reader, or HearthMirror if HearthSim grants permission) moves to the post-v1 roadmap; the provider interface, health states, and kill switch stay so it slots in without rework.
 
-**Exit:** MMR± matches the in-game post-match screen for one real solo and one real duos match; with the provider force-disabled, a full match records normally and the UI shows the degraded state.
+**Exit:** with the null provider, a full match records normally and the UI shows the degraded state everywhere MMR would appear; manual entries round-trip through the DB and render in the per-mode card.
 
 ### M5 — Storage, retention, and archive engine
 
@@ -123,4 +123,4 @@ Full settings surface (resolution/fps/encoder/quality; per-source audio with mic
 
 ## Out of scope for v1
 
-No cloud/sync/accounts (local-only is a feature). No clip export to standalone files (virtual ranges only; export is v1.1). No auto-highlight detection, non-BG modes, board replay/simulation, in-app trimming, localization, macOS/Linux, HDR or >60 fps. No code-signing cert yet (SmartScreen caveat documented). Duos beyond the mode split (partner display, shared-board markers) is post-v1.
+No cloud/sync/accounts (local-only is a feature). No clip export to standalone files (virtual ranges only; export is v1.1). No auto-highlight detection, non-BG modes, board replay/simulation, in-app trimming, localization, macOS/Linux, HDR or >60 fps. No code-signing cert yet (SmartScreen caveat documented). Duos beyond the mode split (partner display, shared-board markers) is post-v1. **No automatic MMR in v1** (decided at M1 exit): the clean-room memory reader is the post-v1 route, upgraded to HearthMirror if HearthSim grants permission; v1 offers manual rating entry only.
