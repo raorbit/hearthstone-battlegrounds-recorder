@@ -67,7 +67,9 @@ if (processLoopbackAvailable && targetPid != 0)
     Console.WriteLine($"[CAPTURE] Process loopback: PID {targetPid}, {options.Seconds}s ...");
     try
     {
-        processResult = ProcessLoopbackCapture.Capture(targetPid, options.IncludeTree, options.Seconds, processOut);
+        // Always capture the target (the game). WASAPI process loopback has no "target without its
+        // child tree" mode, so the only correct choice for game audio is IncludeTargetProcessTree.
+        processResult = ProcessLoopbackCapture.Capture(targetPid, captureEverythingExceptTarget: false, options.Seconds, processOut);
         PrintResult("Process loopback (game only)", processResult.Value);
     }
     catch (Exception ex)
