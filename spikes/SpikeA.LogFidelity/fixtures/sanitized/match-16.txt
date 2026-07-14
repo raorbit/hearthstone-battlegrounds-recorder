@@ -1,0 +1,360 @@
+D 04:43:01.5742716 GameState.DebugPrintPower() - CREATE_GAME
+D 04:43:01.5742716 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=27
+D 04:43:01.5742716 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=50
+D 04:43:01.5742716 GameState.DebugPrintPower() - TAG_CHANGE Entity=4 tag=STATE value=RUNNING 
+D 04:43:01.5742716 GameState.DebugPrintPower() - TAG_CHANGE Entity=5 tag=PLAYSTATE value=PLAYING 
+D 04:43:01.5742716 GameState.DebugPrintPower() - TAG_CHANGE Entity=6 tag=PLAYSTATE value=PLAYING 
+D 04:43:01.5742716 GameState.DebugPrintGame() - BuildNumber=246003
+D 04:43:01.5742716 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
+D 04:43:01.5742716 GameState.DebugPrintGame() - FormatType=FT_WILD
+D 04:43:01.5742716 GameState.DebugPrintGame() - ScenarioID=3459
+D 04:43:01.5742716 GameState.DebugPrintGame() - PlayerID=2, PlayerName=Player1#00000
+D 04:43:01.5742716 GameState.DebugPrintGame() - PlayerID=10, PlayerName=Player
+D 04:43:16.2538250 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 04:43:16.4787585 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 04:43:22.9159096 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 04:43:24.8999617 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 04:43:25.1208522 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 04:43:26.4949633 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 04:43:31.2707059 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 04:43:42.8330963 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=HERO_ENTITY value=97 
+D 04:43:42.8330963 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=HAND zonePos=4 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:43:43.2292618 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=1 
+D 04:43:43.2292618 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=1 
+D 04:43:43.2920667 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:43:43.2920667 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:43:43.2960671 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:43:43.3000666 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:43:43.3041487 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.3081474 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:43:43.3121754 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 04:43:43.3212169 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:43:43.3212169 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:43:43.3246365 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:43:43.3291444 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:43:43.3334047 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.3390558 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:43:43.3420757 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:43:43.3460736 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:43:43.3500740 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.3542022 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:43:43.3582033 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:43:43.3626185 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:43:43.3626185 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:43:43.3666164 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:43:43.3711203 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:43:43.3711203 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:43:43.3761239 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.3791234 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:43:43.4252622 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:43:43.4292632 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:43:43.4334493 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:43:43.4374480 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:43:43.4460283 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.4500334 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:43:43.4669972 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:43:43.4709967 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:43:43.4885970 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.4921041 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:43:43.5209030 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.5249095 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:43:43.5420305 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:43:43.5420305 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:43:43.5580589 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:43:43.5622533 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:43:43.5622533 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:43:43.5672516 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:43:43.5959862 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.5999853 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:43:43.6170057 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:43:43.6170057 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:43:43.6210056 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:43:43.6254465 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:44:30.4670084 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
+D 04:44:30.4670084 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
+D 04:44:30.4670084 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:44:30.6752055 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=683 
+D 04:44:30.8922292 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:44:30.8922292 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:44:31.0049067 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:44:31.0089848 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:44:31.1549462 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=3 
+D 04:44:31.1549462 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=2 
+D 04:44:31.1589466 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:44:31.1629729 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:44:31.1795551 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:44:31.1840673 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:44:31.2254048 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:44:31.2304038 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:44:31.2384179 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:44:31.2419228 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:44:31.2509269 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:44:31.2550516 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:45:18.4426640 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
+D 04:45:18.4426640 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
+D 04:45:18.4426640 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:45:18.5894779 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1069 
+D 04:45:18.8176526 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:45:18.8176526 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:45:18.9390387 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:45:18.9430156 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:45:18.9470187 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:45:18.9510194 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:45:18.9550935 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:45:19.1010060 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=5 
+D 04:45:19.1010060 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=3 
+D 04:45:19.1056810 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:45:19.1096807 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:45:19.1181903 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:45:19.1211907 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:45:19.1256975 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:45:19.1306972 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:45:19.1347340 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:45:19.1468190 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:45:19.1508190 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:45:19.1548629 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:45:19.1593926 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:45:19.1720267 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:45:19.1761881 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:45:19.1811898 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:45:19.1887009 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:45:19.1927358 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:45:19.2014185 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:45:19.2049265 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:45:19.2141028 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:45:19.2176738 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:45:19.2216766 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:45:19.2257658 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:45:19.2307667 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:45:19.2391827 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:45:19.2432840 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:46:17.0439921 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
+D 04:46:17.0439921 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
+D 04:46:17.0439921 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:46:17.1765296 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1547 
+D 04:46:17.4436945 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:46:17.4436945 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:46:17.4850855 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:46:17.4896681 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:46:17.4939209 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:46:17.4975811 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:46:17.7025913 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=7 
+D 04:46:17.7025913 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=4 
+D 04:46:17.7060987 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:46:17.7100985 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:46:17.7317906 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:46:17.7351669 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:46:17.7391685 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:46:17.7430198 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 04:46:17.7557125 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:46:17.7597115 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 04:46:17.7682198 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:46:17.7727561 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 04:46:17.7809254 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:46:17.7850306 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:46:17.7900421 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:46:17.7940409 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 04:47:33.9695298 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
+D 04:47:33.9695298 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
+D 04:47:33.9695298 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:47:34.1193920 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=2243 
+D 04:47:34.5482792 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:47:34.5482792 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:47:34.5939740 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:47:34.5994824 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:47:34.6034844 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:47:34.6069898 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:47:34.6109918 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:47:35.5517321 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=9 
+D 04:47:35.5517321 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=5 
+D 04:47:35.5582443 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:47:35.5612439 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:47:35.6234197 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:47:35.6279286 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:49:16.9788846 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
+D 04:49:16.9788846 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
+D 04:49:16.9788846 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:49:17.1415442 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=3253 
+D 04:49:18.1124979 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:49:18.1124979 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:49:18.1462283 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 04:49:18.1503072 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:49:18.1543074 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:49:18.1543074 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:49:18.1588162 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:49:18.6920663 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=11 
+D 04:49:18.6920663 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=6 
+D 04:49:18.6960657 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:49:18.7000982 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:49:18.7671873 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:49:18.7711947 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:49:18.7751942 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:49:18.7787029 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:49:18.7833322 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:49:18.7878375 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:51:15.9971756 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12 
+D 04:51:15.9971756 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=6 
+D 04:51:15.9971756 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:51:16.1811089 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=4608 
+D 04:51:17.2523934 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=5
+D 04:51:17.2523934 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna Starseeker id=218 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59 player=10] tag=PLAYER_LEADERBOARD_PLACE value=0 
+D 04:51:17.2976300 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:51:17.2976300 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:51:17.3262988 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:51:17.3314568 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:51:17.3314568 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:51:17.3354560 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:51:17.3389585 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 04:51:17.6064914 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=13 
+D 04:51:17.6064914 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=7 
+D 04:51:17.6205063 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:51:17.6225101 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:51:17.6310200 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:51:17.6460861 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:51:17.6802818 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:51:17.6822854 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:51:17.6842857 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:51:17.6920734 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:51:17.6980736 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:51:17.7014431 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:51:17.7064446 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:51:17.7109513 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:51:17.7179547 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:51:17.7231905 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:53:15.6698428 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=14 
+D 04:53:15.6698428 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=7 
+D 04:53:15.6698428 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:53:15.9367513 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=6449 
+D 04:53:17.6844720 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:53:17.6844720 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:53:17.7111448 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:53:17.7154410 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:53:17.7204408 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:53:17.7204408 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:53:18.0027399 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=15 
+D 04:53:18.0027399 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=8 
+D 04:55:35.9295676 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=16 
+D 04:55:35.9295676 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=8 
+D 04:55:35.9295676 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:55:36.2381302 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=8801 
+D 04:55:38.1506736 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:55:38.1506736 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:55:38.1846170 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:55:38.1886168 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:55:38.1927626 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:55:38.1968372 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:55:38.1968372 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:55:38.2005058 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:55:38.2046811 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 04:55:38.7692149 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=17 
+D 04:55:38.7692149 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=9 
+D 04:58:10.9356846 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:58:10.9400452 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:58:10.9400452 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:58:21.6912829 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=18 
+D 04:58:21.6912829 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=9 
+D 04:58:21.6912829 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 04:58:22.0815434 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=11749 
+D 04:58:24.1933068 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 04:58:24.1933068 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 04:58:24.2199901 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:58:24.2264946 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:58:24.2264946 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:58:24.2284994 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:58:24.2324983 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:58:24.2364983 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 04:58:24.2406033 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 04:58:24.7151206 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=19 
+D 04:58:24.7151206 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=10 
+D 04:58:24.7846223 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:58:24.7866214 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:58:24.7906392 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:58:24.7906392 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:59:05.7574236 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 04:59:05.7624281 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 04:59:05.7664286 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:59:36.3916466 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 04:59:36.3916466 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 04:59:36.3956480 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 04:59:36.3991557 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:00:57.7845340 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=20 
+D 05:00:57.7845340 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=10 
+D 05:00:57.7845340 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:00:58.1846245 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=14991 
+D 05:01:00.8383460 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:01:00.8383460 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 05:01:00.8674548 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:01:00.8714858 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:01:00.8754855 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:01:00.8794858 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:01:00.8839482 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:01:00.8879513 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:01:00.8879513 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:01:00.8924599 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:01:01.2796798 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=21 
+D 05:01:01.2796798 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=11 
+D 05:02:12.3808881 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:02:12.3857067 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:02:12.3857067 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:02:36.6683902 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:02:36.6724401 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:02:36.6764416 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:03:41.1653397 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=22 
+D 05:03:41.1653397 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=11 
+D 05:03:41.1653397 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:03:41.7901980 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=18694 
+D 05:03:45.9782974 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:03:45.9782974 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 05:03:46.0153505 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:03:46.0193497 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:03:46.0237231 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:03:46.0282300 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:03:46.0322320 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:03:46.0366710 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:03:46.0366710 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:03:46.0406728 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=156 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_44_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:03:46.5650528 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=23 
+D 05:03:46.5650528 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=12 
+D 05:03:46.5735635 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:03:46.5775632 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:03:46.6387391 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:03:46.6407387 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:07:42.2855739 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=24 
+D 05:07:42.2855739 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=12 
+D 05:07:42.2855739 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:07:42.7474157 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=22660 
+D 05:07:46.4264574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:07:46.4264574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Kel'Thuzad tag=HERO_ENTITY value=50 
+D 05:07:46.4594239 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:07:46.4624234 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:07:46.4659258 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vanndar Stormpike id=202 zone=SETASIDE zonePos=0 cardId=BG22_HERO_003 player=10] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:07:46.4684453 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:07:46.4684453 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Galakrond id=186 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_02_SKIN_F player=10] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:07:46.4724454 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:07:46.4766351 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:07:47.0313041 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=25 
+D 05:07:47.0313041 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=13 
+D 05:11:29.6142828 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=26 
+D 05:11:29.6142828 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=13 
+D 05:11:29.6142828 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:11:30.0130523 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=25395 
+D 05:11:35.6219256 GameState.DebugPrintPower() -         TAG_CHANGE Entity=Player tag=PLAYSTATE value=LOSING 
+D 05:11:35.6489494 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:11:35.6489494 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=50 
+D 05:11:35.6677463 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=PLAYING 
+D 05:11:35.6677463 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sorceress Greymane id=140 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_50_SKIN_D4 player=10] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:11:35.6717645 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=123 zone=SETASIDE zonePos=0 cardId=BG20_HERO_201 player=10] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:11:35.6757698 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Aranna, Unleashed id=4859 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_59t player=10] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:11:35.6797702 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=E.T.C., Band Manager id=171 zone=SETASIDE zonePos=0 cardId=BG25_HERO_105 player=10] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:11:36.2547982 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=27 
+D 05:11:36.2547982 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=14 
+D 05:15:26.4365206 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=28 
+D 05:15:26.4365206 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=14 
+D 05:15:26.4365206 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:15:26.7739748 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=27676 
+D 05:15:31.8555556 GameState.DebugPrintPower() -         TAG_CHANGE Entity=28599 tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:15:31.8555556 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOSING 
+D 05:15:31.8951417 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOST 
+D 05:15:31.8951417 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=WON 
+D 05:15:31.9157597 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE 
+D 05:15:32.0573085 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Thorim, Stormlord id=97 zone=PLAY zonePos=0 cardId=BG27_HERO_801 player=2] tag=PLAYER_LEADERBOARD_PLACE value=3 

@@ -1,0 +1,211 @@
+D 02:12:59.5394851 GameState.DebugPrintPower() - CREATE_GAME
+D 02:12:59.5394851 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=32
+D 02:12:59.5394851 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=63
+D 02:12:59.5394851 GameState.DebugPrintPower() - TAG_CHANGE Entity=10 tag=STATE value=RUNNING 
+D 02:12:59.5394851 GameState.DebugPrintPower() - TAG_CHANGE Entity=11 tag=PLAYSTATE value=PLAYING 
+D 02:12:59.5394851 GameState.DebugPrintPower() - TAG_CHANGE Entity=12 tag=PLAYSTATE value=PLAYING 
+D 02:12:59.5394851 GameState.DebugPrintGame() - BuildNumber=246003
+D 02:12:59.5394851 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
+D 02:12:59.5394851 GameState.DebugPrintGame() - FormatType=FT_WILD
+D 02:12:59.5394851 GameState.DebugPrintGame() - ScenarioID=3459
+D 02:12:59.5394851 GameState.DebugPrintGame() - PlayerID=4, PlayerName=Player1#00000
+D 02:12:59.5394851 GameState.DebugPrintGame() - PlayerID=12, PlayerName=Player
+D 02:13:13.7398147 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 02:13:16.9149039 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 02:13:23.8775751 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 02:13:29.9522809 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 02:13:34.6273791 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 02:13:36.3192958 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 02:13:44.5772267 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 02:13:50.1823922 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=HERO_ENTITY value=95 
+D 02:13:50.1823922 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=HAND zonePos=3 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:13:50.5569685 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=1 
+D 02:13:50.5569685 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=1 
+D 02:13:50.6236517 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:13:50.6236517 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:13:50.6276504 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:13:50.6316544 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:13:50.6361599 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=216 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:13:50.6401595 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.6446744 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:13:50.6521886 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.6571989 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:13:50.6611960 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.6654753 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:13:50.6694767 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.6735524 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:13:50.6775554 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.6815586 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:13:50.6860645 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.6910646 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:13:50.8653328 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.8693279 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:13:50.9451786 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.9491863 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:13:50.9946573 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:13:50.9983665 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:14:37.8990431 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
+D 02:14:37.8990431 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
+D 02:14:37.8990431 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:14:38.0701728 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=585 
+D 02:14:38.3331298 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:14:38.3331298 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:14:38.4451662 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:14:38.4451662 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:14:38.4491610 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:14:38.4531611 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:14:38.4574424 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:14:38.6202277 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=3 
+D 02:14:38.6202277 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=2 
+D 02:14:38.6286803 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:14:38.6316802 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:14:38.6361865 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:14:38.6411881 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:14:38.6909892 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:14:38.6951980 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:14:38.6993624 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:14:38.7033736 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:14:38.7075692 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:14:38.7115646 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:14:38.7160743 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:14:38.7209084 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:14:38.7244155 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:14:38.7279280 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:15:25.9243285 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
+D 02:15:25.9243285 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
+D 02:15:25.9243285 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:15:26.1041393 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=934 
+D 02:15:26.3454843 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:15:26.3454843 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:15:26.3999867 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:15:26.4044909 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:15:26.4084955 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:15:26.4124950 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:15:26.6419725 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=5 
+D 02:15:26.6419725 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=3 
+D 02:15:26.7139533 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:15:26.7169625 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:16:25.0792146 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
+D 02:16:25.0792146 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
+D 02:16:25.0792146 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:16:25.2542206 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1412 
+D 02:16:25.5628764 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:16:25.5628764 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:16:25.5793902 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:16:25.5833909 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:16:25.5875119 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:16:25.5925011 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=216 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:16:25.5960181 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:16:25.7883126 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=7 
+D 02:16:25.7883126 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=4 
+D 02:16:25.7923092 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:16:25.7963914 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:16:25.8003912 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:16:25.8053218 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:16:25.8133348 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:16:25.8174212 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:16:25.8214277 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:16:25.8543861 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:16:25.8584629 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:16:25.8635786 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:16:25.8670466 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:16:25.8710533 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:16:25.8760758 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:16:25.8800827 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:17:41.8262648 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
+D 02:17:41.8262648 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
+D 02:17:42.1393234 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:17:42.2640797 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1916 
+D 02:17:42.6595807 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:17:42.6595807 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:17:42.7264751 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:17:42.7305537 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:17:42.7305537 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:17:42.7355580 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:17:42.7388758 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=216 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:17:42.7430452 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:17:42.9594628 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=9 
+D 02:17:42.9594628 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=5 
+D 02:19:11.6063716 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
+D 02:19:11.6063716 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
+D 02:19:11.6063716 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:19:11.7820627 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=2556 
+D 02:19:12.2695559 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:19:12.2695559 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:19:12.3446573 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:19:12.3491749 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:19:12.3521730 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:19:12.3521730 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:19:12.3571676 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:19:12.3606785 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:19:13.6157086 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=11 
+D 02:19:13.6157086 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=6 
+D 02:21:11.0962869 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12 
+D 02:21:11.0962869 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=6 
+D 02:21:11.0962869 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:21:11.2954896 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=3618 
+D 02:21:12.1385070 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:21:12.1385070 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:21:12.1602030 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:21:12.1632115 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:21:12.1672116 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:21:12.1707623 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:21:12.1749418 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:21:12.1749418 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=216 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:21:12.4668454 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=13 
+D 02:21:12.4668454 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=7 
+D 02:23:06.1391536 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=14 
+D 02:23:06.1391536 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=7 
+D 02:23:06.1391536 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:23:06.3396404 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=4902 
+D 02:23:07.4430450 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:23:07.4430450 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:23:07.4640598 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:23:07.4685658 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:23:07.7205144 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=15 
+D 02:23:07.7205144 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=8 
+D 02:25:18.7499496 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=16 
+D 02:25:18.7499496 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=8 
+D 02:25:18.7499496 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:25:19.0129102 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=6535 
+D 02:25:20.4617387 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:25:20.4617387 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:25:20.4862583 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:25:20.4912620 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:25:20.4952751 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:25:20.4992785 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_002 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:25:21.1294800 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=17 
+D 02:25:21.1294800 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=9 
+D 02:27:54.3011198 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=18 
+D 02:27:54.3011198 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=9 
+D 02:27:54.7257263 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:27:55.0765228 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=8617 
+D 02:27:56.5386926 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:27:56.5386926 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:27:56.5544203 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:27:56.5594540 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:27:56.5634549 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:27:56.5679604 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:27:56.5720403 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:27:56.5768658 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:27:56.9972189 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=19 
+D 02:27:56.9972189 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=10 
+D 02:30:29.9169915 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=20 
+D 02:30:29.9169915 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=10 
+D 02:30:29.9169915 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:30:30.1789189 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=10871 
+D 02:30:31.8409317 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:30:31.8409317 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=63 
+D 02:30:31.8582030 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=231 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_28 player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:30:31.8613213 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=166 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41_SKIN_F player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:30:31.8653210 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=201 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103_SKIN_A player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:30:31.8703172 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Rock Master Voone id=182 zone=SETASIDE zonePos=0 cardId=BG26_HERO_104 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:30:31.8738286 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dark Flight Malygos id=95 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_C4 player=4] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:30:31.8738286 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Alexstrasza id=152 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_56_SKIN_C player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:30:32.2490849 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=21 
+D 02:30:32.2490849 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=11 
+D 02:32:26.3883450 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=CONCEDED 
+D 02:32:26.3923409 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOSING 
+D 02:32:26.4554940 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOST 
+D 02:32:26.4554940 GameState.DebugPrintPower() - TAG_CHANGE Entity=Bartender Bob tag=PLAYSTATE value=WON 
+D 02:32:26.4554940 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE 

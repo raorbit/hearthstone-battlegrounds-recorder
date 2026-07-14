@@ -1,0 +1,352 @@
+D 00:25:48.9648101 GameState.DebugPrintPower() - CREATE_GAME
+D 00:25:48.9648101 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=31
+D 00:25:48.9648101 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=62
+D 00:25:48.9648101 GameState.DebugPrintPower() - TAG_CHANGE Entity=10 tag=STATE value=RUNNING 
+D 00:25:48.9648101 GameState.DebugPrintPower() - TAG_CHANGE Entity=11 tag=PLAYSTATE value=PLAYING 
+D 00:25:48.9648101 GameState.DebugPrintPower() - TAG_CHANGE Entity=12 tag=PLAYSTATE value=PLAYING 
+D 00:25:48.9648101 GameState.DebugPrintGame() - BuildNumber=246003
+D 00:25:48.9648101 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
+D 00:25:48.9648101 GameState.DebugPrintGame() - FormatType=FT_WILD
+D 00:25:48.9648101 GameState.DebugPrintGame() - ScenarioID=3459
+D 00:25:48.9648101 GameState.DebugPrintGame() - PlayerID=4, PlayerName=Player1#00000
+D 00:25:48.9648101 GameState.DebugPrintGame() - PlayerID=12, PlayerName=Player
+D 00:26:05.0980738 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 00:26:06.7851484 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 00:26:08.0769320 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 00:26:08.2941670 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 00:26:10.1955755 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 00:26:12.7603901 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 00:26:18.7443441 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 00:26:39.1859670 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=HERO_ENTITY value=107 
+D 00:26:39.1859670 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=HAND zonePos=4 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:26:39.5858688 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=1 
+D 00:26:39.5858688 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=1 
+D 00:26:39.5858688 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:26:39.6488991 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:39.6524057 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.6564095 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:39.6629222 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:39.6649187 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.6689219 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_004 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 00:26:39.6769626 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.6810777 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.6860817 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:39.6901130 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.6941093 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:39.6981130 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.7773712 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:39.7818817 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.7858822 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:39.7900927 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:39.7940931 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.7981206 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:39.8022874 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.8064486 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:39.8106207 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:39.8156272 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.8191300 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:39.8231331 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.8311631 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:39.8361662 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.8391612 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:39.8445396 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:39.8490472 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.8564546 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.8610636 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:39.8650588 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.8731970 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:39.8772010 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.8817117 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:39.8857074 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:39.8902248 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.9022636 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:39.9062659 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:39.9107720 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:39.9228078 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:39.9274943 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:39.9310064 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:39.9360066 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:39.9390064 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:40.0690275 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:40.1773344 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:40.1814593 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:40.1939823 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:40.1974692 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:40.2020177 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:40.2066394 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:40.2111653 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:40.2231933 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:40.2271685 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:40.2316915 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:26:40.2356872 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:26:40.2487197 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:26:40.2522318 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:26:40.2562318 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:26:40.2607410 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:27:26.8983442 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
+D 00:27:26.8983442 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
+D 00:27:26.8983442 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:27:27.0696089 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=660 
+D 00:27:27.3323779 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:27:27.3323779 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=62 
+D 00:27:27.4408680 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:27:27.4453845 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:27:27.4483844 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:27:27.4528966 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:27:27.7531358 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=3 
+D 00:27:27.7531358 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=2 
+D 00:27:27.7571356 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:27:27.7616454 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:27:27.7656490 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:27:27.7696486 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:27:27.7738360 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:27:27.7820592 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:27:27.7860590 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:27:27.7905666 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:27:27.7946222 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:27:27.7986261 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:27:27.8068515 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:27:27.8111302 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:27:27.8151291 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:27:27.8196326 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:27:27.8236387 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:27:27.8362040 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:27:27.8407142 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:27:27.8447182 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:27:27.8487997 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:27:27.8528258 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:27:27.8570788 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:28:19.5490914 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
+D 00:28:19.5490914 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
+D 00:28:19.5490914 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:28:19.7429136 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=1166 
+D 00:28:20.1369224 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:28:20.1369224 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:28:20.2034877 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:28:20.2074903 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:28:20.2115151 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:28:20.2165129 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:28:20.2205152 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:28:20.5375678 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=5 
+D 00:28:20.5375678 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=3 
+D 00:29:32.8305335 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
+D 00:29:32.8305335 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
+D 00:29:32.8305335 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:29:33.0429263 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=1809 
+D 00:29:33.9157949 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:29:33.9157949 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:29:33.9398788 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:29:33.9418780 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:29:33.9469763 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:29:33.9469763 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:29:33.9509800 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:29:34.2508635 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=7 
+D 00:29:34.2508635 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=4 
+D 00:29:34.2545450 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:29:34.2545450 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:29:34.2588791 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:29:34.2630617 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:29:34.2720872 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:29:34.2720872 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:29:34.3211624 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:29:34.3253792 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:29:34.3292884 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:29:34.3292884 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:31:31.2279262 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
+D 00:31:31.2279262 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
+D 00:31:31.2279262 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:31:31.5524345 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=2821 
+D 00:31:32.7723706 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:31:32.7723706 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:31:32.7904771 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:31:32.7941246 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:31:32.7981284 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:31:32.7981284 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:31:32.8021309 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:31:32.8061570 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:31:32.8111614 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_004 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:31:32.8147076 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Teron Gorefiend id=193 zone=SETASIDE zonePos=0 cardId=BG25_HERO_103 player=12] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 00:31:33.3391100 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=9 
+D 00:31:33.3391100 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=5 
+D 00:31:33.3431100 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:31:33.3476181 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:31:33.3516181 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:31:33.3561298 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:31:33.3641299 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:31:33.3681592 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:31:33.4115446 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:31:33.4140494 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:31:33.4190538 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:31:33.4230576 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:33:17.2284849 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
+D 00:33:17.2284849 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
+D 00:33:17.2284849 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:33:17.4989897 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=3972 
+D 00:33:18.6741197 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:33:18.6741197 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:33:18.6867732 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:33:18.6907807 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:33:18.6947825 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:33:18.6992861 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:33:18.7032905 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:33:18.7032905 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:33:19.6206570 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=11 
+D 00:33:19.6206570 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=6 
+D 00:33:19.6246564 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:33:19.6246564 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:33:19.6286677 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:33:19.6330788 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:33:19.6410970 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:33:19.6410970 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:33:19.6450964 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:33:19.6946681 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:33:19.6991797 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:33:19.7031822 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:33:19.7082094 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:33:19.7122095 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:33:19.7162060 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:33:19.7207163 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:33:19.7247163 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:35:28.6760889 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12 
+D 00:35:28.6760889 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=6 
+D 00:35:28.6760889 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:35:28.9636791 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=5252 
+D 00:35:30.1258219 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:35:30.1258219 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:35:30.1425248 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:35:30.1465286 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:35:30.1515677 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:35:30.1545675 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:35:30.1591249 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:35:30.6842248 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=13 
+D 00:35:30.6842248 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=7 
+D 00:35:30.6882283 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:35:30.6922725 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:35:30.6962725 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:35:30.7016028 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:35:30.7056032 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:35:30.7091627 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:35:30.7131695 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:35:30.7171713 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:35:30.7222399 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:35:30.7303485 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:35:30.7341629 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:35:30.7530089 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:35:30.7550075 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:35:30.7595683 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:35:30.7636024 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:35:30.7666022 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:37:31.6865660 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=14 
+D 00:37:31.6865660 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=7 
+D 00:37:31.6865660 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:37:32.0205662 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=7068 
+D 00:37:33.4317401 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:37:33.4317401 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:37:33.4572935 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:37:33.4613388 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:37:33.4653355 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:37:33.4693390 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:37:33.4693390 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:37:33.4732515 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:37:33.9706504 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=15 
+D 00:37:33.9706504 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=8 
+D 00:39:52.0667209 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=16 
+D 00:39:52.0667209 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=8 
+D 00:39:52.0667209 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:39:52.5250606 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=9448 
+D 00:39:54.6128694 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:39:54.6128694 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:39:54.6504156 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:39:54.6579303 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:39:54.6579303 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:39:54.6599374 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_004 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:39:54.6644393 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:39:54.6674442 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:39:54.6714431 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:39:55.4802389 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=17 
+D 00:39:55.4802389 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=9 
+D 00:40:56.0819127 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_004 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:40:56.0899627 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:40:56.0899627 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:42:42.7644587 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=18 
+D 00:42:42.7644587 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=9 
+D 00:42:42.7644587 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:42:43.2274057 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=11965 
+D 00:42:45.7772084 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:42:45.7772084 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:42:45.7876862 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_004 player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:42:45.7906826 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:42:45.7938567 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:42:45.7981549 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:42:45.8021649 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:42:45.8061614 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:42:45.8105019 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:42:46.2768826 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=19 
+D 00:42:46.2768826 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=10 
+D 00:42:46.2860169 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:42:46.2900295 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:42:46.2940246 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:42:46.2981616 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:42:46.3525477 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:42:46.3560616 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:43:51.3612456 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:43:51.3652434 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:43:51.3703042 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:45:29.4340466 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=20 
+D 00:45:29.4340466 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=10 
+D 00:45:29.4340466 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:45:29.9088676 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=15065 
+D 00:45:32.3716420 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:45:32.3716420 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:45:32.3916581 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Pyramad id=159 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_39 player=12] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:45:32.3963206 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:45:32.4008340 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:45:32.4048458 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:45:32.4113477 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_004 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:45:32.4173491 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:45:32.8259352 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=21 
+D 00:45:32.8259352 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=11 
+D 00:47:42.0860946 GameState.DebugPrintPower() -         TAG_CHANGE Entity=17285 tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:47:42.0860946 GameState.DebugPrintPower() -         TAG_CHANGE Entity=17286 tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:48:23.0442132 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=22 
+D 00:48:23.0442132 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=11 
+D 00:48:23.0442132 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:48:23.6738016 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=18235 
+D 00:48:26.0611128 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:48:26.0611128 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Kel'Thuzad tag=HERO_ENTITY value=62 
+D 00:48:26.0907182 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:48:26.0942398 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_004 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:48:26.1027432 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:48:26.1071952 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:48:26.1145589 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:48:26.1145589 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Farseer Nobundo id=174 zone=SETASIDE zonePos=0 cardId=BG31_HERO_003 player=12] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 00:48:26.9241683 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=23 
+D 00:48:26.9241683 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=12 
+D 00:49:04.0367688 GameState.DebugPrintPower() -         TAG_CHANGE Entity=19248 tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 00:49:04.0367688 GameState.DebugPrintPower() -         TAG_CHANGE Entity=19249 tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:51:10.6964372 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=24 
+D 00:51:10.6964372 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=12 
+D 00:51:10.6964372 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:51:11.5127092 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=21612 
+D 00:51:15.3552416 GameState.DebugPrintPower() -         TAG_CHANGE Entity=Player tag=PLAYSTATE value=LOSING 
+D 00:51:15.4180624 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 00:51:15.4180624 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=62 
+D 00:51:15.4410850 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=PLAYING 
+D 00:51:15.4440856 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=130 zone=SETASIDE zonePos=0 cardId=BG34_HERO_004 player=12] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 00:51:15.4463149 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:51:15.4514007 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:51:15.4514007 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sir Finley Mrrgglton id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_40 player=12] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 00:51:16.6383101 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=25 
+D 00:51:16.6383101 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=13 
+D 00:54:04.3871526 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=26 
+D 00:54:04.3871526 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=13 
+D 00:54:04.3871526 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 00:54:04.9078750 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=24482 
+D 00:54:08.1631836 GameState.DebugPrintPower() -         TAG_CHANGE Entity=25349 tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 00:54:08.1631836 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOSING 
+D 00:54:08.1796123 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOST 
+D 00:54:08.1796123 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=WON 
+D 00:54:08.1826156 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=208 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201 player=12] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 00:54:08.1866121 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Lich King id=221 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22_SKIN_G player=12] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 00:54:08.7317308 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE 
+D 00:54:08.8862301 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Vol'jin id=107 zone=PLAY zonePos=0 cardId=BG20_HERO_201 player=4] tag=PLAYER_LEADERBOARD_PLACE value=4 

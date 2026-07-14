@@ -1,0 +1,299 @@
+D 05:18:07.8095918 GameState.DebugPrintPower() - CREATE_GAME
+D 05:18:07.8095918 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=33
+D 05:18:07.8095918 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=68
+D 05:18:07.8095918 GameState.DebugPrintPower() - TAG_CHANGE Entity=13 tag=STATE value=RUNNING 
+D 05:18:07.8095918 GameState.DebugPrintPower() - TAG_CHANGE Entity=14 tag=PLAYSTATE value=PLAYING 
+D 05:18:07.8095918 GameState.DebugPrintPower() - TAG_CHANGE Entity=15 tag=PLAYSTATE value=PLAYING 
+D 05:18:07.8095918 GameState.DebugPrintGame() - BuildNumber=246003
+D 05:18:07.8095918 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
+D 05:18:07.8095918 GameState.DebugPrintGame() - FormatType=FT_WILD
+D 05:18:07.8095918 GameState.DebugPrintGame() - ScenarioID=3459
+D 05:18:07.8095918 GameState.DebugPrintGame() - PlayerID=5, PlayerName=Player1#00000
+D 05:18:07.8095918 GameState.DebugPrintGame() - PlayerID=13, PlayerName=Player
+D 05:18:29.7094263 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 05:18:30.4139282 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 05:18:30.5388415 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 05:18:38.4763539 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 05:18:41.6644797 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 05:18:47.5391561 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 05:18:48.1681758 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=HERO_ENTITY value=89 
+D 05:18:48.1681758 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Morchie id=89 zone=HAND zonePos=2 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:50.2354553 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 05:18:50.7647395 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=1 
+D 05:18:50.7647395 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=1 
+D 05:18:50.8604808 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:50.8644796 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:18:50.8689841 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:18:50.8729937 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:18:50.8769938 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:18:50.8805042 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:18:50.8845060 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:18:50.8895196 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:50.8935245 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:50.8975237 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:18:50.9020377 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:18:50.9060380 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:50.9105492 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:50.9145501 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:18:50.9185500 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:18:50.9220617 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:50.9270618 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:50.9315723 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:18:50.9345705 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:18:50.9390750 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:50.9430836 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:50.9545988 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:50.9565989 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:50.9601084 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:50.9651123 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:50.9686176 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:50.9736273 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:50.9766268 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:18:50.9821432 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:18:51.0102837 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:18:51.0142879 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:18:51.0553438 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:51.0598554 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:51.0638598 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:18:51.0693679 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:18:51.0893948 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:18:51.0933989 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:18:51.0973985 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:18:51.1019120 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:19:38.0770115 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
+D 05:19:38.0770115 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
+D 05:19:38.0770115 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:19:38.2612309 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=705 
+D 05:19:38.4690293 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:19:38.4690293 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:19:38.4852726 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:19:38.4905451 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:19:38.4935448 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:19:38.4975450 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:19:38.5021256 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:19:38.5067120 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:19:38.5067120 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:19:38.6770030 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=3 
+D 05:19:38.6770030 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=2 
+D 05:19:38.6810223 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:19:38.6860273 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:19:38.6890222 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:19:38.6944908 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:19:38.6974899 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:19:38.6974899 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:19:38.7065115 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:19:38.7112010 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:19:38.7192008 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:19:38.7227078 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:19:38.7278543 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:19:38.7313636 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:19:38.7393661 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:19:38.7435421 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:19:38.7475413 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:19:38.7475413 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:19:38.7566688 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:19:38.7611767 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:19:38.7651755 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:19:38.7696799 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:20:25.6530719 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
+D 05:20:25.6530719 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
+D 05:20:25.6530719 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:20:25.7820625 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1036 
+D 05:20:25.9989005 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:20:25.9989005 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:20:26.1199138 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:20:26.1240859 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:20:26.1280868 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:20:26.1322015 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:20:26.1322015 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:20:26.1362010 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:20:26.2702272 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=5 
+D 05:20:26.2702272 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=3 
+D 05:21:24.6742216 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
+D 05:21:24.6742216 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
+D 05:21:24.6742216 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:21:24.8122726 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1502 
+D 05:21:25.0580879 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:21:25.0580879 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:21:25.1711004 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:21:25.1741980 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:21:25.1782943 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:21:25.1782943 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:21:25.3292931 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=7 
+D 05:21:25.3292931 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=4 
+D 05:21:25.3453202 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:21:25.3493221 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:21:25.4042313 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:21:25.4127385 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:21:25.4197427 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:21:25.4242543 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:21:25.4330407 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:21:25.4370475 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:22:38.0333723 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
+D 05:22:38.0333723 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
+D 05:22:38.0333723 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:22:38.2047337 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=2007 
+D 05:22:38.5922591 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:22:38.5922591 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:22:38.6054200 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:22:38.6054200 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:22:38.6094199 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:22:38.6134508 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:22:38.6174534 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:22:40.0542214 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=9 
+D 05:22:40.0542214 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=5 
+D 05:22:40.0592217 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:22:40.0636947 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:22:40.1343315 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:22:40.1383337 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:22:40.1423319 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:22:40.1463841 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:22:40.1509063 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:22:40.1544150 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:24:06.2597646 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
+D 05:24:06.2597646 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
+D 05:24:06.2597646 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:24:06.4600777 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=3015 
+D 05:24:07.0068907 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:24:07.0068907 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:24:07.0387463 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:24:07.0387463 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:24:07.0437523 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:24:07.0478560 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:24:07.0518601 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:24:07.3604563 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=11 
+D 05:24:07.3604563 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=6 
+D 05:24:07.3649623 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:24:07.3719662 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:24:07.3773624 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:24:07.3983135 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:24:07.4013121 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:24:07.4307328 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:24:07.4358960 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:24:07.4399007 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:24:07.4429007 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:24:07.4469564 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:24:07.4529576 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:24:07.4549885 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:24:07.4604974 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:24:07.4640011 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:24:07.4685828 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:26:03.0869730 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12 
+D 05:26:03.0869730 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=6 
+D 05:26:03.0869730 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:26:03.2832875 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=4456 
+D 05:26:04.2249432 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:26:04.2249432 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:26:04.5201724 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=13 
+D 05:26:04.5201724 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=7 
+D 05:26:04.5981861 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:26:04.6031859 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:26:04.6162114 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:26:04.6203747 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:26:04.6243724 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:26:04.6298797 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:26:04.6383898 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:26:04.6458952 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:27:59.7380774 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=14 
+D 05:27:59.7380774 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=7 
+D 05:27:59.7380774 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:28:00.0090133 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=6006 
+D 05:28:01.0009573 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:28:01.0009573 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:28:01.0209712 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:28:01.0209712 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:28:01.0251184 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:28:01.0294643 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:28:01.5166283 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=15 
+D 05:28:01.5166283 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=8 
+D 05:28:01.5214341 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:28:01.5254324 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:28:01.5925743 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:28:01.5925743 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:28:01.5965751 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:28:01.6010889 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:30:11.2486568 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=16 
+D 05:30:11.2486568 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=8 
+D 05:30:11.2486568 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:30:11.5112404 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=7884 
+D 05:30:12.8002147 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:30:12.8002147 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:30:12.8446437 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:30:12.8501488 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:30:12.8561523 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:30:12.8591541 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:30:12.8654688 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Drek'Thar id=163 zone=SETASIDE zonePos=0 cardId=BG22_HERO_002_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 05:30:13.4101983 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=17 
+D 05:30:13.4101983 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=9 
+D 05:32:51.6252740 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=18 
+D 05:32:51.6252740 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=9 
+D 05:32:51.6252740 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:32:51.8919625 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=10505 
+D 05:32:53.5745257 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:32:53.5745257 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:32:53.5962233 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:32:53.6002233 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=133 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 05:32:54.1285491 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=19 
+D 05:32:54.1285491 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=10 
+D 05:33:46.5880516 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:33:46.5923884 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:35:24.3477470 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=20 
+D 05:35:24.3477470 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=10 
+D 05:35:24.3477470 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:35:24.7389450 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=13044 
+D 05:35:26.8942633 GameState.DebugPrintPower() -         TAG_CHANGE Entity=Player tag=PLAYSTATE value=LOSING 
+D 05:35:26.9148921 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:35:26.9148921 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:35:26.9347506 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=PLAYING 
+D 05:35:27.4182052 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=21 
+D 05:35:27.4182052 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=11 
+D 05:38:02.0166523 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=22 
+D 05:38:02.0166523 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=11 
+D 05:38:02.0166523 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:38:02.2747270 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=14788 
+D 05:38:04.3749119 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:38:04.3749119 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:38:04.3937325 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:38:04.3978994 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:38:04.3978994 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Dancin' Deryl id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_36_SKIN_H player=13] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 05:38:04.4019507 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=210 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=13] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 05:38:04.4049514 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Ambassador Faelin id=238 zone=SETASIDE zonePos=0 cardId=BG22_HERO_201_SKIN_C player=13] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 05:38:04.4079522 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sylvanas Windrunner id=178 zone=SETASIDE zonePos=0 cardId=BG23_HERO_306 player=13] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 05:38:04.6155392 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=23 
+D 05:38:04.6155392 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=12 
+D 05:40:42.4688419 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=24 
+D 05:40:42.4688419 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=12 
+D 05:40:42.4688419 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:40:42.7350203 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=16308 
+D 05:40:44.2975711 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:40:44.2975711 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=68 
+D 05:40:44.6105477 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=25 
+D 05:40:44.6105477 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=13 
+D 05:43:25.1162924 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=26 
+D 05:43:25.1162924 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=13 
+D 05:43:25.1162924 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:43:25.4207261 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=17956 
+D 05:43:27.0810244 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:43:27.0810244 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:43:27.0957043 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Morchie id=89 zone=PLAY zonePos=0 cardId=BG34_HERO_004 player=5] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 05:43:27.0957043 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Jaraxxus id=193 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_37_SKIN_E player=13] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 05:43:27.3764077 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=27 
+D 05:43:27.3764077 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=14 
+D 05:45:56.5420611 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=28 
+D 05:45:56.5420611 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=14 
+D 05:45:56.5420611 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:45:56.8849489 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=19635 
+D 05:45:58.9306179 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=PLAYSTATE value=LOSING 
+D 05:45:58.9431310 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:45:58.9431310 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:45:58.9733277 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=PLAYING 
+D 05:45:59.3139192 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=29 
+D 05:45:59.3139192 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=15 
+D 05:48:38.8078456 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=30 
+D 05:48:38.8078456 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=15 
+D 05:48:38.8078456 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 05:48:39.0281005 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=21190 
+D 05:48:40.5161920 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 05:48:40.5161920 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=68 
+D 05:48:40.8531501 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=31 
+D 05:48:40.8531501 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=16 

@@ -1,0 +1,302 @@
+D 01:50:53.0933170 GameState.DebugPrintPower() - CREATE_GAME
+D 01:50:53.0933170 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=39
+D 01:50:53.0933170 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=86
+D 01:50:53.0933170 GameState.DebugPrintPower() - TAG_CHANGE Entity=22 tag=STATE value=RUNNING 
+D 01:50:53.0933170 GameState.DebugPrintPower() - TAG_CHANGE Entity=23 tag=PLAYSTATE value=PLAYING 
+D 01:50:53.0933170 GameState.DebugPrintPower() - TAG_CHANGE Entity=24 tag=PLAYSTATE value=PLAYING 
+D 01:50:53.0933170 GameState.DebugPrintGame() - BuildNumber=246003
+D 01:50:53.0933170 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
+D 01:50:53.0933170 GameState.DebugPrintGame() - FormatType=FT_WILD
+D 01:50:53.0933170 GameState.DebugPrintGame() - ScenarioID=3459
+D 01:50:53.0933170 GameState.DebugPrintGame() - PlayerID=8, PlayerName=Player1#00000
+D 01:50:53.0933170 GameState.DebugPrintGame() - PlayerID=16, PlayerName=Player
+D 01:51:06.3227567 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 01:51:10.9010356 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 01:51:14.9848754 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 01:51:17.4810181 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 01:51:20.4645493 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 01:51:25.7394506 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 01:51:41.5854628 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=HERO_ENTITY value=99 
+D 01:51:41.5854628 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=HAND zonePos=2 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:52:03.2862667 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 01:52:03.9690953 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=1 
+D 01:52:03.9690953 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=1 
+D 01:52:04.0693806 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:52:04.0733839 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 01:52:04.0773833 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.0818112 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.0858196 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=184 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:52:04.0893215 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.0893215 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:04.0982622 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.1024102 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.1109163 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.1147590 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:04.1194361 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.1234419 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.1274397 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.1274397 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:04.1397594 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.1444746 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.1484746 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.1525238 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:04.1678703 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.1733805 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.1818861 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.1858857 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.1893947 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.1893947 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:04.2061329 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.2101479 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.2276706 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.2312701 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.2352705 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.2402825 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:04.2524196 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.2524196 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:04.2694354 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.2734963 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.2774931 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.2816591 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:04.3897643 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:04.5065147 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:04.5105975 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:04.5105975 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:51.1450778 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
+D 01:52:51.1450778 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
+D 01:52:51.1450778 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 01:52:51.2866612 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=660 
+D 01:52:51.4859982 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 01:52:51.4859982 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 01:52:51.5951728 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:51.5991764 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:51.6036746 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:51.7442657 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:51.7442657 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=3 
+D 01:52:51.7442657 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=2 
+D 01:52:51.7492659 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:51.7532880 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:51.7613039 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:51.7653083 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:51.7693085 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:51.7693085 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:51.7783523 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:51.7824395 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:51.7864427 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:51.7899493 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:51.7949540 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:52:51.7989563 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:52:51.8031972 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:51.8031972 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:51.8071971 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:51.8114560 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:52:51.8164546 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:52:51.8164546 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:53:36.0911070 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
+D 01:53:36.0911070 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
+D 01:53:36.0911070 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 01:53:36.2577833 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=993 
+D 01:53:36.4491541 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 01:53:36.4491541 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 01:53:36.4576564 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:53:36.4621721 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:53:36.4659571 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:53:36.4701737 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=184 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:53:36.7080785 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=5 
+D 01:53:36.7080785 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=3 
+D 01:53:36.7121071 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:53:36.7121071 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:53:36.7161093 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:53:36.7201133 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:53:36.7242057 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:53:36.7282062 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:53:36.7372436 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:53:36.7412467 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:53:36.7490673 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:53:36.7535770 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:53:36.7582472 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:53:36.7582472 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:54:32.3298988 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
+D 01:54:32.3298988 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
+D 01:54:32.3298988 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 01:54:32.4838559 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1436 
+D 01:54:32.8593153 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 01:54:32.8593153 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 01:54:32.9217891 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:54:32.9251448 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:54:32.9291922 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 01:54:32.9328913 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:54:32.9378982 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:54:32.9418940 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:54:32.9459649 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=184 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:54:33.1541653 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:54:33.1541653 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=7 
+D 01:54:33.1541653 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=4 
+D 01:54:33.1581675 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:54:33.1626733 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 01:54:33.1666780 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:54:33.1706779 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 01:54:33.1751896 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:54:33.1792290 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:54:33.1924346 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:54:33.1954435 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:54:33.2004414 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:54:33.2044613 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:54:33.2084648 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:54:33.2129869 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:54:33.2169744 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:54:33.2209744 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:54:33.2250456 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:54:33.2290457 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:54:33.2333590 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 01:54:33.2375258 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:54:33.2417815 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:54:33.2457890 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:54:33.2497890 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 01:54:33.2540475 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:54:33.2591002 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:54:33.2621000 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:54:33.2662614 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:55:46.8765050 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
+D 01:55:46.8765050 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
+D 01:55:46.8765050 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 01:55:47.0801589 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=2084 
+D 01:55:47.4681248 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 01:55:47.4681248 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 01:55:47.4797541 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:55:47.4842703 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 01:55:47.4884845 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:55:47.4926512 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:55:47.4972911 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:55:47.5012894 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=184 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:55:47.7259874 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=9 
+D 01:55:47.7259874 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=5 
+D 01:55:47.7302734 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:55:47.7353050 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:55:47.7383050 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:55:47.7433047 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:55:47.7464559 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:55:47.7515081 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:55:47.7546797 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:55:47.7592659 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:55:47.7683001 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:55:47.7723006 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:55:47.7763122 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:55:47.7803910 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:55:47.7845545 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:55:47.7884882 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:55:47.7923078 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:55:47.7974077 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:55:47.8014125 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:55:47.8074968 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:57:16.8488278 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
+D 01:57:16.8488278 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
+D 01:57:16.8488278 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 01:57:17.0360857 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=3069 
+D 01:57:17.6063134 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 01:57:17.6063134 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 01:57:17.6148208 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 01:57:17.6188242 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:57:17.6228280 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:57:18.1275148 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=11 
+D 01:57:18.1275148 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=6 
+D 01:57:18.1315225 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:57:18.1361546 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:57:18.1565616 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:57:18.1605569 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:57:18.1650673 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:57:18.1700702 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:57:18.1730699 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:57:18.1775507 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:57:18.1815434 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 01:57:18.1850463 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:59:18.8579833 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12 
+D 01:59:18.8579833 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=6 
+D 01:59:18.8579833 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 01:59:19.0787169 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=4492 
+D 01:59:19.8501739 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 01:59:19.8501739 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 01:59:19.8622419 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 01:59:19.8672450 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 01:59:19.8703396 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 01:59:19.8743397 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 01:59:19.8788423 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=184 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 01:59:20.2642536 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 01:59:20.2642536 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=13 
+D 01:59:20.2642536 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=7 
+D 02:01:15.5221392 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=14 
+D 02:01:15.5221392 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=7 
+D 02:01:15.5221392 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:01:15.8060494 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=6404 
+D 02:01:16.8635687 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:01:16.8635687 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 02:01:16.8730887 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:01:16.8760882 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:01:16.8806017 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:01:17.4135759 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=15 
+D 02:01:17.4135759 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=8 
+D 02:01:17.4883369 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:01:17.4935345 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:01:17.4965314 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:01:17.5010492 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:01:17.5094105 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:01:17.5146574 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:03:34.5659654 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=16 
+D 02:03:34.5659654 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=8 
+D 02:03:34.5659654 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:03:34.9868628 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=8730 
+D 02:03:36.7328175 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:03:36.7328175 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=86 
+D 02:03:36.7463212 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:03:36.7493209 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:03:36.7528672 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:03:36.7578718 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:03:36.7623808 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:03:36.7653808 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:03:37.5698858 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=17 
+D 02:03:37.5698858 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=9 
+D 02:06:14.5597885 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=18 
+D 02:06:14.5597885 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=9 
+D 02:06:14.5597885 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:06:14.9265542 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=12237 
+D 02:06:17.0678613 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:06:17.0678613 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=86 
+D 02:06:17.0823784 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Forest Lord Cenarius id=168 zone=SETASIDE zonePos=0 cardId=BG32_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 02:06:17.0843775 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mr. Bigglesworth id=199 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_70_SKIN_I player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 02:06:17.0885886 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:06:17.0926498 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:06:17.0973094 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:06:17.1013166 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=184 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:06:17.1053442 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:06:17.1053442 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Rat King id=135 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_12 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 02:06:17.6681521 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=19 
+D 02:06:17.6681521 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=10 
+D 02:08:53.3364069 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=20 
+D 02:08:53.3364069 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=10 
+D 02:08:53.3364069 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:08:53.7034401 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=16821 
+D 02:08:56.0362322 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 02:08:56.0362322 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 02:08:56.0539630 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:08:56.0574664 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:08:56.0614698 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:08:56.0614698 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Sire Denathrius id=184 zone=SETASIDE zonePos=0 cardId=BG24_HERO_100_SKIN_A player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 02:08:56.5987018 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=21 
+D 02:08:56.5987018 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=11 
+D 02:08:56.6027086 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:08:56.6072098 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:08:56.6783006 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:08:56.6852946 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:11:24.6885981 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=22 
+D 02:11:24.6885981 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=11 
+D 02:11:24.6885981 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 02:11:25.0340516 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=20418 
+D 02:11:26.6178473 GameState.DebugPrintPower() -             TAG_CHANGE Entity=21141 tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 02:11:26.6178473 GameState.DebugPrintPower() -         TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOSING 
+D 02:11:26.6688280 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOST 
+D 02:11:26.6688280 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=WON 
+D 02:11:26.6712084 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Guff Runetotem id=215 zone=SETASIDE zonePos=0 cardId=BG20_HERO_242 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 02:11:26.6762063 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Scabbs Cutterbutter id=245 zone=SETASIDE zonePos=0 cardId=BG21_HERO_010_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 02:11:26.6802296 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Shudderwock id=151 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_23_SKIN_C player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 02:11:27.2638729 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE 
+D 02:11:27.3757129 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Infinite Toki id=99 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_28 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
