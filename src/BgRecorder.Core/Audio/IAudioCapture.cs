@@ -38,6 +38,7 @@ public sealed record AudioResult(string Path, TimeSpan Duration);
 /// <summary>Muxes the staged video and audio into the final library MP4 (video remuxed, audio encoded to AAC).</summary>
 public interface IMuxer
 {
+    /// <param name="audioWav">Staged audio WAV; an empty string means no audio — the video is remuxed alone.</param>
     /// <param name="audioOffset">Positive = audio started after video's first frame; shifts audio right.</param>
     Task MuxAsync(string videoMp4, string audioWav, TimeSpan audioOffset, string outputMp4, CancellationToken ct);
 }
