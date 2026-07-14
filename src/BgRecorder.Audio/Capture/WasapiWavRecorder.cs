@@ -18,9 +18,10 @@ internal sealed class WasapiWavRecorder : IWavRecorder
     private readonly ManualResetEventSlim _stopped = new(false);
     private long _dataBytes;
     private long _avgBytesPerSec;
-    private DateTimeOffset? _firstSample;
+    private long _firstSampleTicks; // UTC ticks of the first delivered sample; 0 = not yet seen.
     private int _failedRaised;
     private int _started;
+    private int _disposed;
 
     private WasapiWavRecorder(IWaveIn capture, string outPath)
     {
@@ -37,7 +38,18 @@ internal sealed class WasapiWavRecorder : IWavRecorder
         => new(new WasapiCapture(), outPath);
 
     public string OutputPath => _outPath;
-    public DateTimeOffset? FirstSampleWallClock => _firstSample;
+
+    public DateTimeOffset? FirstSampleWallClock
+    {
+        get
+        {
+            // The capture thread publishes this once via Interlocked; read it atomically
+            // so a caller on another thread never sees a torn DateTimeOffset value.
+            long ticks = Interlocked.Read(ref _firstSampleTicks);
+            return ticks == 0 ? null : new DateTimeOffset(ticks, TimeSpan.Zero);
+        }
+    }
+
     public event Action<string>? Failed;
 
     public void Start()
@@ -70,6 +82,11 @@ internal sealed class WasapiWavRecorder : IWavRecorder
 
     public void Dispose()
     {
+        // Idempotent: AudioCaptureSession disposes recorders on stop (to free the WAV
+        // handle before mixing) and again from DisposeAsync.
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
+            return;
+
         try { _capture.StopRecording(); } catch { /* ignore */ }
         _stopped.Wait(TimeSpan.FromSeconds(2));
         _capture.Dispose();
@@ -81,7 +98,9 @@ internal sealed class WasapiWavRecorder : IWavRecorder
     {
         if (e.BytesRecorded <= 0 || _writer is null)
             return;
-        _firstSample ??= DateTimeOffset.UtcNow;
+        // Publish the first-sample wall clock exactly once, atomically (0 is the sentinel).
+        if (Interlocked.Read(ref _firstSampleTicks) == 0)
+            Interlocked.CompareExchange(ref _firstSampleTicks, DateTimeOffset.UtcNow.UtcTicks, 0);
         _writer.Write(e.Buffer, 0, e.BytesRecorded);
         _dataBytes += e.BytesRecorded;
     }

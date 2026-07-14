@@ -26,8 +26,9 @@ internal sealed class ProcessLoopbackRecorder : IWavRecorder
     private readonly ManualResetEventSlim _ready = new(false);
     private Exception? _startException;
     private long _dataBytes;
-    private DateTimeOffset? _firstSample;
+    private long _firstSampleTicks; // UTC ticks of the first delivered sample; 0 = not yet seen.
     private int _failedRaised;
+    private int _disposed;
 
     public ProcessLoopbackRecorder(uint targetPid, bool includeProcessTree, string outPath)
     {
@@ -37,7 +38,18 @@ internal sealed class ProcessLoopbackRecorder : IWavRecorder
     }
 
     public string OutputPath => _outPath;
-    public DateTimeOffset? FirstSampleWallClock => _firstSample;
+
+    public DateTimeOffset? FirstSampleWallClock
+    {
+        get
+        {
+            // The capture thread publishes this once via Interlocked; read it atomically
+            // so a caller on another thread never sees a torn DateTimeOffset value.
+            long ticks = Interlocked.Read(ref _firstSampleTicks);
+            return ticks == 0 ? null : new DateTimeOffset(ticks, TimeSpan.Zero);
+        }
+    }
+
     public event Action<string>? Failed;
 
     public void Start()
@@ -65,6 +77,11 @@ internal sealed class ProcessLoopbackRecorder : IWavRecorder
 
     public void Dispose()
     {
+        // Idempotent: AudioCaptureSession disposes recorders on stop (to free the WAV
+        // handle before mixing) and again from DisposeAsync.
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
+            return;
+
         _stop = true;
         _thread?.Join(TimeSpan.FromSeconds(5));
         _ready.Dispose();
@@ -73,6 +90,7 @@ internal sealed class ProcessLoopbackRecorder : IWavRecorder
     private void CaptureThread()
     {
         IAudioClient? audioClient = null;
+        IAudioCaptureClient? captureClient = null;
         WaveFileWriter? writer = null;
         try
         {
@@ -109,7 +127,7 @@ internal sealed class ProcessLoopbackRecorder : IWavRecorder
 
             Guid captureIid = NativeAudio.IID_IAudioCaptureClient;
             Check(audioClient.GetService(ref captureIid, out object captureObj), "IAudioClient.GetService(IAudioCaptureClient)");
-            var captureClient = (IAudioCaptureClient)captureObj;
+            captureClient = (IAudioCaptureClient)captureObj;
 
             using var sampleReady = new AutoResetEvent(false);
             Check(audioClient.SetEventHandle(sampleReady.SafeWaitHandle.DangerousGetHandle()), "IAudioClient.SetEventHandle");
@@ -140,7 +158,9 @@ internal sealed class ProcessLoopbackRecorder : IWavRecorder
                             if (byteCount > scratch.Length)
                                 scratch = new byte[byteCount];
 
-                            _firstSample ??= DateTimeOffset.UtcNow;
+                            // Publish the first-sample wall clock exactly once, atomically.
+                            if (Interlocked.Read(ref _firstSampleTicks) == 0)
+                                Interlocked.CompareExchange(ref _firstSampleTicks, DateTimeOffset.UtcNow.UtcTicks, 0);
 
                             bool silent = (flags & NativeAudio.AUDCLNT_BUFFERFLAGS_SILENT) != 0;
                             if (silent || dataPtr == IntPtr.Zero)
@@ -176,6 +196,8 @@ internal sealed class ProcessLoopbackRecorder : IWavRecorder
         finally
         {
             writer?.Dispose();
+            if (captureClient is not null)
+                Marshal.ReleaseComObject(captureClient);
             if (audioClient is not null)
                 Marshal.ReleaseComObject(audioClient);
             _ready.Set();
