@@ -19,3 +19,10 @@ __pycache__/
 recordings/
 *.mp4
 *.mkv
+
+# Unsanitized game logs, local databases, dumps (sanitized fixtures are committed explicitly)
+fixtures/raw/
+*.log
+*.db
+*.sqlite
+*.dmp
