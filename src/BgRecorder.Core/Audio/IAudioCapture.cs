@@ -14,6 +14,14 @@ public interface IAudioSession : IAsyncDisposable
     /// <summary>Wall clock of the first captured sample, once known. Used for the A/V mux offset.</summary>
     DateTimeOffset? FirstSampleWallClock { get; }
 
+    /// <summary>
+    /// The capture mode that actually ran. Differs from the requested mode when game-only
+    /// process loopback was unavailable (older OS build or activation failure) and the engine
+    /// fell back to full system loopback. The caller compares this against the requested mode
+    /// to warn the user that non-game audio may be captured.
+    /// </summary>
+    AudioCaptureMode ActualMode { get; }
+
     event Action<string>? Failed;
 
     Task<AudioResult> StopAsync();
