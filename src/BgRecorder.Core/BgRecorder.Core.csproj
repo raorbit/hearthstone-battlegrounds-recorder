@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Contracts, domain events, and models shared by every subsystem. Keep this dependency-free. -->
+</Project>

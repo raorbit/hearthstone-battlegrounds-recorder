@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- WPF tray shell: status glyphs, onboarding (log.config merge), composition root -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
+    <ProjectReference Include="..\BgRecorder.Logs\BgRecorder.Logs.csproj" />
+    <ProjectReference Include="..\BgRecorder.Capture\BgRecorder.Capture.csproj" />
+    <ProjectReference Include="..\BgRecorder.Audio\BgRecorder.Audio.csproj" />
+    <ProjectReference Include="..\BgRecorder.Session\BgRecorder.Session.csproj" />
+    <ProjectReference Include="..\BgRecorder.Data\BgRecorder.Data.csproj" />
+    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.3.0" />
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+  </ItemGroup>
+</Project>

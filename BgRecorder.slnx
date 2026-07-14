@@ -1,0 +1,43 @@
+<Solution>
+  <!-- Everything maps Any CPU -> x64: ScreenRecorderLib ships per-arch native DLLs and errors on AnyCPU -->
+  <Folder Name="/src/">
+    <Project Path="src/BgRecorder.App/BgRecorder.App.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="src/BgRecorder.Audio/BgRecorder.Audio.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="src/BgRecorder.Capture/BgRecorder.Capture.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="src/BgRecorder.Core/BgRecorder.Core.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="src/BgRecorder.Data/BgRecorder.Data.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="src/BgRecorder.Logs/BgRecorder.Logs.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="src/BgRecorder.Session/BgRecorder.Session.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BgRecorder.Audio.Tests/BgRecorder.Audio.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="tests/BgRecorder.Capture.Tests/BgRecorder.Capture.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="tests/BgRecorder.Data.Tests/BgRecorder.Data.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="tests/BgRecorder.Logs.Tests/BgRecorder.Logs.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="tests/BgRecorder.Session.Tests/BgRecorder.Session.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+  </Folder>
+</Solution>

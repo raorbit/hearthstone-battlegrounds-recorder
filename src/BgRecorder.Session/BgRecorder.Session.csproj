@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- SessionCoordinator state machine, staging manifests, crash recovery, disk safety -->
+  <ItemGroup>
+    <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
+  </ItemGroup>
+</Project>

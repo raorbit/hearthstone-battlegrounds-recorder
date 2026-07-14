@@ -1,0 +1,12 @@
+<Project>
+  <!-- Applies to src/ and tests/ only; spikes/ projects declare their own settings -->
+  <PropertyGroup Condition="!$(MSBuildProjectDirectory.Contains('spikes'))">
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- ScreenRecorderLib ships per-arch native DLLs; x64 everywhere avoids AnyCPU mapping headaches -->
+    <Platforms>x64</Platforms>
+    <Platform>x64</Platform>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+</Project>
