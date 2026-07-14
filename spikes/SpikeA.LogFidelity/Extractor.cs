@@ -56,18 +56,8 @@ public sealed class Extractor
             File.WriteAllLines(rawPath, buffer);
 
             // sanitized/: distilled (default) + redacted, committed to Git.
-            var sanitizer = new Sanitizer();
-            var sanitized = new List<string>(buffer.Count);
-            foreach (var l in buffer)
-            {
-                if (!fullSanitized && !LineFilter.IsParserRelevant(l))
-                    continue;
-                sanitized.Add(sanitizer.Sanitize(l));
-            }
-            File.WriteAllLines(sanPath, sanitized);
-
-            matches.Add(new MatchFiles(index, rawPath, sanPath, buffer.Count, sanitized.Count,
-                new Dictionary<string, string>(sanitizer.Mapping)));
+            var (sanCount, mapping) = WriteSanitized(buffer, sanPath, fullSanitized);
+            matches.Add(new MatchFiles(index, rawPath, sanPath, buffer.Count, sanCount, mapping));
             buffer.Clear();
         }
 
@@ -88,6 +78,41 @@ public sealed class Extractor
         Flush(); // final match
 
         return new Report(matches, rawDir, sanitizedDir, !fullSanitized);
+    }
+
+    /// <summary>
+    /// Learn opponent handles from the full raw <paramref name="buffer"/>, distill (unless
+    /// <paramref name="fullSanitized"/>) and redact each line, and write the committed sanitized file.
+    /// Returns the sanitized line count and the stable original→placeholder mapping.
+    /// </summary>
+    private static (int lineCount, IReadOnlyDictionary<string, string> mapping) WriteSanitized(
+        IReadOnlyList<string> buffer, string sanPath, bool fullSanitized)
+    {
+        // Learn this match's player handles from the full raw slice first (distillation can drop the
+        // descriptors that tell a player handle apart from a game construct), then redact.
+        var sanitizer = new Sanitizer();
+        sanitizer.LearnPlayers(buffer);
+        var sanitized = new List<string>(buffer.Count);
+        foreach (var l in buffer)
+        {
+            if (!fullSanitized && !LineFilter.IsParserRelevant(l))
+                continue;
+            sanitized.Add(sanitizer.Sanitize(l));
+        }
+        File.WriteAllLines(sanPath, sanitized);
+        return (sanitized.Count, new Dictionary<string, string>(sanitizer.Mapping));
+    }
+
+    /// <summary>
+    /// Regenerate one committed sanitized fixture from its existing gitignored raw slice, preserving the
+    /// match-NN name. Used by the <c>resanitize</c> command to rebuild the whole corpus in place (e.g. after
+    /// a sanitizer change) without re-splitting a live Power.log.
+    /// </summary>
+    public static MatchFiles ReSanitizeFile(string rawPath, string sanPath, bool fullSanitized = false)
+    {
+        var buffer = File.ReadAllLines(rawPath);
+        var (sanCount, mapping) = WriteSanitized(buffer, sanPath, fullSanitized);
+        return new MatchFiles(0, rawPath, sanPath, buffer.Length, sanCount, mapping);
     }
 
     /// <summary>Returns true if 'git check-ignore &lt;path&gt;' reports the path as ignored (exit code 0).</summary>

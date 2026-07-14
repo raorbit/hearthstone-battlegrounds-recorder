@@ -1,0 +1,2 @@
+# Local-only leak-scan denylist of real identifiers — never commit real PII.
+known-originals.local.txt
