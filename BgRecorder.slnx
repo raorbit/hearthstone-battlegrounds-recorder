@@ -33,6 +33,9 @@
     <Project Path="tests/BgRecorder.Data.Tests/BgRecorder.Data.Tests.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
+    <Project Path="tests/BgRecorder.E2E.Tests/BgRecorder.E2E.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
     <Project Path="tests/BgRecorder.Logs.Tests/BgRecorder.Logs.Tests.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
