@@ -40,11 +40,23 @@ public sealed class ScreenRecorderLibRecorder : IRecorder
         var source = RecorderOptionsFactory.CreateSource(window.Handle);
         var recorderOptions = RecorderOptionsFactory.Build(source, options);
         var recorder = Recorder.CreateRecorder(recorderOptions);
-        var adapter = new SrlRecorderAdapter(recorder, source);
 
-        var session = new RecordingSessionImpl(adapter, Path.GetFullPath(stagingMp4Path));
-        session.Start();
+        // Once CreateRecorder succeeds, the native recorder owns WGC/D3D/MediaFoundation COM
+        // resources. If anything below throws (adapter/session construction or Start), we must
+        // release it — otherwise it is orphaned until finalization, holding the capture device.
+        // Disposing the recorder tears down those native resources regardless of how far we got.
+        try
+        {
+            var adapter = new SrlRecorderAdapter(recorder, source);
+            var session = new RecordingSessionImpl(adapter, Path.GetFullPath(stagingMp4Path));
+            session.Start();
 
-        return Task.FromResult<IRecordingSession>(session);
+            return Task.FromResult<IRecordingSession>(session);
+        }
+        catch
+        {
+            recorder.Dispose();
+            throw;
+        }
     }
 }
