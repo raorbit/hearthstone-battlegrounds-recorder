@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Child-process harness for the crash-recovery E2E test. Runs the real recording stack
+    (log tail + parse + coordinator + ScreenRecorderLib capture + process-loopback audio +
+    SQLite) into a sandbox staging dir, streams a fixture until mid-match, then records until
+    the parent test hard-kills it. Never finalizes on its own — the whole point is to die
+    mid-recording and leave an orphaned fragmented MP4 for StartupRecovery to reclaim.
+    TFM / x64 / nullable / implicit usings come from the repo Directory.Build.props.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>BgRecorder.CrashHarness</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BgRecorder.Logs\BgRecorder.Logs.csproj" />
+    <ProjectReference Include="..\..\src\BgRecorder.Capture\BgRecorder.Capture.csproj" />
+    <ProjectReference Include="..\..\src\BgRecorder.Audio\BgRecorder.Audio.csproj" />
+    <ProjectReference Include="..\..\src\BgRecorder.Session\BgRecorder.Session.csproj" />
+    <ProjectReference Include="..\..\src\BgRecorder.Data\BgRecorder.Data.csproj" />
+  </ItemGroup>
+</Project>

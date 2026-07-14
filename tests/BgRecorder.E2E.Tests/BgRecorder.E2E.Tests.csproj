@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Walking-skeleton end-to-end test: real log tail + parse + coordinator + capture + audio + mux + SQLite -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BgRecorder.Logs\BgRecorder.Logs.csproj" />
+    <ProjectReference Include="..\..\src\BgRecorder.Capture\BgRecorder.Capture.csproj" />
+    <ProjectReference Include="..\..\src\BgRecorder.Audio\BgRecorder.Audio.csproj" />
+    <ProjectReference Include="..\..\src\BgRecorder.Session\BgRecorder.Session.csproj" />
+    <ProjectReference Include="..\..\src\BgRecorder.Data\BgRecorder.Data.csproj" />
+    <!-- Build (but do not link) the crash-recovery child harness; the Crash test spawns its assembly. -->
+    <ProjectReference Include="..\BgRecorder.CrashHarness\BgRecorder.CrashHarness.csproj" ReferenceOutputAssembly="false" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0" />
+  </ItemGroup>
+</Project>
