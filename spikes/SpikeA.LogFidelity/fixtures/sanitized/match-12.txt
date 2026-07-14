@@ -1,0 +1,261 @@
+D 03:06:12.2876681 GameState.DebugPrintPower() - CREATE_GAME
+D 03:06:12.2876681 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=39
+D 03:06:12.2876681 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=86
+D 03:06:12.2876681 GameState.DebugPrintPower() - TAG_CHANGE Entity=22 tag=STATE value=RUNNING 
+D 03:06:12.2876681 GameState.DebugPrintPower() - TAG_CHANGE Entity=23 tag=PLAYSTATE value=PLAYING 
+D 03:06:12.2876681 GameState.DebugPrintPower() - TAG_CHANGE Entity=24 tag=PLAYSTATE value=PLAYING 
+D 03:06:12.2876681 GameState.DebugPrintGame() - BuildNumber=246003
+D 03:06:12.2876681 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
+D 03:06:12.2876681 GameState.DebugPrintGame() - FormatType=FT_WILD
+D 03:06:12.2876681 GameState.DebugPrintGame() - ScenarioID=3459
+D 03:06:12.2876681 GameState.DebugPrintGame() - PlayerID=8, PlayerName=Player1#00000
+D 03:06:12.2876681 GameState.DebugPrintGame() - PlayerID=16, PlayerName=Player
+D 03:06:27.9182628 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 03:06:30.5339713 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 03:06:38.3802605 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 03:06:38.6758800 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 03:06:49.1354173 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=HERO_ENTITY value=90 
+D 03:06:49.1354173 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=HAND zonePos=2 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 03:06:53.8223808 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 03:06:57.1968550 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 03:07:05.0640048 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 03:07:05.5850504 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=1 
+D 03:07:05.5850504 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=1 
+D 03:07:05.6468163 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 03:07:05.6511112 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lady Vashj id=180 zone=SETASIDE zonePos=0 cardId=BG23_HERO_304 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:07:05.6556866 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:07:05.6599473 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:05.6639528 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:05.6678823 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.6722970 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.6762961 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:05.6808071 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:05.6848043 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.6892820 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.6934881 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.6971043 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.7593752 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.7643814 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.7718938 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.7758903 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.7809145 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:05.7849182 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:05.7889126 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.7930382 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.8010540 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.8054391 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.8263711 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:05.8308799 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:05.8348807 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.8388799 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.8515470 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:05.8560921 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:05.8595974 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.8636035 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.8805499 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:05.8845491 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:05.8890550 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.8920606 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.9016146 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.9055055 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:05.9179404 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:05.9225751 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:05.9350888 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:05.9387741 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:05.9429407 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:05.9471075 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:52.8979499 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
+D 03:07:52.8979499 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
+D 03:07:52.8979499 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:07:53.0237853 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=778 
+D 03:07:53.1904684 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:07:53.1904684 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=86 
+D 03:07:53.2314657 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lady Vashj id=180 zone=SETASIDE zonePos=0 cardId=BG23_HERO_304 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 03:07:53.2354690 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:07:53.2394692 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:07:53.2435664 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:53.2475677 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:07:53.4316611 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=3 
+D 03:07:53.4316611 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=2 
+D 03:07:53.4461715 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:07:53.4506833 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:07:53.4516816 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:53.4628748 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:53.4638743 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:53.4980677 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:07:53.5015760 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:07:53.5065753 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:53.5106316 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:53.5181382 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:53.5226507 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:53.5318037 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:07:53.5358037 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:07:53.5398034 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:07:53.5433099 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:07:53.5483099 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:07:53.5518186 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:53.5568186 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:07:53.5600096 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:07:53.5650186 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:08:39.2488468 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
+D 03:08:39.2488468 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
+D 03:08:39.2488468 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:08:39.3947541 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=1247 
+D 03:08:39.6316519 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:08:39.6316519 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:08:39.6356520 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lady Vashj id=180 zone=SETASIDE zonePos=0 cardId=BG23_HERO_304 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 03:08:39.6406704 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 03:08:39.6406704 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:08:39.6442898 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:08:39.6492923 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:08:39.6526301 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:08:39.6566276 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:08:39.6606277 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:08:39.8732950 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=5 
+D 03:08:39.8732950 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=3 
+D 03:08:39.8772982 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:08:39.8824062 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:08:39.9404684 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:08:39.9444786 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:08:39.9484760 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:08:39.9526194 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:08:39.9606197 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:08:39.9658052 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:08:39.9688048 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:08:39.9733118 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:08:39.9773115 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:08:39.9814362 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:08:39.9854363 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:08:39.9889824 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:09:37.9615962 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
+D 03:09:37.9615962 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
+D 03:09:37.9615962 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:09:38.1116018 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=2033 
+D 03:09:38.5113350 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:09:38.5113350 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:09:38.5785360 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:09:38.5830408 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:09:38.5870520 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:09:38.5913707 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:09:38.5953747 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:09:38.5993734 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:09:38.7907187 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=7 
+D 03:09:38.7907187 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=4 
+D 03:09:38.7947238 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:09:38.7987276 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:09:38.8613771 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:09:38.8664303 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:09:38.8784691 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:09:38.8829765 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:09:38.8869739 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:09:38.8907728 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:10:57.0500288 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
+D 03:10:57.0500288 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
+D 03:10:57.0500288 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:10:57.1961342 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=2916 
+D 03:10:57.6998235 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:10:57.6998235 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:10:57.8127286 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Time Twister Chromie id=135 zone=SETASIDE zonePos=0 cardId=BG34_HERO_001 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 03:10:57.8174392 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:10:57.8214446 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:10:57.8249540 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:10:57.9878936 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=9 
+D 03:10:57.9878936 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=5 
+D 03:10:57.9918930 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:10:57.9964019 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:10:58.0629308 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:10:58.0667051 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:10:58.0716461 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:10:58.0751556 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:10:58.0796577 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:10:58.0796577 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:12:27.2008574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
+D 03:12:27.2008574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
+D 03:12:27.2008574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:12:27.4018879 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=3996 
+D 03:12:28.0891587 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:12:28.0891587 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:12:28.1056842 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:12:28.1095126 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:12:28.1136791 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:12:29.4426615 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:12:29.4426615 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=11 
+D 03:12:29.4426615 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=6 
+D 03:12:29.4466883 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:12:29.4466883 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:12:29.5224532 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:12:29.5268329 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:12:29.5308330 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:12:29.5308330 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:12:29.5395468 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:12:29.5435455 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:14:25.1245102 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12 
+D 03:14:25.1245102 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=6 
+D 03:14:25.1245102 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:14:25.3869173 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=5678 
+D 03:14:26.2324081 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:14:26.2324081 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:14:26.2449152 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:14:26.2484254 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:14:26.2534249 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:14:26.2534249 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:14:26.2564238 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Murozond, Unbounded id=212 zone=SETASIDE zonePos=0 cardId=BG34_HERO_000 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 03:14:26.5901313 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=13 
+D 03:14:26.5901313 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=7 
+D 03:16:18.6416195 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=14 
+D 03:16:18.6416195 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=7 
+D 03:16:18.6416195 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:16:18.9831217 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=8016 
+D 03:16:20.1786965 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:16:20.1786965 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:16:20.2064233 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:16:20.2117698 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:16:20.2117698 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:16:20.2148416 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:16:20.5916661 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=15 
+D 03:16:20.5916661 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=8 
+D 03:18:26.9770901 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=16 
+D 03:18:26.9770901 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=8 
+D 03:18:26.9770901 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:18:27.3866462 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=11073 
+D 03:18:29.0975057 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:18:29.0975057 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:18:29.1130444 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:18:29.1130444 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:18:29.1150449 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:18:29.7690726 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=17 
+D 03:18:29.7690726 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=9 
+D 03:21:11.2208574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=18 
+D 03:21:11.2208574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=9 
+D 03:21:11.2208574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:21:11.6751346 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=15552 
+D 03:21:13.8836857 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:21:13.8836857 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:21:13.9077047 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:21:13.9117063 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:21:13.9162153 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Mister Clocksworth id=90 zone=PLAY zonePos=0 cardId=BG34_HERO_002 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:21:13.9162153 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Malygos id=227 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_58_SKIN_E player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 03:21:13.9202157 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=165 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 03:21:14.4287500 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=19 
+D 03:21:14.4287500 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=10 
+D 03:23:43.1187382 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=20 
+D 03:23:43.1187382 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=10 
+D 03:23:43.1187382 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:23:43.6021766 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=20018 
+D 03:23:45.2899355 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 03:23:45.2899355 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 03:23:45.3085511 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:23:45.3135502 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:23:45.7181028 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=21 
+D 03:23:45.7181028 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=11 
+D 03:26:12.2743317 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=22 
+D 03:26:12.2743317 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=11 
+D 03:26:13.4302670 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 03:26:13.8909860 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=24021 
+D 03:26:15.4407992 GameState.DebugPrintPower() -             TAG_CHANGE Entity=24556 tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 03:26:15.4407992 GameState.DebugPrintPower() -         TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOSING 
+D 03:26:15.5178157 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=LOST 
+D 03:26:15.5178157 GameState.DebugPrintPower() - TAG_CHANGE Entity=Bartender Bob tag=PLAYSTATE value=WON 
+D 03:26:15.5222094 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Kerrigan, Queen of Blades id=242 zone=SETASIDE zonePos=0 cardId=BG31_HERO_811 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 03:26:15.5252123 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 03:26:16.0034149 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE 

@@ -1,0 +1,382 @@
+D 23:05:06.8634302 GameState.DebugPrintPower() - CREATE_GAME
+D 23:05:06.8634302 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=39
+D 23:05:06.8634302 GameState.DebugPrintPower() -         tag=HERO_ENTITY value=86
+D 23:05:06.8634302 GameState.DebugPrintPower() - TAG_CHANGE Entity=22 tag=STATE value=RUNNING 
+D 23:05:06.8634302 GameState.DebugPrintPower() - TAG_CHANGE Entity=23 tag=PLAYSTATE value=PLAYING 
+D 23:05:06.8634302 GameState.DebugPrintPower() - TAG_CHANGE Entity=24 tag=PLAYSTATE value=PLAYING 
+D 23:05:06.8634302 GameState.DebugPrintGame() - BuildNumber=246003
+D 23:05:06.8634302 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS
+D 23:05:06.8634302 GameState.DebugPrintGame() - FormatType=FT_WILD
+D 23:05:06.8634302 GameState.DebugPrintGame() - ScenarioID=3459
+D 23:05:06.8634302 GameState.DebugPrintGame() - PlayerID=8, PlayerName=Player1#00000
+D 23:05:06.8634302 GameState.DebugPrintGame() - PlayerID=16, PlayerName=Player
+D 23:05:25.2221402 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 23:05:28.4096816 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 23:05:32.9931366 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 23:05:36.6760880 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 23:05:39.3635401 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=HERO_ENTITY value=100 
+D 23:05:39.3635401 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=HAND zonePos=2 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 23:05:43.5522016 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 23:05:44.9430814 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 23:05:59.0976814 GameState.DebugPrintPower() -     tag=PLAYER_LEADERBOARD_PLACE value=1
+D 23:05:59.6059273 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=1 
+D 23:05:59.6059273 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=1 
+D 23:05:59.6724356 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.6764664 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.6814665 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.6850951 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.6850951 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.6893993 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:05:59.6934037 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:05:59.6974350 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.6974350 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.7055051 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.7095049 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.7178393 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.7218386 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.7263513 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.7313482 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.7347804 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.7347804 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.7397803 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.7435986 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.7476070 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.7523005 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.7553943 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.7603942 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.7643164 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.8264629 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.8314578 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.8314578 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.8479649 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.8519710 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.8554867 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.8604869 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.8639930 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.8854962 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.8894953 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.8934311 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.8934311 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.8975980 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.9062739 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.9103491 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.9134022 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.9179378 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.9353987 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.9383992 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.9434267 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.9474344 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:05:59.9520349 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.9684322 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:05:59.9725989 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:05:59.9767656 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:05:59.9807725 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:05:59.9975510 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:06:00.0016852 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:06:46.8208032 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=2 
+D 23:06:46.8208032 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=1 
+D 23:06:46.8208032 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:06:46.9943574 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=674 
+D 23:06:47.2488551 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:06:47.2488551 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:06:47.3693616 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:06:47.3733617 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:06:47.3773873 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:06:47.3813941 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:06:47.3852291 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:06:47.5148893 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=3 
+D 23:06:47.5148893 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=2 
+D 23:06:47.5192558 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:06:47.5232517 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:06:47.5278876 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:06:47.5311112 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:06:47.5401705 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:06:47.5443960 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:06:47.5814150 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:06:47.5859150 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:06:47.5944292 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:06:47.5987243 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:06:47.6105023 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:06:47.6145046 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:06:47.6189051 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:06:47.6232034 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:06:47.6323692 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:06:47.6353949 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:07:33.4536563 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=4 
+D 23:07:33.4536563 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=2 
+D 23:07:33.4536563 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:07:33.6118943 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1064 
+D 23:07:33.8957634 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:07:33.8957634 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:07:34.0064210 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.0116758 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:07:34.0116758 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:07:34.0159052 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:07:34.2242718 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=5 
+D 23:07:34.2242718 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=3 
+D 23:07:34.2277844 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:07:34.2327791 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:07:34.2362919 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.2402870 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:07:34.2442918 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:07:34.2528003 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:07:34.2573048 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:07:34.2613044 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.2653061 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:07:34.2783677 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.2823625 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:07:34.2823625 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:07:34.2938793 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.2993938 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:07:34.3033943 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:07:34.3108423 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.3108423 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:07:34.3153497 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:07:34.3274889 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.3324846 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:07:34.3359986 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:07:34.3450032 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.3485257 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:07:34.3570331 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:07:34.3613275 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:08:31.5910887 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=6 
+D 23:08:31.5910887 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=3 
+D 23:08:31.5910887 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:08:31.7620801 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=1582 
+D 23:08:32.1162491 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:08:32.1162491 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:08:32.2339497 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 23:08:32.2382417 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:08:32.2428947 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:08:32.2449029 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.2504181 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:08:32.2544186 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:08:32.2584662 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:08:32.4129616 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=7 
+D 23:08:32.4129616 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=4 
+D 23:08:32.4182638 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.4182638 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:08:32.4212659 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:08:32.4297715 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.4337718 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:08:32.4464080 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.4464080 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:08:32.4499151 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:08:32.4814124 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.4834200 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:08:32.4914562 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.4959651 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:08:32.4959651 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:08:32.5076214 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.5076214 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:08:32.5116248 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:08:32.5202233 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.5245874 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:08:32.5245874 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:08:32.5329210 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:08:32.5329210 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:08:32.5371557 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:47.5087934 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=8 
+D 23:09:47.5087934 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=4 
+D 23:09:47.5087934 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:09:47.7173148 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=2189 
+D 23:09:48.1213102 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:09:48.1213102 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:09:48.1923383 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:09:48.1963381 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:48.2004243 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:09:48.2044231 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:09:49.7046779 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=9 
+D 23:09:49.7046779 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=5 
+D 23:09:49.7091898 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:49.7131858 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:09:49.7176900 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:49.7217066 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:09:49.7301507 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:49.7337624 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:09:49.7797657 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:49.7843726 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:09:49.7925465 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:49.7965463 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:09:49.8005874 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:49.8045875 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:09:49.8097760 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:09:49.8137759 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:11:14.0264180 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=10 
+D 23:11:14.0264180 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=5 
+D 23:11:14.0264180 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:11:14.2688895 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=3032 
+D 23:11:14.8854884 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:11:14.8854884 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:11:14.9017026 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 23:11:14.9058706 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:11:14.9105142 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:11:14.9105142 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:11:14.9142040 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:11:14.9175362 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:11:15.3023139 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=11 
+D 23:11:15.3023139 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=6 
+D 23:11:15.3058239 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:11:15.3098554 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:11:15.3144596 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:11:15.3189753 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:11:15.3767858 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:11:15.3813106 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:11:15.3850434 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:11:15.3892102 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:11:15.3974965 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:11:15.4020037 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:11:15.4060032 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:11:15.4100856 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:13:13.8950455 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12 
+D 23:13:13.8950455 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=6 
+D 23:13:13.8950455 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:13:14.1530169 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=4110 
+D 23:13:14.9983654 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:13:14.9983654 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:13:15.0073999 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:13:15.0073999 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:13:15.0114021 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:13:15.0157918 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:13:15.0197904 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:13:15.0243060 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:13:15.3369774 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=13 
+D 23:13:15.3369774 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=7 
+D 23:15:09.8553353 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=14 
+D 23:15:09.8553353 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=7 
+D 23:15:09.8553353 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:15:10.1130490 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=5353 
+D 23:15:10.9783549 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:15:10.9783549 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:15:10.9888623 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:15:10.9918685 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:15:10.9918685 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:15:10.9963870 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:15:11.0013858 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:15:11.3092519 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=15 
+D 23:15:11.3092519 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=8 
+D 23:15:11.3132550 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:15:11.3173428 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:15:11.3266222 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:15:11.3305201 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:15:11.3778543 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:15:11.3818547 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:15:11.3893697 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:15:11.3974114 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:15:11.4045127 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:15:11.4130145 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:15:11.4200222 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:15:11.4230218 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:15:11.4280442 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:15:11.4340803 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:15:11.4370841 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:15:11.4410807 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:15:11.4452105 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:15:11.4482069 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:15:11.4512103 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:15:11.4562435 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:17:18.4944190 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=16 
+D 23:17:18.4944190 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=8 
+D 23:17:18.4944190 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:17:18.7695491 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=7066 
+D 23:17:20.1655234 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:17:20.1655234 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:17:20.1994599 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 23:17:20.2034564 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:17:20.2054604 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:17:20.2054604 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:17:20.2185291 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:17:20.2205270 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:17:20.2235251 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:17:20.8293273 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=17 
+D 23:17:20.8293273 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=9 
+D 23:17:20.8323297 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:17:20.8396418 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:17:20.8446419 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:17:20.8481314 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:17:20.8586502 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:17:20.8586502 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:17:20.9082753 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:17:20.9112796 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:17:20.9158363 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:17:20.9188530 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:17:20.9273617 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:17:20.9374464 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:17:20.9394462 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:17:20.9424422 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:17:20.9484950 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:17:20.9535428 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:20:00.2136084 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=18 
+D 23:20:00.2136084 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=9 
+D 23:20:00.2136084 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:20:00.5165676 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=HERO_ENTITY value=9218 
+D 23:20:02.2754732 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:20:02.2754732 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:20:02.2874964 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:20:02.2874964 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:20:02.2915180 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:20:02.2965136 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:20:02.2999423 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:20:02.3049420 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=The Curator id=244 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_33 player=16] tag=PLAYER_LEADERBOARD_PLACE value=7 
+D 23:20:02.3090986 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=George the Fallen id=150 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_15_SKIN_F4 player=16] tag=PLAYER_LEADERBOARD_PLACE value=8 
+D 23:20:02.6882082 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=19 
+D 23:20:02.6882082 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=10 
+D 23:22:31.7232709 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=20 
+D 23:22:31.7232709 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=10 
+D 23:22:31.7232709 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:22:32.0649197 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=11904 
+D 23:22:34.0859958 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:22:34.0859958 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:22:34.0975055 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Chenvaala id=100 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_78 player=8] tag=PLAYER_LEADERBOARD_PLACE value=1 
+D 23:22:34.0975055 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:22:34.0995021 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:22:34.1022267 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:22:34.6197532 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=21 
+D 23:22:34.6197532 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=11 
+D 23:22:34.6951184 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:22:34.6981209 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:22:34.7024323 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:22:34.7071618 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:24:46.7081665 GameState.DebugPrintPower() -             TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:24:46.7131928 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:25:07.4467120 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=22 
+D 23:25:07.4467120 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=11 
+D 23:25:07.4467120 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:25:07.8676665 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=14737 
+D 23:25:10.3047804 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:25:10.3047804 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:25:10.3190753 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:25:10.3220799 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:25:10.3250994 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:25:10.8167819 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=23 
+D 23:25:10.8167819 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=12 
+D 23:26:43.8265184 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:26:43.8315254 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:26:43.8386326 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Arch-Villain Rafaam id=213 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_45 player=16] tag=PLAYER_LEADERBOARD_PLACE value=5 
+D 23:26:43.8416291 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Nozdormu id=228 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_57_SKIN_L player=16] tag=PLAYER_LEADERBOARD_PLACE value=6 
+D 23:28:09.3360564 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=24 
+D 23:28:09.3360564 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=12 
+D 23:28:09.3360564 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:28:09.7743714 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=16962 
+D 23:28:11.9147940 GameState.DebugPrintPower() -         TAG_CHANGE Entity=Player tag=PLAYSTATE value=LOSING 
+D 23:28:11.9581425 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:28:11.9581425 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:28:11.9783565 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=PLAYING 
+D 23:28:11.9783565 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Lord Barov id=167 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72_SKIN_D player=16] tag=PLAYER_LEADERBOARD_PLACE value=2 
+D 23:28:11.9833563 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:28:11.9853573 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:28:12.5098181 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=25 
+D 23:28:12.5098181 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player1#00000 tag=TURN value=13 
+D 23:30:53.7181086 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=26 
+D 23:30:53.7181086 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Bartender Bob tag=TURN value=13 
+D 23:30:53.7181086 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=2 
+D 23:30:53.9430059 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=18273 
+D 23:30:54.8463139 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=PLAYSTATE value=LOSING 
+D 23:30:54.8796996 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1 
+D 23:30:54.8796996 GameState.DebugPrintPower() -     TAG_CHANGE Entity=Player tag=HERO_ENTITY value=86 
+D 23:30:54.8907643 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=LOST 
+D 23:30:54.8907643 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player1#00000 tag=PLAYSTATE value=WON 
+D 23:30:54.8927650 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Reno Jackson id=182 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_41 player=16] tag=PLAYER_LEADERBOARD_PLACE value=3 
+D 23:30:54.8947647 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=Zerek, Master Cloner id=135 zone=SETASIDE zonePos=0 cardId=BG31_HERO_005 player=16] tag=PLAYER_LEADERBOARD_PLACE value=4 
+D 23:30:55.2258363 GameState.DebugPrintPower() - TAG_CHANGE Entity=Player tag=PLAYSTATE value=LOSING 
+D 23:30:55.2258363 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE 
