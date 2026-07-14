@@ -32,7 +32,7 @@ public sealed partial class Sanitizer
     private int _next = 1;
 
     // Name token + "#" + digits. Lookbehind avoids matching inside an already-numbered token.
-    // Uses Unicode letter/number classes so tags like "Player#123" would also be caught.
+    // Uses Unicode letter/number classes so accented/CJK tags like "Ünïcödë#123" are caught too.
     [GeneratedRegex(@"(?<![\w#])[\p{L}\p{N}_]+#\d+\b")]
     private static partial Regex BattleTag();
 
