@@ -16,11 +16,16 @@ internal static class ProcessLoopbackCapture
     private const int Channels = 2;
     private const int BitsPerSample = 16;
 
-    public static CaptureResult Capture(uint targetPid, bool includeProcessTree, int seconds, string outPath)
+    public static CaptureResult Capture(uint targetPid, bool captureEverythingExceptTarget, int seconds, string outPath)
     {
-        var loopbackMode = includeProcessTree
-            ? ProcessLoopbackMode.IncludeTargetProcessTree
-            : ProcessLoopbackMode.ExcludeTargetProcessTree;
+        // WASAPI process loopback has exactly two modes: capture the target's process tree, or
+        // capture everything EXCEPT it. There is no "target without its children" mode, so capturing
+        // the game (this spike's goal) must always Include the target tree. Selecting Exclude only
+        // makes sense when the caller explicitly wants all OTHER audio — never as a "no child tree"
+        // toggle: doing that captured every other app and then reported it as "game audio captured".
+        var loopbackMode = captureEverythingExceptTarget
+            ? ProcessLoopbackMode.ExcludeTargetProcessTree
+            : ProcessLoopbackMode.IncludeTargetProcessTree;
 
         IAudioClient audioClient = ActivateProcessLoopbackClient(targetPid, loopbackMode);
 
