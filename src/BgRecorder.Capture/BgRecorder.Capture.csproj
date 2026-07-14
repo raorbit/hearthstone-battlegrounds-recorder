@@ -1,7 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!-- IRecorder implementation over ScreenRecorderLib (WGC + hardware H264, fragmented MP4) -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Public XML docs are intentionally not exhaustive for this internal-heavy library. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
     <PackageReference Include="ScreenRecorderLib" Version="6.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BgRecorder.Capture.Tests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 </Project>
