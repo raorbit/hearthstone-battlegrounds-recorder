@@ -14,6 +14,13 @@ namespace BgRecorder.App;
 /// </summary>
 public partial class App : Application
 {
+    /// <summary>
+    /// Upper bound on how long a user-initiated exit waits for the in-progress match to finalize
+    /// durably (video stop is itself capped at 30s, then a quick mux + row insert). If it overruns,
+    /// shutdown proceeds and startup recovery salvages the staged files next launch.
+    /// </summary>
+    private static readonly TimeSpan ShutdownFinalizeTimeout = TimeSpan.FromSeconds(45);
+
     private readonly CancellationTokenSource _cts = new();
     private TrayController? _tray;
     private AppServices? _services;
@@ -26,6 +33,7 @@ public partial class App : Application
         base.OnStartup(e);
 
         ConfigureLogging();
+        RegisterGlobalExceptionHandlers();
         _isSmoke = Environment.GetCommandLineArgs()
             .Any(a => string.Equals(a, "--smoke", StringComparison.OrdinalIgnoreCase));
         Log.Information("BgRecorder starting (version {Version}, smoke={Smoke})",
@@ -48,6 +56,27 @@ public partial class App : Application
         }
 
         _ = BootstrapAsync();
+    }
+
+    /// <summary>
+    /// A tray-only recorder must survive a stray exception (e.g. a transient Win32 error from the
+    /// shell notify-icon on a background state update) rather than tearing the process down and
+    /// skipping the graceful finalize. Log everything; keep the app alive where WPF lets us.
+    /// </summary>
+    private void RegisterGlobalExceptionHandlers()
+    {
+        DispatcherUnhandledException += (_, args) =>
+        {
+            Log.Error(args.Exception, "Unhandled dispatcher exception; keeping the app alive");
+            args.Handled = true;
+        };
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            Log.Fatal(args.ExceptionObject as Exception, "Unhandled AppDomain exception (terminating={Terminating})", args.IsTerminating);
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            Log.Error(args.Exception, "Unobserved task exception");
+            args.SetObserved();
+        };
     }
 
     private void ConfigureLogging()
@@ -103,7 +132,15 @@ public partial class App : Application
     private void ApplyState(CoordinatorState state)
     {
         Log.Information("Coordinator state -> {State}", state);
-        _tray?.SetState(state);
+        try
+        {
+            _tray?.SetState(state);
+        }
+        catch (Exception ex)
+        {
+            // A shell notify-icon update can throw transiently; a tray glyph must never crash the app.
+            Log.Warning(ex, "Could not update the tray glyph for state {State}", state);
+        }
     }
 
     private async void OnStopRecording()
@@ -176,7 +213,36 @@ public partial class App : Application
         _shuttingDown = true;
         _exitCode = exitCode;
         Log.Information("Shutdown requested (exit code {Code})", exitCode);
-        Shutdown();
+        _ = FinalizeThenShutdownAsync();
+    }
+
+    /// <summary>
+    /// Durably finalize any in-progress recording BEFORE tearing the app down, so a normal exit
+    /// during a match produces a complete VOD + row rather than leaning on crash recovery. Bounded
+    /// so a stuck subsystem can never hang the exit; on overrun we proceed and recovery salvages it.
+    /// </summary>
+    private async Task FinalizeThenShutdownAsync()
+    {
+        var services = _services;
+        if (services is not null)
+        {
+            try
+            {
+                services.Coordinator.PauseAutoRecording(); // no new match arms during shutdown
+                var finalize = services.Coordinator.StopCurrentRecordingAsync();
+                if (await Task.WhenAny(finalize, Task.Delay(ShutdownFinalizeTimeout)).ConfigureAwait(false) != finalize)
+                {
+                    Log.Warning("Recording finalize did not complete within {Seconds}s during shutdown; " +
+                        "staged files remain and will be recovered on next launch", ShutdownFinalizeTimeout.TotalSeconds);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Error finalizing the current recording during shutdown");
+            }
+        }
+
+        await Dispatcher.InvokeAsync(Shutdown);
     }
 
     protected override void OnExit(ExitEventArgs e)
@@ -185,13 +251,20 @@ public partial class App : Application
 
         try
         {
-            // Dispose off the dispatcher thread with a bounded wait so a slow subsystem
-            // teardown can never hang the shutdown or deadlock on the UI thread.
+            // Dispose off the dispatcher thread with a bounded wait so a slow subsystem teardown can
+            // never hang shutdown or deadlock on the UI thread. A normal exit has already finalized the
+            // recording (FinalizeThenShutdownAsync); this generous bound is the backstop for any other
+            // exit path (e.g. Windows session-ending) and, unlike before, logs an overrun instead of
+            // silently discarding it.
             var services = _services;
             if (services is not null)
             {
                 _services = null;
-                Task.Run(async () => await services.DisposeAsync()).Wait(TimeSpan.FromSeconds(5));
+                if (!Task.Run(async () => await services.DisposeAsync()).Wait(ShutdownFinalizeTimeout))
+                {
+                    Log.Warning("Subsystem teardown did not finish within {Seconds}s; any staged files will be recovered next launch",
+                        ShutdownFinalizeTimeout.TotalSeconds);
+                }
             }
         }
         catch (Exception ex)

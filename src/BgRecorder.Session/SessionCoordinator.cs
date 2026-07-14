@@ -135,6 +135,28 @@ public sealed class SessionCoordinator : ISessionCoordinator
 
     private bool Post(Command cmd) => _commands.Writer.TryWrite(cmd);
 
+    /// <summary>
+    /// After the loop handles ShutdownCmd it stops reading, so any command still queued behind it
+    /// (e.g. a <see cref="StopCurrentRecordingAsync"/> that raced <see cref="DisposeAsync"/>) would
+    /// leave its awaited Task pending forever. Complete those waiters before exiting the loop.
+    /// </summary>
+    private void DrainPendingWaiters()
+    {
+        _commands.Writer.TryComplete();
+        while (_commands.Reader.TryRead(out var pending))
+        {
+            switch (pending)
+            {
+                case StopCurrentCmd(var tcs):
+                    tcs.TrySetResult();
+                    break;
+                case ShutdownCmd(var d):
+                    d.TrySetResult();
+                    break;
+            }
+        }
+    }
+
     // ---------------------------------------------------------------- event loop
 
     private async Task RunLoopAsync()
@@ -200,6 +222,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
                             await FinalizeAsync().ConfigureAwait(false);
                         }
                         done.TrySetResult();
+                        DrainPendingWaiters();
                         return;
                 }
             }
@@ -404,6 +427,15 @@ public sealed class SessionCoordinator : ISessionCoordinator
             ctx.Audio = await _audioCapture.StartAsync(audioTarget, audioPath, CancellationToken.None).ConfigureAwait(false);
             ctx.AudioFailedHandler = reason => Post(new AudioFailedCmd(reason));
             ctx.Audio.Failed += ctx.AudioFailedHandler;
+
+            // Privacy: if game-only audio was requested but the engine had to fall back to full
+            // system loopback (older Windows build or activation failure), surface it — this match's
+            // audio may include other apps (Discord/browser/notifications), not just the game.
+            if (mode == AudioCaptureMode.ProcessLoopback && ctx.Audio.ActualMode != AudioCaptureMode.ProcessLoopback)
+            {
+                Report("Game-only audio is unavailable on this system (requires Windows 11 build 20348+); " +
+                    "recording ALL system audio for this match, which may include other applications.");
+            }
         }
         catch (Exception ex)
         {
@@ -425,6 +457,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
         var events = (_matchEvents ?? []).ToList();
         SetState(CoordinatorState.Finalizing);
 
+        var finalized = false;
         try
         {
             ctx.Watchdog?.Dispose();
@@ -459,7 +492,6 @@ public sealed class SessionCoordinator : ISessionCoordinator
             // Final pre-mux manifest snapshot: if anything below fails, recovery has everything.
             WriteManifestCore(ctx, events, finalized: false);
 
-            var finalized = false;
             if (videoResult is not null && File.Exists(videoResult.Path))
             {
                 finalized = await MuxAndInsertAsync(ctx, events, videoResult, audioResult, videoClock, audioClock)
@@ -473,7 +505,6 @@ public sealed class SessionCoordinator : ISessionCoordinator
             if (finalized)
             {
                 WriteManifestCore(ctx, events, finalized: true);
-                TryDeleteDirectory(ctx.SessionDir);
             }
         }
         catch (Exception ex)
@@ -486,6 +517,15 @@ public sealed class SessionCoordinator : ISessionCoordinator
             // every path, including an exception escaping the try above.
             await DisposeQuietlyAsync(ctx.Audio).ConfigureAwait(false);
             await DisposeQuietlyAsync(ctx.Video).ConfigureAwait(false);
+
+            // Delete staging only AFTER the capture handles are released — a still-open WASAPI/encoder
+            // file handle makes the recursive delete fail and orphans a full staging duplicate that
+            // recovery would otherwise leave behind. Runs only when the row was committed; if the
+            // delete still fails, recovery reclaims the folder next launch (idempotent on SessionId).
+            if (finalized)
+            {
+                TryDeleteDirectory(ctx.SessionDir);
+            }
 
             _recording = null;
             _matchEvents = null;
@@ -527,7 +567,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
         string outputPath;
         try
         {
-            outputPath = LibraryPaths.CreateUniqueMp4Path(_settings.LibraryDir, ctx.MatchStartedAt);
+            outputPath = LibraryPaths.CreateSessionMp4Path(_settings.LibraryDir, ctx.MatchStartedAt, ctx.SessionId);
         }
         catch (Exception ex)
         {
@@ -564,6 +604,8 @@ public sealed class SessionCoordinator : ISessionCoordinator
                 new FileInfo(outputPath).Length,
                 videoResult.Duration);
             (match, markers) = _assembler.Assemble(events, timeline, VideoStatus.Complete);
+            // Stamp the recording's stable identity so a crash-recovery re-run is idempotent.
+            match = match with { SessionId = ctx.SessionId };
         }
         catch (Exception ex)
         {

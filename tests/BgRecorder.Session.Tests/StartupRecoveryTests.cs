@@ -165,7 +165,7 @@ public sealed class StartupRecoveryTests : IDisposable
     }
 
     [Fact]
-    public async Task AlreadyFinalizedManifest_LeftUntouched()
+    public async Task AlreadyFinalizedManifest_StagedDuplicateReclaimed()
     {
         var dir = CreateSessionDir(out var video, out var audio);
         ManifestStore.Write(dir, Manifest(video, audio, finalized: true));
@@ -173,10 +173,45 @@ public sealed class StartupRecoveryTests : IDisposable
         var report = await CreateSut().RunAsync();
 
         Assert.Equal(RecoveryOutcome.SkippedFinalized, Assert.Single(report.Sessions).Outcome);
-        Assert.Empty(_muxer.Calls);
+        Assert.Empty(_muxer.Calls);          // never re-registered
         Assert.Empty(_repository.Inserted);
-        Assert.True(Directory.Exists(dir)); // untouched
-        Assert.True(File.Exists(video));
+        // The row + library file already exist, so the staged copy is a pure duplicate: reclaimed,
+        // not leaked forever. (Idempotent inserts make reclaiming safe.)
+        Assert.False(Directory.Exists(dir));
+    }
+
+    /// <summary>
+    /// Idempotency: a crash between the DB commit and the staging delete (or a delete that failed)
+    /// leaves an unfinalized folder whose match is already recorded. Recovery must NOT re-mux/insert
+    /// a duplicate — it recognises the session id and just reclaims the staged copy.
+    /// </summary>
+    [Fact]
+    public async Task OrphanWhoseMatchAlreadyRecorded_ReclaimedWithoutDuplicating()
+    {
+        var dir = CreateSessionDir(out var video, out var audio);
+        ManifestStore.Write(dir, Manifest(video, audio, videoClock: Ev.T0.AddSeconds(2)));
+        // Folder name is the session id; mark it already-recorded (as a prior finalize would have).
+        _repository.ExistingSessions.Add(Path.GetFileName(dir));
+
+        var report = await CreateSut().RunAsync();
+
+        Assert.Equal(RecoveryOutcome.AlreadyRecorded, Assert.Single(report.Sessions).Outcome);
+        Assert.Empty(_muxer.Calls);          // no re-mux
+        Assert.Empty(_repository.Inserted);  // no duplicate row
+        Assert.False(Directory.Exists(dir)); // staged duplicate reclaimed
+    }
+
+    /// <summary>The recovered match carries the staging session id so a re-run stays idempotent.</summary>
+    [Fact]
+    public async Task RecoveredMatch_CarriesSessionId()
+    {
+        var dir = CreateSessionDir(out var video, out var audio);
+        ManifestStore.Write(dir, Manifest(video, audio, videoClock: Ev.T0.AddSeconds(2)));
+
+        await CreateSut().RunAsync();
+
+        var (match, _) = Assert.Single(_repository.Inserted);
+        Assert.Equal(Path.GetFileName(dir), match.SessionId);
     }
 
     // ---------------------------------------------------------------- poison staged audio
@@ -312,6 +347,6 @@ public sealed class StartupRecoveryTests : IDisposable
         Assert.Contains(report.Sessions, s => s.SessionDir == okDir && s.Outcome == RecoveryOutcome.Recovered);
         Assert.Contains(report.Sessions, s => s.SessionDir == doneDir && s.Outcome == RecoveryOutcome.SkippedFinalized);
         Assert.False(Directory.Exists(okDir));
-        Assert.True(Directory.Exists(doneDir));
+        Assert.False(Directory.Exists(doneDir)); // finalized staging duplicate reclaimed
     }
 }

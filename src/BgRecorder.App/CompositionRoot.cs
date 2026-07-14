@@ -45,7 +45,10 @@ internal static class CompositionRoot
         var installDir = settings.HearthstoneInstallDir ?? @"C:\Program Files (x86)\Hearthstone";
         var dbPath = Path.Combine(appDataDir, "library.db");
 
-        IGameEventSource source = new GameEventSource(installDir);
+        var gameEventSource = new GameEventSource(installDir);
+        // Surface log-watcher errors (a transient IO fault no longer kills the loop silently).
+        gameEventSource.Diagnostic += message => Log.Warning("Log watcher: {Message}", message);
+        IGameEventSource source = gameEventSource;
         IRecorder recorder = new ScreenRecorderLibRecorder();
         IAudioCapture audio = new AudioCaptureEngine();
         IMuxer muxer = new MediaFoundationMuxer();

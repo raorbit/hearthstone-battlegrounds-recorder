@@ -173,6 +173,9 @@ public sealed class DiskSafetyTests
         public Task<long> InsertMatchAsync(MatchRecord match, IReadOnlyList<MarkerRecord> markers, CancellationToken ct = default)
             => throw new InvalidOperationException("db down");
 
+        public Task<bool> MatchExistsBySessionAsync(string sessionId, CancellationToken ct = default)
+            => throw new InvalidOperationException("db down");
+
         public Task UpdateVideoStatusAsync(long matchId, VideoStatus status, CancellationToken ct = default)
             => throw new InvalidOperationException("db down");
 
