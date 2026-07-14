@@ -233,6 +233,93 @@ public sealed class SqliteMatchRepositoryTests
     }
 
     [Fact]
+    public async Task Insert_is_idempotent_on_session_id()
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            var match = SampleMatch() with { SessionId = "abc123" };
+
+            var id1 = await repo.InsertMatchAsync(match, SampleMarkers());
+            // A crash-recovery re-run of the same staging session inserts again…
+            var id2 = await repo.InsertMatchAsync(match with { VideoStatus = VideoStatus.Incomplete }, SampleMarkers());
+
+            Assert.Equal(id1, id2);                       // …but returns the existing row, no duplicate
+            var row = Assert.Single(await repo.ListMatchesAsync());
+            Assert.Equal("abc123", row.SessionId);
+            Assert.Equal(VideoStatus.Complete, row.VideoStatus); // original row untouched
+
+            await using var raw = OpenRaw(db);
+            Assert.Equal(1L, await raw.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM matches;"));
+            // Markers were not duplicated either.
+            Assert.Equal(3L, await raw.ExecuteScalarAsync<long>(
+                "SELECT COUNT(*) FROM markers WHERE match_id = @id;", new { id = id1 }));
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
+    public async Task MatchExistsBySession_reflects_inserted_rows()
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            Assert.False(await repo.MatchExistsBySessionAsync("sess-1"));
+            await repo.InsertMatchAsync(SampleMatch() with { SessionId = "sess-1" }, []);
+            Assert.True(await repo.MatchExistsBySessionAsync("sess-1"));
+            Assert.False(await repo.MatchExistsBySessionAsync("sess-2"));
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
+    public async Task Null_session_ids_do_not_collide()
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            // Rows without a session id (manual imports/tests) must not be deduped against each other.
+            await repo.InsertMatchAsync(SampleMatch(), []);
+            await repo.InsertMatchAsync(SampleMatch(), []);
+            Assert.Equal(2, (await repo.ListMatchesAsync()).Count);
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
+    public async Task ListMatches_orders_by_instant_across_mixed_offsets()
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            // Around a fall-back DST overlap the local wall-clock text misleads: the later row has the
+            // smaller local time. Sorting must follow the true UTC instant, not the offset-bearing text.
+            var newer = SampleMatch() with
+            {
+                StartedAt = new DateTimeOffset(2026, 11, 1, 1, 10, 0, TimeSpan.FromHours(-5)), // 06:10Z
+                HeroCardId = "NEW",
+            };
+            var older = SampleMatch() with
+            {
+                StartedAt = new DateTimeOffset(2026, 11, 1, 1, 50, 0, TimeSpan.FromHours(-4)), // 05:50Z
+                HeroCardId = "OLD",
+            };
+
+            await repo.InsertMatchAsync(newer, []);
+            await repo.InsertMatchAsync(older, []);
+
+            var list = await repo.ListMatchesAsync();
+            Assert.Equal("NEW", list[0].HeroCardId); // 06:10Z is the newer instant despite the larger local time on OLD
+            Assert.Equal("OLD", list[1].HeroCardId);
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
     public async Task Sequential_inserts_get_distinct_increasing_ids()
     {
         var db = NewDbPath();

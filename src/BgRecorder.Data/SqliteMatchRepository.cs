@@ -47,6 +47,20 @@ public sealed class SqliteMatchRepository : IMatchRepository
         await using var conn = await OpenConnectionAsync(ct);
         await using var tx = await conn.BeginTransactionAsync(ct);
 
+        // Idempotency: a recording carries a stable SessionId (the staging folder). If a crash
+        // recovery re-runs the same session, return the existing row instead of duplicating it.
+        if (match.SessionId is not null)
+        {
+            var existing = await conn.ExecuteScalarAsync<long?>(new CommandDefinition(
+                "SELECT id FROM matches WHERE session_id = @session_id;",
+                new { session_id = match.SessionId }, tx, cancellationToken: ct));
+            if (existing is { } existingId)
+            {
+                await tx.CommitAsync(ct);
+                return existingId;
+            }
+        }
+
         var id = await conn.ExecuteScalarAsync<long>(
             new CommandDefinition(InsertMatchSql, ToMatchParameters(match), tx, cancellationToken: ct));
 
@@ -67,6 +81,16 @@ public sealed class SqliteMatchRepository : IMatchRepository
 
         await tx.CommitAsync(ct);
         return id;
+    }
+
+    public async Task<bool> MatchExistsBySessionAsync(string sessionId, CancellationToken ct = default)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(sessionId);
+        await using var conn = await OpenConnectionAsync(ct);
+        var found = await conn.ExecuteScalarAsync<long?>(new CommandDefinition(
+            "SELECT 1 FROM matches WHERE session_id = @session_id LIMIT 1;",
+            new { session_id = sessionId }, cancellationToken: ct));
+        return found is not null;
     }
 
     public async Task UpdateVideoStatusAsync(long matchId, VideoStatus status, CancellationToken ct = default)
@@ -108,7 +132,11 @@ public sealed class SqliteMatchRepository : IMatchRepository
 
     private static object ToMatchParameters(MatchRecord match) => new
     {
+        session_id = match.SessionId,
         started_at = match.StartedAt.ToString("O", CultureInfo.InvariantCulture),
+        // A normalized UTC instant ("...Z") whose lexical order equals chronological order, so the
+        // library list sorts correctly even when rows carry different UTC offsets (DST, travel).
+        started_at_utc = match.StartedAt.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
         ended_at = match.EndedAt?.ToString("O", CultureInfo.InvariantCulture),
         game_type = (int)match.GameType,
         hero_card_id = match.HeroCardId,
@@ -130,6 +158,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
     private static MatchRecord MapRow(MatchRow row) => new()
     {
         Id = row.id,
+        SessionId = row.session_id,
         StartedAt = ParseTimestamp(row.started_at),
         EndedAt = row.ended_at is null ? null : ParseTimestamp(row.ended_at),
         GameType = (Core.Events.BgGameType)row.game_type,
@@ -153,6 +182,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
     private sealed class MatchRow
     {
         public long id { get; init; }
+        public string? session_id { get; init; }
         public string started_at { get; init; } = "";
         public string? ended_at { get; init; }
         public int game_type { get; init; }
@@ -176,7 +206,9 @@ public sealed class SqliteMatchRepository : IMatchRepository
 
         CREATE TABLE IF NOT EXISTS matches (
             id                INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id        TEXT    NULL UNIQUE,
             started_at        TEXT    NOT NULL,
+            started_at_utc    TEXT    NOT NULL,
             ended_at          TEXT    NULL,
             game_type         INTEGER NOT NULL,
             hero_card_id      TEXT    NULL,
@@ -210,13 +242,13 @@ public sealed class SqliteMatchRepository : IMatchRepository
 
     private const string InsertMatchSql = """
         INSERT INTO matches (
-            started_at, ended_at, game_type, hero_card_id, place, tavern_turns, play_state,
-            truncated, video_status, video_path, video_size_bytes, video_duration_ms,
-            starred, manual_rating, created_at)
+            session_id, started_at, started_at_utc, ended_at, game_type, hero_card_id, place,
+            tavern_turns, play_state, truncated, video_status, video_path, video_size_bytes,
+            video_duration_ms, starred, manual_rating, created_at)
         VALUES (
-            @started_at, @ended_at, @game_type, @hero_card_id, @place, @tavern_turns, @play_state,
-            @truncated, @video_status, @video_path, @video_size_bytes, @video_duration_ms,
-            @starred, @manual_rating, @created_at)
+            @session_id, @started_at, @started_at_utc, @ended_at, @game_type, @hero_card_id, @place,
+            @tavern_turns, @play_state, @truncated, @video_status, @video_path, @video_size_bytes,
+            @video_duration_ms, @starred, @manual_rating, @created_at)
         RETURNING id;
         """;
 
@@ -226,10 +258,10 @@ public sealed class SqliteMatchRepository : IMatchRepository
         """;
 
     private const string ListMatchesSql = """
-        SELECT id, started_at, ended_at, game_type, hero_card_id, place, tavern_turns, play_state,
-               truncated, video_status, video_path, video_size_bytes, video_duration_ms,
+        SELECT id, session_id, started_at, ended_at, game_type, hero_card_id, place, tavern_turns,
+               play_state, truncated, video_status, video_path, video_size_bytes, video_duration_ms,
                starred, manual_rating
         FROM matches
-        ORDER BY started_at DESC, id DESC;
+        ORDER BY started_at_utc DESC, id DESC;
         """;
 }
