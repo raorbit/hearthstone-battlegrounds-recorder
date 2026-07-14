@@ -147,6 +147,27 @@ public sealed class LogConfigWriterTests : IDisposable
     }
 
     [Fact]
+    public void Rerun_after_crash_does_not_clobber_the_pristine_backup()
+    {
+        // First run backs up the pristine original and updates the config.
+        string original = "[Power]\nLogLevel=1\n"; // missing FilePrinting + Verbose
+        File.WriteAllText(_path, original);
+        var first = LogConfigWriter.Ensure(_path);
+        Assert.Equal(LogConfigOutcome.Updated, first.Outcome);
+        Assert.Equal(original, File.ReadAllText(_path + ".bak")); // pristine backup captured
+
+        // Simulate a crash that left a DIFFERENT, still-non-compliant config in place, then a rerun. The
+        // rerun must patch it again WITHOUT overwriting the still-pristine .bak (the only good copy).
+        File.WriteAllText(_path, "[Power]\nFilePrinting=true\n"); // missing LogLevel + Verbose
+        var second = LogConfigWriter.Ensure(_path);
+        Assert.Equal(LogConfigOutcome.Updated, second.Outcome);
+
+        Assert.Equal(original, File.ReadAllText(_path + ".bak")); // backup untouched, not clobbered
+        Assert.False(File.Exists(_path + ".tmp"), "atomic-replace temp file must not linger");
+        AssertCompliant();
+    }
+
+    [Fact]
     public void Existing_power_among_foreign_sections_patches_only_power()
     {
         string original =

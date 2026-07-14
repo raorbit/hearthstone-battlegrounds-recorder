@@ -152,4 +152,77 @@ public sealed class PowerLogParserTests
         var truncated = events.OfType<MatchEnded>().Single();
         Assert.True(truncated.Truncated);
     }
+
+    [Fact]
+    public void Deferred_match_end_is_stamped_at_the_placement_settle_not_a_later_teardown_line()
+    {
+        // Regression (P2-9): after STATE=COMPLETE the game re-emits final placements, then tears the match
+        // down. The deferred MatchEnded must carry the time of the LAST settle line (end of the placement
+        // settle), not the later teardown line that merely triggers the emit.
+        var parser = new PowerLogParser(Fixtures.Seed);
+        var events = new List<GameEvent>();
+        events.AddRange(parser.Feed("D 21:59:00.0000000 GameState.DebugPrintPower() - CREATE_GAME"));
+        events.AddRange(parser.Feed("D 21:59:00.5000000 GameState.DebugPrintGame() - GameType=GT_BATTLEGROUNDS"));
+        events.AddRange(parser.Feed("D 21:59:01.0000000 GameState.DebugPrintGame() - PlayerID=2, PlayerName=Tester#1234"));
+        events.AddRange(parser.Feed("D 22:00:00.0000000 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE"));
+        // Placement settle (local player, id/player=2): this is the true end of the match.
+        events.AddRange(parser.Feed("D 22:00:01.0000000 GameState.DebugPrintPower() - TAG_CHANGE Entity=[Player id=2 player=2] tag=PLAYER_LEADERBOARD_PLACE value=1"));
+        // First non-leaderboard teardown line — arrives 4s later and only triggers the deferred end.
+        events.AddRange(parser.Feed("D 22:00:05.0000000 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER"));
+
+        var end = Assert.Single(events.OfType<MatchEnded>());
+        Assert.False(end.Truncated);
+        Assert.Equal(1, end.FinalPlace);
+
+        var settle = Assert.Single(events.OfType<PlacementChanged>());
+        Assert.Equal(settle.Timestamp, end.Timestamp);                       // stamped at the settle line
+        Assert.Equal(new TimeSpan(0, 22, 0, 1), end.Timestamp.TimeOfDay);    // 22:00:01, the settle
+        Assert.NotEqual(new TimeSpan(0, 22, 0, 5), end.Timestamp.TimeOfDay); // NOT 22:00:05, the teardown
+    }
+
+    // US Eastern (observes DST) for the DST-transition tests; tolerant of Windows vs IANA id.
+    private static TimeZoneInfo Eastern()
+    {
+        foreach (var id in new[] { "Eastern Standard Time", "America/New_York" })
+            if (TimeZoneInfo.TryFindSystemTimeZoneById(id, out var tz))
+                return tz;
+        throw new InvalidOperationException("US Eastern time zone not available on this host");
+    }
+
+    [Fact]
+    public void Spring_forward_recomputes_the_offset_per_instant()
+    {
+        // P2-10: the UTC offset must track each reconstructed instant, not freeze at the session-start offset.
+        // 2026-03-08 US Eastern springs forward at 02:00 EST (-05:00) → 03:00 EDT (-04:00).
+        var seed = new DateTimeOffset(2026, 3, 8, 0, 30, 0, TimeSpan.FromHours(-5));
+        var parser = new PowerLogParser(seed, Eastern());
+        var events = new List<GameEvent>();
+        events.AddRange(parser.Feed("D 01:00:00.0000000 GameState.DebugPrintPower() - CREATE_GAME"));
+        events.AddRange(parser.Feed("D 01:30:00.0000000 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=TURN value=1")); // before, EST
+        events.AddRange(parser.Feed("D 03:30:00.0000000 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=TURN value=3")); // after, EDT
+
+        var turns = events.OfType<TurnStarted>().ToList();
+        Assert.Equal(2, turns.Count);
+        Assert.Equal(TimeSpan.FromHours(-5), turns[0].Timestamp.Offset); // pre-transition
+        Assert.Equal(TimeSpan.FromHours(-4), turns[1].Timestamp.Offset); // post-transition (frozen-offset bug → -5)
+        Assert.Equal(new DateTime(2026, 3, 8), turns[0].Timestamp.Date);
+        Assert.Equal(new DateTime(2026, 3, 8), turns[1].Timestamp.Date); // forward jump is not a rollover
+    }
+
+    [Fact]
+    public void Fall_back_rewind_is_not_treated_as_a_midnight_rollover()
+    {
+        // P2-10: 2026-11-01 US Eastern falls back at 02:00 EDT → 01:00 EST, so 01:59 → 01:00 is a <1h backward
+        // step. It must NOT advance the date (the old "any backward jump = new day" rule wrongly added a day).
+        var seed = new DateTimeOffset(2026, 11, 1, 1, 30, 0, TimeSpan.FromHours(-4));
+        var parser = new PowerLogParser(seed, Eastern());
+        var events = new List<GameEvent>();
+        events.AddRange(parser.Feed("D 01:59:00.0000000 GameState.DebugPrintPower() - CREATE_GAME"));
+        events.AddRange(parser.Feed("D 01:00:00.0000000 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=TURN value=1"));
+
+        var start = Assert.Single(events.OfType<MatchStarted>());
+        var turn = Assert.Single(events.OfType<TurnStarted>());
+        Assert.Equal(new DateTime(2026, 11, 1), start.Timestamp.Date);
+        Assert.Equal(new DateTime(2026, 11, 1), turn.Timestamp.Date); // stays on 11-01 (bug → 11-02)
+    }
 }

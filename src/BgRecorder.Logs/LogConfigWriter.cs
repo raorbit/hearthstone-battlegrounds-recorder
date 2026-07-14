@@ -104,8 +104,16 @@ public static class LogConfigWriter
             return new LogConfigResult(LogConfigOutcome.AlreadyCompliant, null);
 
         string backupPath = configPath + ".bak";
-        File.Copy(configPath, backupPath, overwrite: true); // exact original bytes
-        File.WriteAllText(configPath, string.Join(nl, lines), new UTF8Encoding(false));
+        // Back up the pristine original ONCE and never clobber an existing .bak: a prior run that crashed
+        // mid-write could have left a truncated config, and overwriting would destroy the only good copy.
+        if (!File.Exists(backupPath))
+            File.Copy(configPath, backupPath); // exact original bytes (no overwrite)
+
+        // Write atomically: stage into a temp file, then swap it in with File.Replace so a crash can never
+        // leave a half-written config in place (readers see either the old or the fully-updated file).
+        string tempPath = configPath + ".tmp";
+        File.WriteAllText(tempPath, string.Join(nl, lines), new UTF8Encoding(false));
+        File.Replace(tempPath, configPath, destinationBackupFileName: null);
         return new LogConfigResult(LogConfigOutcome.Updated, backupPath);
     }
 
