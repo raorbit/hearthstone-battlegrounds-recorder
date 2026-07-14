@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
     <ProjectReference Include="..\BgRecorder.Logs\BgRecorder.Logs.csproj" />
