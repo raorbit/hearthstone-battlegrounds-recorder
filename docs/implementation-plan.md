@@ -1,0 +1,116 @@
+# Implementation plan
+
+Plan for building the recorder described by the [design prototype](../design/) within the constraints in [technical-notes.md](technical-notes.md). Solo-dev paced: after M2 every milestone boundary leaves a shippable app.
+
+## Stack
+
+**C# / .NET 8 (LTS), single Windows process.**
+
+| Concern | Choice |
+|---|---|
+| Shell | WPF + tray icon (H.NotifyIcon.Wpf) |
+| UI | WebView2 hosting a small TypeScript + Preact + Vite SPA ported from the prototype (markup/CSS transfer nearly 1:1); VOD playback via HTML5 `<video>` |
+| Capture | ScreenRecorderLib (Windows.Graphics.Capture + Media Foundation hardware encoders NVENC/AMF/QSV, x264 fallback), behind an `IRecorder` interface; named pivot: ffmpeg child process (`ddagrab` + `h264_nvenc`); last resort: libobs |
+| Audio | WASAPI process loopback (game-only audio, port of Microsoft's ApplicationLoopback sample) + NAudio for mic/device handling; fallback: full system loopback with relabeled toggle |
+| Log watching | Newest-subfolder discovery + tailer modeled on HearthSim HearthWatcher; pivot: adopt the HearthWatcher package wholesale |
+| MMR | HearthMirror in-process behind an optional `IRatingProvider`; documented Plan B: net48 sidecar emitting JSON if in-proc load under .NET 8 fails |
+| Metadata | SQLite (Microsoft.Data.Sqlite + Dapper) |
+| Packaging | Velopack — Setup.exe + delta auto-updates from GitHub Releases |
+| Logging | Serilog rolling files |
+
+Why .NET: HearthMirror is C#-only and MMR is unreadable any other way — every non-.NET stack pays a permanent sidecar tax. The whole reference ecosystem (HDT, HearthWatcher, HearthDb) is C#, so parsing-fidelity questions are answered by reading proven code. Why WebView2 for UI: the finished HTML prototype ports almost directly, and HTML5 video is a far better player substrate than WPF MediaElement (frame-accurate seeking, easy marker overlays). The prototype's dc-runtime and unpkg React are design-tool artifacts and are not shipped.
+
+## Architecture
+
+```
+Power.log (game)              Hearthstone process memory
+     |                                  |
+ LogWatcher ──lines──► LogParser        |
+     |                    |       RatingProvider (HearthMirror, OPTIONAL)
+     └──────────► GameEvents ◄──────────┘
+                      |
+              SessionCoordinator  (recording state machine)
+                |            |
+        CaptureEngine    MatchAssembler ──► SQLite (matches, markers, files)
+        (IRecorder)          |                      |
+                |            └──► StorageEngine ────┤  (archive/eviction pass)
+             .mp4 files                             |
+                                              UiBridge (WebView2 postMessage RPC)
+                                                    |
+                                              Library SPA (ported prototype)
+```
+
+- **LogWatcher** — finds the newest `<install>\Logs\Hearthstone_YYYY_MM_DD_HH_MM_SS\` subfolder, re-checks on game restart, tails Power.log with a polling `FileShare.ReadWrite` reader.
+- **LogParser** — minimal BG-only tag set: CREATE_GAME, GameType (`GT_BATTLEGROUNDS_DUO=37`), hero entities, TURN/STEP (**displayed tavern turn = `(TURN+1)/2`**; combat boundaries from TURN parity/STEP), per-combat result + damage, `PLAYER_LEADERBOARD_PLACE`, final board. Fully fixture-testable.
+- **SessionCoordinator** — state machine `Idle → Armed → Recording → Finalizing → Armed`, driving all three status states the prototype shows (recording / waiting-for-match / game-not-found). Two distinct user controls: **Stop this recording** (finalize early, stay armed for the next match) and **Pause auto-recording** (disarm; distinct tray glyph; resume affordance offers *resume now / auto-resume next match / stay off this session*).
+- **CaptureEngine** — window capture + hardware encode behind `IRecorder`; fragmented MP4 so a crash mid-match leaves a playable file; marker clock = log-event wall-clock minus recording-start wall-clock. Startup crash-recovery detects orphaned fragmented MP4s and commits them as `video_status='incomplete'` rows.
+- **RatingProvider** — optional/degradable; samples at match start, polls post-game until the rating changes (timeout tuned by Spike C); solo `Rating` and `DuosRating` stored strictly per mode; health states (OK / AttachFailed / PatchBroken) + feature-flag kill switch. Failure degrades to null MMR; recording never depends on it.
+- **StorageEngine** — retention spec below; journaled mover with a `mover_journal` table (copy → fsync → size + xxHash verify → DB flip → delete source; startup reconciliation: source wins if verify incomplete, target wins if complete).
+- **UiBridge** — JSON-RPC over `postMessage`; media served via virtual host mapping with an HTTP 206 range handler for multi-GB seeking.
+
+## Retention policy (resolves the prototype's contradiction)
+
+1. **Tiers.** One recording drive (cap **R**, the prototype's Max storage slider) and zero or more priority-ordered archive drives, each with its own cap. New recordings always land on the recording drive.
+2. **Pinned hot set.** The newest **K** matches (default 5) always stay on the recording drive — "newest stay on the fast drive" is an invariant, not an accident of ordering.
+3. **Over R → archive first.** Move oldest-finished-first (starred included — moves are lossless) to the highest-priority archive drive with headroom under both its cap and real free space.
+4. **No archive headroom → delete oldest-unstarred-first.** This fires directly off R when no archive can take the move — so the single-drive default behaves exactly as the prototype copy promises ("oldest unstarred removed first when the cap is hit"). An optional total-library cap T (default = R + archive caps) additionally bounds the whole library.
+5. **Starred is inviolable.** If space is needed and everything left is starred: delete nothing, raise a persistent notification, and refuse to arm for the *next* match (the current one always finishes) while below the floor.
+6. **Free space is authoritative.** Effective budget per drive = min(cap, used + free). Recording-drive floor = max(10 GB, 2× rolling-average match size); a low-space watchdog finalizes early rather than corrupting. Caps are user intent; the disk is the truth.
+7. **Offline archives** (unplugged drive) mark rows offline — playback disabled, metadata kept, nothing deleted.
+
+## Milestones
+
+### M1 — Spike sprint: kill the unknowns (time-boxed: ~1 weekend per spike)
+
+Four independent `dotnet run` console apps under `/spikes`, each with a written GO/PIVOT verdict in `spikes/DECISIONS.md`. Spike code is written to be salvaged (A → LogParser, B's config → CaptureEngine), not discarded.
+
+- **A — log fidelity**: subfolder discovery + tailer; parse ≥10 real matches (solo and duos, one concede, one mid-session client restart); archive the raw logs as the permanent fixture corpus. *Pivot:* any missed boundary or wrong placement → adopt HearthWatcher wholesale.
+- **B — capture perf**: ScreenRecorderLib at 1080p60 NVENC for a 30-min session; measure game FPS impact with PresentMon. *Kill line:* >5 % FPS loss or WGC defects → ffmpeg pivot; then libobs; then descope to 30 fps.
+- **C — HearthMirror**: verify the assembly loads in-proc under .NET 8 (the net48 TFM risk); read rating before/after 3 real matches; confirm solo/duos separation; measure post-game update latency. Can't kill the project — tunes the provider design; sidecar is Plan B.
+- **D — game-only audio**: process-loopback capture of Hearthstone-only audio mixed with mic. *Verdict rule:* GO → ship it as v1 default (the design's "Discord stays out of your VODs" promise); NO-GO → system loopback with the desktop-audio toggle relabeled honestly.
+
+**Exit:** all four spikes run against the live game; DECISIONS.md holds measured numbers (FPS %, parse accuracy /10, MMR latency) and a GO or named-pivot verdict each.
+
+### M2 — Walking skeleton: log-triggered recording
+
+Solution structure (`Core` / `App` / `Tests`); productionize the parser with fixture-driven tests; recording state machine incl. stop-vs-pause semantics; CaptureEngine on the chosen route; SQLite schema v1; onboarding writes log.config (**merge, never clobber** an existing file) + the prototype's live test-feed verifier; tray icon with state.
+
+**Exit:** 3 consecutive real matches, including one game-client restart in between, produce 3 playable MP4s and 3 correct DB rows (hero, placement, turns, combat markers) with zero manual interaction.
+
+### M3 — Library UI and VOD player
+
+Port the prototype to the SPA; RPC bridge; buckets/search/segment filters; design + build the date filter the prototype left unmodeled; player with combat/damage markers and turn ticks, final-board strip, keyboard shortcuts; clips as **virtual marker ranges** (no file copies); thumbnails on finalize. Validate multi-GB `<video>` range-seeking in week one (the milestone's risk item).
+
+**Exit:** every recorded match browsable; smooth scrubbing on multi-GB VODs; markers within ±2 s of true combat start across 5 real matches; filters return correct subsets.
+
+### M4 — Rating provider and per-mode stats
+
+`IRatingProvider` + HearthMirror implementation; MMR± only when start/end samples exist for the same mode; sidebar rating card strictly per-mode, **following the active solo/duos bucket**; degradation UX (null MMR renders as "—", non-blocking "MMR unavailable — recordings unaffected" banner).
+
+**Exit:** MMR± matches the in-game post-match screen for one real solo and one real duos match; with the provider force-disabled, a full match records normally and the UI shows the degraded state.
+
+### M5 — Storage, retention, and archive engine
+
+Implement the spec above; journaled transactional mover that never contends with an active recording's disk bandwidth; startup reconciliation; "what would be evicted next" preview in settings; scripted **VHDX torture suite**: fill past cap → archive; archives full → delete oldest unstarred; all-starred → notify + zero deletions; yank drive mid-move; `kill -9` mid-move.
+
+**Exit:** the torture suite passes — DB and filesystem consistent in every scenario, zero starred files deleted, zero orphans, correct offline flagging.
+
+### M6 — Settings, polish, packaging, updates
+
+Full settings surface (resolution/fps/encoder/quality; per-source audio with mic + desktop default OFF; output folder; notifications); launch-at-login; toasts; crash handler + logs; Velopack Setup.exe with delta auto-updates; **idle resource budget**: Armed-state CPU < ~0.5 %, WebView2 torn down while the window is hidden.
+
+**Exit:** on a clean VM: install → onboard → record a match hands-free → auto-update vN→vN+1 with settings and library intact — and the idle budget holds.
+
+## Top risks
+
+1. **Capture performance/compatibility** (the project-killer) — hard numeric kill line in Spike B, pivot ladder behind `IRecorder`; detect minimized/exclusive-fullscreen and warn instead of recording black frames.
+2. **Log format changes on game patches** — permanent fixture corpus + regression tests; tolerant minimal tag set; HearthWatcher as pre-agreed pivot; watchdog banner when the game is running with fresh log writes but no events.
+3. **HearthMirror breakage on patches** (precedent: HSTracker #1419) — optional-by-architecture, health states, kill switch, pinned versions; M4's exit proves indifference.
+4. **Retention bugs = user data loss** — journaled mover, starred inviolable, VHDX torture suite as a hard exit gate.
+5. **Multi-GB seeking in WebView2** — validated week one of M3; HTTP 206 handler is the committed default.
+6. **Disk-full mid-recording** — floor check before arming, watchdog finalizes early, staging-dir writes.
+7. **Solo-dev scope creep** — the punt list below is contractual for v1; every post-M2 milestone boundary is shippable.
+
+## Out of scope for v1
+
+No cloud/sync/accounts (local-only is a feature). No clip export to standalone files (virtual ranges only; export is v1.1). No auto-highlight detection, non-BG modes, board replay/simulation, in-app trimming, localization, macOS/Linux, HDR or >60 fps. No code-signing cert yet (SmartScreen caveat documented). Duos beyond the mode split (partner display, shared-board markers) is post-v1.
