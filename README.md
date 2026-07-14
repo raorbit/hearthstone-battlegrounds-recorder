@@ -6,7 +6,11 @@ The recorder tails the Hearthstone game log to detect matches and combats, captu
 
 ## Status
 
-M1 spike sprint done (pending a few live-play measurements). The four de-risking spikes in [`spikes/`](spikes/) are built and verified against the real game: log discovery/parsing/tailing (17 real matches, GO), window capture with NVENC + fragmented MP4 (GO on feasibility), the dependency licensing gate + read-only attach probe (HearthMirror NO-GO as-is), and game-only process-loopback audio (GO). Verdicts and measured numbers live in [`spikes/DECISIONS.md`](spikes/DECISIONS.md). Next: M2 walking skeleton.
+M2 walking skeleton built; M1 spike verdicts in [`spikes/DECISIONS.md`](spikes/DECISIONS.md).
+
+The app skeleton (`BgRecorder.slnx`, `src/` + `tests/`) records unattended end-to-end: log watcher → BG parser (fixture-tested against 17 real matches) → session state machine → window capture (NVENC, fragmented MP4) + game-only process-loopback audio → Media Foundation mux at finalize → SQLite library row with combat markers, behind a WPF tray shell. Crash safety is test-proven: a hard-killed recording is recovered on next startup as a playable partial VOD registered as incomplete, including when the kill corrupts the staged audio. 149 tests incl. a live end-to-end test that streams a real match's log through the full stack while capturing the running game.
+
+Still needed to close M2 (real play sessions): 3 consecutive hands-free real matches incl. a client restart, the A/V-sync ±100 ms check over a long session, and Spike B's 30-min PresentMon FPS measurement. v1 ships without automatic MMR (M1 licensing decision).
 
 - `design/` contains an interactive UI prototype of the Library and Settings screens — clone the repo and open [`design/BG Recorder - Library.dc.html`](<design/BG Recorder - Library.dc.html>) locally in a browser (GitHub shows only the source).
 - [`docs/technical-notes.md`](docs/technical-notes.md) — verified facts constraining the implementation: Power.log lives in per-session timestamped subfolders; hero/placement/turns/combats/final board are log-derivable; **rating (MMR) is not in any log** and is read from game memory via HearthMirror (HDT's approach), so it's designed as an optional, degradable subsystem.
