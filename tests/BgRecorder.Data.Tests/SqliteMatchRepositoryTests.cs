@@ -376,4 +376,66 @@ public sealed class SqliteMatchRepositoryTests
         }
         finally { Cleanup(db); }
     }
+
+    /// <summary>
+    /// A database created by an earlier build has a <c>matches</c> table without <c>session_id</c> or
+    /// <c>started_at_utc</c>. InitializeAsync must migrate it (add the columns, backfill the UTC sort
+    /// key, add the uniqueness index) so insert/list/existence queries no longer fail with
+    /// "no such column"; the pre-existing row must survive.
+    /// </summary>
+    [Fact]
+    public async Task Initialize_migrates_a_legacy_matches_table_missing_the_new_columns()
+    {
+        var db = NewDbPath();
+        try
+        {
+            await using (var raw = OpenRaw(db))
+            {
+                await raw.ExecuteAsync("""
+                    CREATE TABLE schema_version (version INTEGER NOT NULL);
+                    INSERT INTO schema_version (version) VALUES (1);
+                    CREATE TABLE matches (
+                        id                INTEGER PRIMARY KEY AUTOINCREMENT,
+                        started_at        TEXT    NOT NULL,
+                        ended_at          TEXT    NULL,
+                        game_type         INTEGER NOT NULL,
+                        hero_card_id      TEXT    NULL,
+                        place             INTEGER NULL,
+                        tavern_turns      INTEGER NOT NULL,
+                        play_state        INTEGER NOT NULL,
+                        truncated         INTEGER NOT NULL,
+                        video_status      INTEGER NOT NULL,
+                        video_path        TEXT    NULL,
+                        video_size_bytes  INTEGER NULL,
+                        video_duration_ms INTEGER NULL,
+                        starred           INTEGER NOT NULL DEFAULT 0,
+                        manual_rating     INTEGER NULL,
+                        created_at        TEXT    NOT NULL
+                    );
+                    CREATE TABLE markers (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT, match_id INTEGER NOT NULL,
+                        kind INTEGER NOT NULL, at_ms INTEGER NOT NULL, tavern_turn INTEGER NOT NULL,
+                        FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+                    );
+                    INSERT INTO matches (started_at, game_type, tavern_turns, play_state, truncated, video_status, created_at)
+                    VALUES ('2026-07-14T09:15:30.0000000-07:00', 0, 11, 2, 0, 0, '2026-07-14T16:15:30.0000000+00:00');
+                    """);
+            }
+
+            var repo = await NewRepoAsync(db); // runs the migration
+
+            // The pre-existing row survives and lists (ORDER BY started_at_utc no longer throws).
+            Assert.Single(await repo.ListMatchesAsync());
+
+            // The added columns are now usable end to end.
+            await repo.InsertMatchAsync(SampleMatch() with { SessionId = "sess-123" }, SampleMarkers());
+            Assert.True(await repo.MatchExistsBySessionAsync("sess-123"));
+
+            // The legacy row got a backfilled UTC sort key.
+            await using var check = OpenRaw(db);
+            Assert.Equal(0L, await check.ExecuteScalarAsync<long>(
+                "SELECT COUNT(*) FROM matches WHERE started_at_utc IS NULL;"));
+        }
+        finally { Cleanup(db); }
+    }
 }

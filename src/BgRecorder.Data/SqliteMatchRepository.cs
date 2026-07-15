@@ -39,6 +39,50 @@ public sealed class SqliteMatchRepository : IMatchRepository
 
         await using var conn = await OpenConnectionAsync(ct);
         await conn.ExecuteAsync(new CommandDefinition(SchemaSql, cancellationToken: ct));
+        await MigrateSchemaAsync(conn, ct).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Bring an existing <c>matches</c> table up to the current column set. A database created by an
+    /// earlier build may predate the <c>session_id</c> / <c>started_at_utc</c> columns; because
+    /// <c>CREATE TABLE IF NOT EXISTS</c> leaves such a table untouched, the insert/list/recovery
+    /// queries would otherwise fail with "no such column". Each step is guarded by the table's actual
+    /// columns, so this is a no-op on a freshly created database and safe to run on every startup.
+    /// </summary>
+    private static async Task MigrateSchemaAsync(SqliteConnection conn, CancellationToken ct)
+    {
+        var columns = (await conn.QueryAsync<string>(new CommandDefinition(
+            "SELECT name FROM pragma_table_info('matches');", cancellationToken: ct)))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        if (!columns.Contains("session_id"))
+        {
+            // ADD COLUMN can't carry an inline UNIQUE, so enforce uniqueness with a partial index
+            // (NULLs exempt, matching the fresh schema's `session_id TEXT NULL UNIQUE`).
+            await conn.ExecuteAsync(new CommandDefinition(
+                "ALTER TABLE matches ADD COLUMN session_id TEXT NULL;", cancellationToken: ct));
+            await conn.ExecuteAsync(new CommandDefinition(
+                "CREATE UNIQUE INDEX IF NOT EXISTS ux_matches_session_id ON matches(session_id) WHERE session_id IS NOT NULL;",
+                cancellationToken: ct));
+        }
+
+        if (!columns.Contains("started_at_utc"))
+        {
+            await conn.ExecuteAsync(new CommandDefinition(
+                "ALTER TABLE matches ADD COLUMN started_at_utc TEXT NULL;", cancellationToken: ct));
+            // Backfill the sort key from the existing offset-preserving started_at, normalized to a
+            // UTC "O" instant exactly as new inserts write it, so ordering stays consistent.
+            var rows = await conn.QueryAsync(new CommandDefinition(
+                "SELECT id, started_at FROM matches WHERE started_at_utc IS NULL;", cancellationToken: ct));
+            foreach (var row in rows)
+            {
+                var utc = ParseTimestamp((string)row.started_at)
+                    .ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
+                await conn.ExecuteAsync(new CommandDefinition(
+                    "UPDATE matches SET started_at_utc = @utc WHERE id = @id;",
+                    new { utc, id = (long)row.id }, cancellationToken: ct));
+            }
+        }
     }
 
     public async Task<long> InsertMatchAsync(
