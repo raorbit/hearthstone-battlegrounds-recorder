@@ -170,7 +170,11 @@ public sealed class MediaStreamLeasePool : IDisposable
             return;
         }
 
-        foreach (var entry in _openStreams
+        // ToArray() takes an atomic snapshot under the dictionary's locks. Ordering _openStreams
+        // directly would route LINQ through ICollection.CopyTo, which reads Count, allocates, then
+        // copies without a lock; a concurrent Lease/reopen adding an entry in that gap throws
+        // ArgumentException — and on the sweep timer's thread that would escape and crash the process.
+        foreach (var entry in _openStreams.ToArray()
                      .OrderBy(e => Interlocked.Read(ref e.Value.LastActivityUtcTicks)))
         {
             if (_openStreams.Count <= _maxOpenStreams)
