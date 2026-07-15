@@ -3,4 +3,9 @@
   <ItemGroup>
     <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BgRecorder.Logs.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>
