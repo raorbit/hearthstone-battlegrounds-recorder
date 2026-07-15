@@ -5,8 +5,10 @@ import {
   createStarReadFence,
   isCoordinatorSnapshotCurrent,
   protectStarredFromStaleRead,
+  pruneStarMutations,
   shouldReloadLibraryAfterStateChange,
   type StarMutation,
+  type StarReadFence,
 } from "./starState";
 import {
   type CoordinatorState,
@@ -574,14 +576,29 @@ export function App(): JSX.Element {
   const listRequestVersionRef = useRef(0);
   const starMutationVersionRef = useRef(0);
   const starMutationsRef = useRef(new Map<number, StarMutation>());
+  const outstandingFencesRef = useRef<StarReadFence[]>([]);
+
+  // A fenced async read (library.list / library.get) registers its fence so committed star history
+  // is retained until every read that could still be racing it has settled, then pruned.
+  const beginStarReadFence = useCallback((): StarReadFence => {
+    const fence = createStarReadFence(starMutationVersionRef.current, starMutationsRef.current);
+    outstandingFencesRef.current.push(fence);
+    return fence;
+  }, []);
+
+  const endStarReadFence = useCallback((fence: StarReadFence): void => {
+    const fences = outstandingFencesRef.current;
+    const index = fences.indexOf(fence);
+    if (index >= 0) {
+      fences.splice(index, 1);
+    }
+    pruneStarMutations(starMutationsRef.current, fences);
+  }, []);
 
   const loadLibrary = useCallback(async (): Promise<void> => {
     const requestVersion = ++listRequestVersionRef.current;
     const coordinatorNotificationVersion = coordinatorNotificationVersionRef.current;
-    const starFence = createStarReadFence(
-      starMutationVersionRef.current,
-      starMutationsRef.current,
-    );
+    const starFence = beginStarReadFence();
     setListLoading(true);
     setListError(null);
     try {
@@ -622,11 +639,12 @@ export function App(): JSX.Element {
         setListLoaded(true);
       }
     } finally {
+      endStarReadFence(starFence);
       if (requestVersion === listRequestVersionRef.current) {
         setListLoading(false);
       }
     }
-  }, []);
+  }, [beginStarReadFence, endStarReadFence]);
 
   // A coordinator transition observed locally (a command reply or a native notification) is newer
   // than the coordinatorState bundled into any library.list already in flight. Bumping the
@@ -706,10 +724,7 @@ export function App(): JSX.Element {
     setDetail(null);
     setDetailError(null);
     setDetailLoading(true);
-    const starFence = createStarReadFence(
-      starMutationVersionRef.current,
-      starMutationsRef.current,
-    );
+    const starFence = beginStarReadFence();
 
     void bridge.request("library.get", { matchId: selectedId })
       .then((result) => {
@@ -730,6 +745,7 @@ export function App(): JSX.Element {
         }
       })
       .finally(() => {
+        endStarReadFence(starFence);
         if (!cancelled) {
           setDetailLoading(false);
         }
@@ -738,7 +754,7 @@ export function App(): JSX.Element {
     return () => {
       cancelled = true;
     };
-  }, [detailVersion, selectedId]);
+  }, [detailVersion, selectedId, beginStarReadFence, endStarReadFence]);
 
   const selectedMatch = matches.find((match) => match.id === selectedId) ?? null;
   const soloCount = matches.filter((match) => normalizeGameType(match.gameType) === "solo").length;

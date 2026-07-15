@@ -15,6 +15,7 @@ const {
   createStarReadFence,
   isCoordinatorSnapshotCurrent,
   protectStarredFromStaleRead,
+  pruneStarMutations,
   shouldReloadLibraryAfterStateChange,
 } = await import(moduleUrl);
 
@@ -70,6 +71,47 @@ test("a failed second toggle keeps the earlier success ahead of a pre-success re
     protectStarredFromStaleRead(match(false), preSuccessFence, mutations).starred,
     true,
   );
+});
+
+test("prune drops a committed mutation when no reads are outstanding", () => {
+  const mutations = new Map([[42, { version: 1, starred: true, pending: false }]]);
+  pruneStarMutations(mutations, []);
+  assert.equal(mutations.has(42), false);
+});
+
+test("prune keeps a pending mutation", () => {
+  const mutations = new Map([[42, { version: 3, starred: true, pending: true }]]);
+  pruneStarMutations(mutations, []);
+  assert.equal(mutations.has(42), true);
+});
+
+test("prune keeps a mutation newer than an outstanding read's fence", () => {
+  const mutations = new Map([[42, { version: 5, starred: true, pending: false }]]);
+  // A read that began at fence version 4 predates this mutation and would still protect it.
+  pruneStarMutations(mutations, [{ version: 4, pendingMatchIds: new Set() }]);
+  assert.equal(mutations.has(42), true);
+});
+
+test("prune keeps a mutation an outstanding read captured as pending", () => {
+  const mutations = new Map([[42, { version: 2, starred: true, pending: false }]]);
+  // The read started while 42 was still pending, so it must keep protecting 42 after it commits.
+  pruneStarMutations(mutations, [{ version: 9, pendingMatchIds: new Set([42]) }]);
+  assert.equal(mutations.has(42), true);
+});
+
+test("prune drops a committed mutation once every outstanding read is authoritative for it", () => {
+  const mutations = new Map([[42, { version: 2, starred: true, pending: false }]]);
+  // A read begun at fence version 2 that did not capture 42 as pending already reads the commit.
+  pruneStarMutations(mutations, [{ version: 2, pendingMatchIds: new Set() }]);
+  assert.equal(mutations.has(42), false);
+});
+
+test("prune keeps a mutation if any one outstanding read still needs it", () => {
+  const mutations = new Map([[42, { version: 5, starred: true, pending: false }]]);
+  const authoritative = { version: 9, pendingMatchIds: new Set() };
+  const stale = { version: 4, pendingMatchIds: new Set() };
+  pruneStarMutations(mutations, [authoritative, stale]);
+  assert.equal(mutations.has(42), true);
 });
 
 test("leaving finalizing requests a library reload", () => {
