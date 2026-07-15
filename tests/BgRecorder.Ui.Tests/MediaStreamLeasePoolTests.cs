@@ -184,6 +184,153 @@ public sealed class MediaStreamLeasePoolTests
         Assert.Equal(offset + 64, reopened.Position);
     }
 
+    [Fact]
+    public async Task Concurrent_leases_reads_and_sweeps_do_not_deadlock()
+    {
+        // BeginRead deliberately calls OperationStarted (which trims and reaches across other lease
+        // gates) OUTSIDE its own gate. If that cross-lease call were ever pulled back under the gate,
+        // two threads each holding their own lease gate while trimming toward the other would deadlock.
+        // Drive many threads through Lease+Read+Sweep over a tiny cap and require the run to finish.
+        var clock = new ManualTimeProvider();
+        using var pool = CreatePool(clock, maxOpenStreams: 2, idleTimeout: TimeSpan.FromDays(1));
+        const int threads = 8;
+        const int iterations = 150;
+        using var start = new Barrier(threads);
+
+        var workers = Enumerable.Range(0, threads).Select(_ => Task.Run(() =>
+        {
+            start.SignalAndWait();
+            for (var i = 0; i < iterations; i++)
+            {
+                using var lease = pool.Lease(
+                    new TrackingStream([1, 2, 3, 4]),
+                    () => new TrackingStream([1, 2, 3, 4]),
+                    0,
+                    4);
+                var buffer = new byte[4];
+                var total = 0;
+                int read;
+                while ((read = lease.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    total += read;
+                }
+                Assert.Equal(4, total);
+                if ((i & 7) == 0)
+                {
+                    pool.Sweep();
+                }
+            }
+        })).ToArray();
+
+        // WaitAsync throws TimeoutException on a stall, surfacing a deadlock as a failed test.
+        await Task.WhenAll(workers).WaitAsync(TimeSpan.FromSeconds(30));
+        pool.Sweep();
+        Assert.Equal(0, pool.OpenStreamCount);
+    }
+
+    [Fact]
+    public async Task Overage_from_two_concurrent_reads_collapses_when_one_completes()
+    {
+        // The docstring promises "completion reapplies the cap". Force a standing overage that only
+        // exists because every candidate is mid-read, then release one read and assert the now-idle
+        // handle is parked by the OperationCompleted trim rather than the OperationStarted one.
+        var clock = new ManualTimeProvider();
+        using var pool = CreatePool(clock, maxOpenStreams: 1, idleTimeout: TimeSpan.FromSeconds(5));
+        using var firstReopen = new BlockingReadStream();
+        using var secondReopen = new BlockingReadStream();
+        using var first = pool.Lease(new TrackingStream([1]), () => firstReopen, 0, 1);
+        clock.Advance(TimeSpan.FromSeconds(6));
+        pool.Sweep();
+        using var second = pool.Lease(new TrackingStream([1]), () => secondReopen, 0, 1);
+        clock.Advance(TimeSpan.FromSeconds(6));
+        pool.Sweep();
+        Assert.Equal(0, pool.OpenStreamCount);
+
+        var firstRead = Task.Run(() => first.Read(new byte[1], 0, 1));
+        Assert.True(firstReopen.ReadStarted.Wait(TimeSpan.FromSeconds(5)));
+        var secondRead = Task.Run(() => second.Read(new byte[1], 0, 1));
+        Assert.True(secondReopen.ReadStarted.Wait(TimeSpan.FromSeconds(5)));
+
+        // Both leases reopened and are blocked in-read: the cap is genuinely exceeded.
+        Assert.Equal(2, pool.OpenStreamCount);
+
+        firstReopen.AllowReadToFinish.Set();
+        Assert.Equal(1, await firstRead);
+
+        // Completing the first read must reapply the cap and park the now-idle first lease.
+        Assert.Equal(1, pool.OpenStreamCount);
+        Assert.True(firstReopen.WasDisposed);
+        Assert.False(secondReopen.WasDisposed);
+
+        secondReopen.AllowReadToFinish.Set();
+        Assert.Equal(1, await secondRead);
+    }
+
+    [Fact]
+    public void Scheduled_timer_callback_parks_an_idle_lease_without_a_manual_sweep()
+    {
+        // Every other test calls Sweep() by hand; this one verifies the constructor actually wires the
+        // periodic timer to Sweep with the right state and interval, the sole automatic reclaim path.
+        var clock = new ControllableTimeProvider();
+        var sweepInterval = TimeSpan.FromSeconds(5);
+        using var pool = new MediaStreamLeasePool(
+            maxOpenStreams: 4,
+            idleTimeout: TimeSpan.FromSeconds(10),
+            sweepInterval: sweepInterval,
+            timeProvider: clock);
+        var initial = new TrackingStream([1, 2, 3]);
+        using var lease = pool.Lease(initial, () => new TrackingStream([1, 2, 3]), 0, 3);
+        Assert.Equal(1, pool.OpenStreamCount);
+        Assert.Equal(sweepInterval, clock.LastTimerPeriod);
+
+        clock.Advance(TimeSpan.FromSeconds(11));
+        clock.FireTimers();
+
+        Assert.True(initial.WasDisposed);
+        Assert.Equal(0, pool.OpenStreamCount);
+        Assert.True(lease.CanRead); // parked, not disposed
+    }
+
+    [Fact]
+    public void A_short_read_before_the_window_end_disposes_the_lease()
+    {
+        // A truncated resource can hand back 0 while the logical window is unfinished. CompleteRead(0)
+        // must terminate and release the handle rather than leaving it open and re-reading forever.
+        var clock = new ManualTimeProvider();
+        using var pool = CreatePool(clock, maxOpenStreams: 4, idleTimeout: TimeSpan.FromSeconds(10));
+        var source = new ShortReadStream(reportedLength: 10, bytesBeforeZero: 2);
+        using var lease = pool.Lease(source, () => new ShortReadStream(10, 2), offset: 0, length: 4);
+        var buffer = new byte[4];
+
+        Assert.Equal(1, lease.Read(buffer, 0, 4));
+        Assert.Equal(1, lease.Read(buffer, 0, 4));
+        Assert.Equal(1, pool.OpenStreamCount);
+
+        // Underlying now yields 0 while the logical position (2) is short of the window length (4).
+        Assert.Equal(0, lease.Read(buffer, 0, 4));
+
+        Assert.True(source.WasDisposed);
+        Assert.Equal(0, pool.OpenStreamCount);
+        Assert.False(lease.CanRead);
+    }
+
+    [Fact]
+    public void Reading_a_parked_lease_after_pool_disposal_throws()
+    {
+        var clock = new ManualTimeProvider();
+        var pool = CreatePool(clock, maxOpenStreams: 1, idleTimeout: TimeSpan.FromSeconds(5));
+        var source = new TrackingStream([1, 2, 3]);
+        using var lease = pool.Lease(source, () => new TrackingStream([1, 2, 3]), 0, 3);
+
+        clock.Advance(TimeSpan.FromSeconds(6));
+        pool.Sweep();
+        Assert.True(source.WasDisposed); // parked
+
+        pool.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => lease.Read(new byte[1], 0, 1));
+    }
+
     private static MediaStreamLeasePool CreatePool(
         TimeProvider clock,
         int maxOpenStreams,
@@ -286,6 +433,112 @@ public sealed class MediaStreamLeasePoolTests
             Array.Clear(buffer, offset, read);
             Position += read;
             return read;
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            Position = origin switch
+            {
+                SeekOrigin.Begin => offset,
+                SeekOrigin.Current => Position + offset,
+                SeekOrigin.End => Length + offset,
+                _ => throw new ArgumentOutOfRangeException(nameof(origin)),
+            };
+            return Position;
+        }
+
+        public override void Flush() { }
+        public override void SetLength(long value) => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        protected override void Dispose(bool disposing)
+        {
+            WasDisposed = true;
+            base.Dispose(disposing);
+        }
+    }
+
+    /// <summary>A clock whose timers fire only when the test drives <see cref="FireTimers"/>.</summary>
+    private sealed class ControllableTimeProvider : TimeProvider
+    {
+        private readonly List<FakeTimer> _timers = [];
+        private DateTimeOffset _utcNow = new(2026, 7, 15, 0, 0, 0, TimeSpan.Zero);
+
+        public TimeSpan? LastTimerPeriod { get; private set; }
+
+        public override DateTimeOffset GetUtcNow() => _utcNow;
+
+        public void Advance(TimeSpan amount) => _utcNow += amount;
+
+        public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
+        {
+            LastTimerPeriod = period;
+            var timer = new FakeTimer(callback, state);
+            lock (_timers)
+            {
+                _timers.Add(timer);
+            }
+            return timer;
+        }
+
+        public void FireTimers()
+        {
+            FakeTimer[] snapshot;
+            lock (_timers)
+            {
+                snapshot = [.. _timers];
+            }
+            foreach (var timer in snapshot)
+            {
+                timer.Fire();
+            }
+        }
+
+        private sealed class FakeTimer(TimerCallback callback, object? state) : ITimer
+        {
+            private bool _disposed;
+
+            public void Fire()
+            {
+                if (!_disposed)
+                {
+                    callback(state);
+                }
+            }
+
+            public bool Change(TimeSpan dueTime, TimeSpan period) => !_disposed;
+
+            public void Dispose() => _disposed = true;
+
+            public ValueTask DisposeAsync()
+            {
+                _disposed = true;
+                return ValueTask.CompletedTask;
+            }
+        }
+    }
+
+    /// <summary>Reports a large length but stops yielding bytes early, mimicking a truncated resource.</summary>
+    private sealed class ShortReadStream(long reportedLength, int bytesBeforeZero) : Stream
+    {
+        public bool WasDisposed { get; private set; }
+        public override bool CanRead => !WasDisposed;
+        public override bool CanSeek => !WasDisposed;
+        public override bool CanWrite => false;
+        public override long Length { get; } = reportedLength;
+        public override long Position { get; set; }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            ValidateBufferArguments(buffer, offset, count);
+            if (count == 0 || Position >= bytesBeforeZero)
+            {
+                return 0;
+            }
+
+            buffer[offset] = 9;
+            Position++;
+            return 1;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
