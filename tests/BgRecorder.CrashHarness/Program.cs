@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using BgRecorder.Audio;
 using BgRecorder.Audio.Muxing;
+using BgRecorder.Audio.Thumbnails;
 using BgRecorder.Capture;
 using BgRecorder.Core;
 using BgRecorder.Core.Capture;
@@ -85,6 +86,7 @@ await using var coordinator = new SessionCoordinator(
     new ScreenRecorderLibRecorder(),
     new AudioCaptureEngine(),
     new MediaFoundationMuxer(),
+    new MediaFoundationThumbnailExtractor(),
     new MatchAssembler(),
     repository,
     new DiskSafety(staging, repository),

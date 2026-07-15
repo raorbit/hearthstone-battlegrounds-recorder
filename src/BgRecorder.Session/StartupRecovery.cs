@@ -16,13 +16,20 @@ namespace BgRecorder.Session;
 public sealed class StartupRecovery
 {
     private readonly IMuxer _muxer;
+    private readonly IThumbnailExtractor _thumbnailExtractor;
     private readonly IMatchAssembler _assembler;
     private readonly IMatchRepository _repository;
     private readonly AppSettings _settings;
 
-    public StartupRecovery(IMuxer muxer, IMatchAssembler assembler, IMatchRepository repository, AppSettings settings)
+    public StartupRecovery(
+        IMuxer muxer,
+        IThumbnailExtractor thumbnailExtractor,
+        IMatchAssembler assembler,
+        IMatchRepository repository,
+        AppSettings settings)
     {
         _muxer = muxer;
+        _thumbnailExtractor = thumbnailExtractor;
         _assembler = assembler;
         _repository = repository;
         _settings = settings;
@@ -137,6 +144,7 @@ public sealed class StartupRecovery
             };
         }
 
+        match = match with { ThumbnailPath = await TryGenerateThumbnailAsync(outputPath, manifest.StartedAt, sessionId).ConfigureAwait(false) };
         return await InsertAndCleanUpAsync(sessionDir, sessionId, match, markers, outputPath, audioFallbackNote, ct).ConfigureAwait(false);
     }
 
@@ -182,6 +190,7 @@ public sealed class StartupRecovery
             VideoStatus = VideoStatus.Incomplete,
             VideoPath = outputPath,
             VideoSizeBytes = FileSize(outputPath),
+            ThumbnailPath = await TryGenerateThumbnailAsync(outputPath, startedAt, sessionId).ConfigureAwait(false),
         };
         return await InsertAndCleanUpAsync(sessionDir, sessionId, match, [], outputPath, audioFallbackNote, ct).ConfigureAwait(false);
     }
@@ -226,6 +235,26 @@ public sealed class StartupRecovery
             audioFallbackNote is null
                 ? $"Registered as incomplete: {outputPath}"
                 : $"Registered as incomplete (video-only; staged audio was unreadable: {audioFallbackNote}): {outputPath}");
+    }
+
+    /// <summary>
+    /// Best-effort thumbnail for a recovered (incomplete) VOD. Never throws: a recovered file may be
+    /// partial/corrupt and simply yield no thumbnail. Deterministic in the session id so a repeated
+    /// recovery pass overwrites rather than orphans it.
+    /// </summary>
+    private async Task<string?> TryGenerateThumbnailAsync(string videoPath, DateTimeOffset startedAt, string sessionId)
+    {
+        try
+        {
+            var thumbnailPath = LibraryPaths.CreateSessionThumbnailPath(_settings.LibraryDir, startedAt, sessionId);
+            return await _thumbnailExtractor.TryExtractAsync(videoPath, thumbnailPath).ConfigureAwait(false)
+                ? thumbnailPath
+                : null;
+        }
+        catch
+        {
+            return null; // a recovered VOD without a thumbnail is fine
+        }
     }
 
     private static string? ExistingOrFallback(string manifestPath, string sessionDir, string pattern)

@@ -15,6 +15,7 @@ using BgRecorder.Logs;
 using BgRecorder.Capture;
 using BgRecorder.Audio;
 using BgRecorder.Audio.Muxing;
+using BgRecorder.Audio.Thumbnails;
 using BgRecorder.Data;
 using BgRecorder.Session;
 using BgRecorder.Storage;
@@ -54,6 +55,7 @@ internal static class CompositionRoot
         IRecorder recorder = new ScreenRecorderLibRecorder();
         IAudioCapture audio = new AudioCaptureEngine();
         IMuxer muxer = new MediaFoundationMuxer();
+        IThumbnailExtractor thumbnailExtractor = new MediaFoundationThumbnailExtractor();
 
         IMatchRepository repository = new SqliteMatchRepository(dbPath);
         await repository.InitializeAsync(ct);
@@ -67,7 +69,7 @@ internal static class CompositionRoot
         // interface so the degradation UX renders, and the clean-room reader slots in post-v1.
         IRatingProvider ratingProvider = new NullRatingProvider();
 
-        var recovery = new StartupRecovery(muxer, assembler, repository, settings);
+        var recovery = new StartupRecovery(muxer, thumbnailExtractor, assembler, repository, settings);
         var recoveryReport = await recovery.RunAsync(ct);
         Log.Information("Startup crash-recovery pass complete: {Count} staged session(s) examined", recoveryReport.Sessions.Count);
         foreach (var session in recoveryReport.Sessions)
@@ -76,7 +78,7 @@ internal static class CompositionRoot
         }
 
         var coordinator = new SessionCoordinator(
-            source, recorder, audio, muxer, assembler, repository, diskSafety, locator, settings);
+            source, recorder, audio, muxer, thumbnailExtractor, assembler, repository, diskSafety, locator, settings);
         coordinator.Diagnostic += message => Log.Warning("Coordinator: {Message}", message);
         await coordinator.StartAsync(ct);
         Log.Information("Session coordinator started; initial state {State}", coordinator.State);

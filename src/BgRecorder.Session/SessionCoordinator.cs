@@ -29,6 +29,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
     private readonly IRecorder _recorder;
     private readonly IAudioCapture _audioCapture;
     private readonly IMuxer _muxer;
+    private readonly IThumbnailExtractor _thumbnailExtractor;
     private readonly IMatchAssembler _assembler;
     private readonly IMatchRepository _repository;
     private readonly IDiskSafety _diskSafety;
@@ -55,6 +56,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
         IRecorder recorder,
         IAudioCapture audioCapture,
         IMuxer muxer,
+        IThumbnailExtractor thumbnailExtractor,
         IMatchAssembler assembler,
         IMatchRepository repository,
         IDiskSafety diskSafety,
@@ -65,6 +67,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
         _recorder = recorder;
         _audioCapture = audioCapture;
         _muxer = muxer;
+        _thumbnailExtractor = thumbnailExtractor;
         _assembler = assembler;
         _repository = repository;
         _diskSafety = diskSafety;
@@ -615,6 +618,11 @@ public sealed class SessionCoordinator : ISessionCoordinator
             return false;
         }
 
+        // Best-effort thumbnail from the finalized library MP4 (which persists after staging is deleted).
+        // Generated here so its path lands in the single row insert; a failure yields a null path and
+        // never blocks finalize.
+        var thumbnailPath = await TryGenerateThumbnailAsync(outputPath, ctx).ConfigureAwait(false);
+
         MatchRecord match;
         IReadOnlyList<MarkerRecord> markers;
         try
@@ -626,7 +634,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
                 videoResult.Duration);
             (match, markers) = _assembler.Assemble(events, timeline, VideoStatus.Complete);
             // Stamp the recording's stable identity so a crash-recovery re-run is idempotent.
-            match = match with { SessionId = ctx.SessionId };
+            match = match with { SessionId = ctx.SessionId, ThumbnailPath = thumbnailPath };
         }
         catch (Exception ex)
         {
@@ -646,6 +654,27 @@ public sealed class SessionCoordinator : ISessionCoordinator
             Report($"Could not save the match row; staged files kept for startup recovery: {ex.Message}");
             TryDeleteFile(outputPath);
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Generates a thumbnail for the finalized video, returning its path or null. Strictly best-effort:
+    /// a thumbnail must never fail or block finalize, so all errors are reported and swallowed. The path
+    /// is deterministic in the session id, so a crash-recovery re-run overwrites rather than orphans it.
+    /// </summary>
+    private async Task<string?> TryGenerateThumbnailAsync(string videoPath, RecordingContext ctx)
+    {
+        try
+        {
+            var thumbnailPath = LibraryPaths.CreateSessionThumbnailPath(_settings.LibraryDir, ctx.MatchStartedAt, ctx.SessionId);
+            return await _thumbnailExtractor.TryExtractAsync(videoPath, thumbnailPath, CancellationToken.None).ConfigureAwait(false)
+                ? thumbnailPath
+                : null;
+        }
+        catch (Exception ex)
+        {
+            Report($"Thumbnail generation failed (non-fatal): {ex.Message}");
+            return null;
         }
     }
 

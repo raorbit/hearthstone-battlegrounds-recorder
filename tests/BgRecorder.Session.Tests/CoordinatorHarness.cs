@@ -18,6 +18,7 @@ internal sealed class CoordinatorHarness : IAsyncDisposable
     public readonly FakeRecorder Recorder = new();
     public readonly FakeAudioCapture Audio = new();
     public readonly FakeMuxer Muxer = new();
+    public readonly FakeThumbnailExtractor Thumbnailer = new();
     public readonly FakeAssembler Assembler = new();
     public readonly FakeRepository Repository = new();
     public readonly FakeDiskSafety DiskSafety = new();
@@ -35,7 +36,7 @@ internal sealed class CoordinatorHarness : IAsyncDisposable
             LibraryDir = Path.Combine(Root, "library"),
         };
         Coordinator = new SessionCoordinator(
-            Source, Recorder, Audio, Muxer, Assembler, Repository, DiskSafety, Locator, Settings);
+            Source, Recorder, Audio, Muxer, Thumbnailer, Assembler, Repository, DiskSafety, Locator, Settings);
         Coordinator.StateChanged += s =>
         {
             lock (States)

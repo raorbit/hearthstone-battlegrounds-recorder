@@ -12,6 +12,7 @@ public sealed class StartupRecoveryTests : IDisposable
     private readonly string _root;
     private readonly AppSettings _settings;
     private readonly FakeMuxer _muxer = new();
+    private readonly FakeThumbnailExtractor _thumbnailer = new();
     private readonly FakeAssembler _assembler = new();
     private readonly FakeRepository _repository = new();
 
@@ -40,7 +41,7 @@ public sealed class StartupRecoveryTests : IDisposable
         }
     }
 
-    private StartupRecovery CreateSut() => new(_muxer, _assembler, _repository, _settings);
+    private StartupRecovery CreateSut() => new(_muxer, _thumbnailer, _assembler, _repository, _settings);
 
     private string CreateSessionDir(out string videoPath, out string audioPath, bool withVideo = true, bool withAudio = true)
     {
