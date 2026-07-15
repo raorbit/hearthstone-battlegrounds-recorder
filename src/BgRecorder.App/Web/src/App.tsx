@@ -18,6 +18,7 @@ import {
   type Marker,
   type MatchDetailResult,
   type MatchSummary,
+  type RatingHealth,
   normalizeCoordinatorState,
   normalizeGameType,
   normalizeMarkerKind,
@@ -355,19 +356,24 @@ function RatingEditor({ match, pending, onSet }: RatingEditorProps): JSX.Element
 interface RatingCardProps {
   matches: MatchSummary[];
   bucket: Bucket;
+  health: RatingHealth | null;
 }
 
 /**
  * Per-mode manual-rating summary. Follows the active solo/duos bucket (the plan's "strictly
- * per-mode" card); with no manual entries it shows the degraded "—" + a non-blocking note.
+ * per-mode" card); with no manual entries it shows the degraded "—". When the rating provider is not
+ * OK (v1 always ships it disabled) a non-blocking "automatic MMR unavailable" note is shown.
  */
-function RatingCard({ matches, bucket }: RatingCardProps): JSX.Element {
+function RatingCard({ matches, bucket, health }: RatingCardProps): JSX.Element {
   const mode: GameType = bucket === "duos" ? "duos" : "solo";
   const modeLabel = mode === "duos" ? "Duos" : "Solo";
   const rated = matches
     .filter((candidate) => normalizeGameType(candidate.gameType) === mode && candidate.manualRating !== null)
     .slice()
     .sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime());
+  const healthNote = health !== null && health !== "ok"
+    ? <p class="rating-card__health">Automatic MMR unavailable — recordings unaffected.</p>
+    : null;
 
   if (rated.length === 0) {
     return (
@@ -376,7 +382,8 @@ function RatingCard({ matches, bucket }: RatingCardProps): JSX.Element {
           <span class="rating-card__mode">{modeLabel} rating</span>
           <span class="rating-card__value rating-card__value--empty">—</span>
         </div>
-        <p class="rating-card__note">MMR unavailable — recordings unaffected. Add a rating on a match to track it here.</p>
+        <p class="rating-card__note">No manual ratings yet — add one on any {modeLabel.toLowerCase()} match to track it here.</p>
+        {healthNote}
       </section>
     );
   }
@@ -412,6 +419,7 @@ function RatingCard({ matches, bucket }: RatingCardProps): JSX.Element {
         </svg>
       )}
       <p class="rating-card__note">Manual entries · {rated.length} rated {modeLabel.toLowerCase()} {rated.length === 1 ? "match" : "matches"}</p>
+      {healthNote}
     </section>
   );
 }
@@ -713,6 +721,7 @@ export function App(): JSX.Element {
   const [listError, setListError] = useState<string | null>(null);
   const [starPending, setStarPending] = useState<ReadonlySet<number>>(new Set());
   const [ratingPending, setRatingPending] = useState<ReadonlySet<number>>(new Set());
+  const [ratingHealth, setRatingHealth] = useState<RatingHealth | null>(null);
   const [pendingCommand, setPendingCommand] = useState<RecorderCommand | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const coordinatorStateRef = useRef<CoordinatorState>(coordinatorState);
@@ -905,6 +914,25 @@ export function App(): JSX.Element {
       cancelled = true;
     };
   }, [detailVersion, selectedId, beginReadFences, endReadFences, protectMatch]);
+
+  const ratingMode: GameType = bucket === "duos" ? "duos" : "solo";
+  useEffect(() => {
+    let cancelled = false;
+    void bridge.request("rating.get", { mode: ratingMode })
+      .then((info) => {
+        if (!cancelled) {
+          setRatingHealth(info.health);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setRatingHealth(null);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [ratingMode]);
 
   const selectedMatch = matches.find((match) => match.id === selectedId) ?? null;
   const soloCount = matches.filter((match) => normalizeGameType(match.gameType) === "solo").length;
@@ -1125,7 +1153,7 @@ export function App(): JSX.Element {
             <BucketButton active={bucket === "starred"} count={starredCount} label="Starred" onClick={() => setBucket("starred")} />
           </nav>
 
-          <RatingCard matches={matches} bucket={bucket} />
+          <RatingCard matches={matches} bucket={bucket} health={ratingHealth} />
 
           <div class="sidebar-note">
             <strong>Local by design</strong>
