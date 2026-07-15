@@ -10,10 +10,21 @@ public sealed class BoundedReadStream : Stream
     private readonly long _start;
     private readonly long _length;
     private readonly bool _leaveOpen;
+    private readonly Action<BoundedReadStream>? _onReleased;
     private long _position;
     private bool _disposed;
 
-    public BoundedReadStream(Stream inner, long offset, long length, bool leaveOpen = false)
+    /// <param name="onReleased">
+    /// Invoked exactly once when this stream disposes (whether via EOF/error self-release or an
+    /// explicit Dispose). The host uses it to drop the stream from its outstanding-request registry
+    /// so a stream that WebView2 abandons on a seek is still released when the window closes.
+    /// </param>
+    public BoundedReadStream(
+        Stream inner,
+        long offset,
+        long length,
+        bool leaveOpen = false,
+        Action<BoundedReadStream>? onReleased = null)
     {
         ArgumentNullException.ThrowIfNull(inner);
         ArgumentOutOfRangeException.ThrowIfNegative(offset);
@@ -32,6 +43,7 @@ public sealed class BoundedReadStream : Stream
         _start = offset;
         _length = length;
         _leaveOpen = leaveOpen;
+        _onReleased = onReleased;
         _inner.Position = offset;
     }
 
@@ -177,12 +189,20 @@ public sealed class BoundedReadStream : Stream
 
     protected override void Dispose(bool disposing)
     {
-        if (!_disposed && disposing && !_leaveOpen)
+        if (!_disposed)
         {
-            _inner.Dispose();
+            _disposed = true;
+            if (disposing)
+            {
+                if (!_leaveOpen)
+                {
+                    _inner.Dispose();
+                }
+
+                _onReleased?.Invoke(this);
+            }
         }
 
-        _disposed = true;
         base.Dispose(disposing);
     }
 

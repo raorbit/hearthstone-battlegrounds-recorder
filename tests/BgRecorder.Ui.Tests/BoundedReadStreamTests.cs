@@ -80,6 +80,55 @@ public sealed class BoundedReadStreamTests
     }
 
     [Fact]
+    public void OnReleased_fires_once_when_abandoned_before_eof_then_disposed()
+    {
+        // The leak path: WebView2 abandons a range request on a seek, so the stream never reaches the
+        // EOF read that self-releases it. The host disposes the survivor when the window closes; that
+        // must release the inner stream and notify the registry exactly once.
+        var inner = new TrackingStream(new byte[] { 1, 2, 3, 4 });
+        var released = 0;
+        var stream = new BoundedReadStream(inner, 0, 4, onReleased: _ => released++);
+
+        Assert.Equal(2, stream.Read(new byte[2], 0, 2));
+        Assert.False(inner.WasDisposed);
+        Assert.Equal(0, released);
+
+        stream.Dispose();
+
+        Assert.True(inner.WasDisposed);
+        Assert.Equal(1, released);
+    }
+
+    [Fact]
+    public void OnReleased_fires_exactly_once_across_eof_release_and_a_later_dispose()
+    {
+        var inner = new TrackingStream(new byte[] { 1, 2 });
+        var released = 0;
+        var stream = new BoundedReadStream(inner, 0, 2, onReleased: _ => released++);
+        var buffer = new byte[2];
+
+        Assert.Equal(2, stream.Read(buffer));
+        Assert.Equal(0, stream.Read(buffer)); // EOF self-releases and notifies
+        Assert.Equal(1, released);
+
+        stream.Dispose(); // the host also disposes the (already released) stream; must not re-fire
+        Assert.Equal(1, released);
+    }
+
+    [Fact]
+    public void OnReleased_fires_even_when_leaving_the_inner_stream_open()
+    {
+        using var inner = new TrackingStream(new byte[] { 1 });
+        var released = 0;
+        var stream = new BoundedReadStream(inner, 0, 1, leaveOpen: true, onReleased: _ => released++);
+
+        stream.Dispose();
+
+        Assert.False(inner.WasDisposed);
+        Assert.Equal(1, released);
+    }
+
+    [Fact]
     public void Window_offsets_remain_64_bit_beyond_four_gibibytes()
     {
         const long fiveGiB = 5L * 1024 * 1024 * 1024;

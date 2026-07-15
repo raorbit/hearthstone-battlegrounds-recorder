@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -24,6 +25,11 @@ public partial class LibraryWindow : Window
     private readonly ISessionCoordinator _coordinator;
     private readonly string _assetsDirectory;
     private readonly CancellationTokenSource _closed = new();
+
+    // Media streams whose ownership was handed to WebView2. Each self-releases on EOF/read failure
+    // (removing itself here); a stream WebView2 abandons on a seek never hits EOF, so the survivors
+    // are disposed when the window closes to bound the open file handles to the window's lifetime.
+    private readonly ConcurrentDictionary<BoundedReadStream, byte> _activeMediaStreams = new();
     private bool _initialized;
 
     public LibraryWindow(UiBridge bridge, ISessionCoordinator coordinator, string assetsDirectory)
@@ -175,7 +181,13 @@ public partial class LibraryWindow : Window
             }
             else
             {
-                content = new BoundedReadStream(file, range.Offset, range.Length);
+                var bounded = new BoundedReadStream(
+                    file,
+                    range.Offset,
+                    range.Length,
+                    onReleased: s => _activeMediaStreams.TryRemove(s, out _));
+                _activeMediaStreams[bounded] = 0;
+                content = bounded;
                 responseStreamOwner = content;
             }
 
@@ -268,8 +280,31 @@ public partial class LibraryWindow : Window
             core.WebResourceRequested -= OnWebResourceRequested;
         }
 
+        DisposeOutstandingMediaStreams();
         WebView.Dispose();
         _closed.Dispose();
+    }
+
+    /// <summary>
+    /// Release any media response streams WebView2 still holds. A range request abandoned on a seek
+    /// never reaches the EOF read that would self-release its file handle, so dispose the survivors
+    /// here; each Dispose removes the stream from the registry via its onReleased callback.
+    /// </summary>
+    private void DisposeOutstandingMediaStreams()
+    {
+        foreach (var entry in _activeMediaStreams)
+        {
+            try
+            {
+                entry.Key.Dispose();
+            }
+            catch
+            {
+                // Best effort on shutdown; a stream mid-read may throw as WebView2 tears down.
+            }
+        }
+
+        _activeMediaStreams.Clear();
     }
 
     private void ShowError(string message)
