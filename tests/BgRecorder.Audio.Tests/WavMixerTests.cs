@@ -65,6 +65,27 @@ public class WavMixerTests : IDisposable
         Assert.True(peak <= short.MaxValue);
     }
 
+    [Fact]
+    public void Mix_DownmixesSurroundGameAudioToStereoWithoutInflatingDuration()
+    {
+        // A 5.1 (6-channel) system-loopback game stream must be folded to stereo, not written
+        // verbatim into a stereo-declared WAV — which would triple the apparent duration and
+        // corrupt playback (6 samples/frame reinterpreted as 3 stereo frames).
+        string game = WriteConstantPcm16(Path.Combine(_dir, "game.wav"), 48000, 6, amplitude: 4000, seconds: 1.0);
+        string mic = WriteConstantPcm16(Path.Combine(_dir, "mic.wav"), 44100, 1, amplitude: 3000, seconds: 1.0);
+        string outPath = Path.Combine(_dir, "mix.wav");
+
+        WavMixer.Mix(game, mic, outPath);
+
+        using var reader = new WaveFileReader(outPath);
+        Assert.Equal(44100, reader.WaveFormat.SampleRate);
+        Assert.Equal(2, reader.WaveFormat.Channels);
+        Assert.Equal(16, reader.WaveFormat.BitsPerSample);
+        // ~1s, NOT ~3s: the six channels were folded to two, not laid end-to-end.
+        Assert.True(reader.TotalTime > TimeSpan.FromMilliseconds(800) && reader.TotalTime < TimeSpan.FromMilliseconds(1200),
+            $"expected ~1s of stereo audio, got {reader.TotalTime}");
+    }
+
     private static string WriteConstantPcm16(string path, int sampleRate, int channels, short amplitude, double seconds)
     {
         var format = new WaveFormat(sampleRate, 16, channels);

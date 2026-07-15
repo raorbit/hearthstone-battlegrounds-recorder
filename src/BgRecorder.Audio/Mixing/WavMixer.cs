@@ -60,9 +60,14 @@ public static class WavMixer
     private static IWaveProvider ToPcm16Stereo44k(AudioFileReader reader)
     {
         ISampleProvider sp = reader;
-        // Mic and game sources are mono or stereo; upmix mono to stereo, then resample.
+        // Normalize the channel count to stereo BEFORE resampling. Mono is upmixed; a surround
+        // source (a 5.1/7.1 system-loopback stream on a surround endpoint keeps the device's native
+        // channel count) is folded to its front L/R pair. Without this, the extra channels are
+        // written past the stereo output header's frame size and play back as length-inflated garbage.
         if (sp.WaveFormat.Channels == 1)
             sp = new MonoToStereoSampleProvider(sp);
+        else if (sp.WaveFormat.Channels > TargetChannels)
+            sp = new MultiplexingSampleProvider([sp], TargetChannels); // front L/R (output ch i <- input ch i)
 
         if (sp.WaveFormat.SampleRate != TargetSampleRate)
             sp = new WdlResamplingSampleProvider(sp, TargetSampleRate);
