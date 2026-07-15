@@ -118,6 +118,7 @@ internal static class CompositionRoot
             Coordinator = coordinator,
             Repository = repository,
             RatingProvider = ratingProvider,
+            StoragePlanner = storageEngine,
             StorageEnforcer = storageEnforcer,
             LibraryDir = settings.LibraryDir,
         };
@@ -155,6 +156,7 @@ internal sealed class AppServices : IAsyncDisposable
     public required ISessionCoordinator Coordinator { get; init; }
     public required IMatchRepository Repository { get; init; }
     public required IRatingProvider RatingProvider { get; init; }
+    public required IStoragePlanner StoragePlanner { get; init; }
     public required StorageEnforcer StorageEnforcer { get; init; }
     public required string LibraryDir { get; init; }
 

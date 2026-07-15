@@ -5,6 +5,7 @@ using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
 using BgRecorder.Core.Rating;
 using BgRecorder.Core.Session;
+using BgRecorder.Core.Storage;
 
 namespace BgRecorder.Ui;
 
@@ -23,18 +24,21 @@ public sealed class UiBridge
     private readonly ISessionCoordinator _coordinator;
     private readonly IRatingProvider _ratingProvider;
     private readonly ISettingsService _settings;
+    private readonly IStoragePlanner _storagePlanner;
     private readonly ConcurrentDictionary<long, string> _videoPaths = new();
 
     public UiBridge(
         IMatchRepository repository,
         ISessionCoordinator coordinator,
         IRatingProvider ratingProvider,
-        ISettingsService settings)
+        ISettingsService settings,
+        IStoragePlanner storagePlanner)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _coordinator = coordinator ?? throw new ArgumentNullException(nameof(coordinator));
         _ratingProvider = ratingProvider ?? throw new ArgumentNullException(nameof(ratingProvider));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+        _storagePlanner = storagePlanner ?? throw new ArgumentNullException(nameof(storagePlanner));
     }
 
     public event Action<string>? Diagnostic;
@@ -148,9 +152,13 @@ public sealed class UiBridge
                     RequiredNullableRating(parameters, "rating"),
                     ct)
                 .ConfigureAwait(false),
+            "library.delete" => await DeleteMatchAsync(RequiredInt64(parameters, "matchId"), ct).ConfigureAwait(false),
             "rating.get" => await GetRatingAsync(RequiredMode(parameters, "mode"), ct).ConfigureAwait(false),
             "settings.get" => GetSettings(),
             "settings.set" => await SetSettingsAsync(parameters, ct).ConfigureAwait(false),
+            "storage.preview" => await GetStoragePreviewAsync(ct).ConfigureAwait(false),
+            "storage.get" => GetStorageSettings(),
+            "storage.set" => await SetStorageSettingsAsync(parameters, ct).ConfigureAwait(false),
             "recorder.stop" => await StopRecordingAsync().ConfigureAwait(false),
             "recorder.pause" => PauseRecording(),
             "recorder.resume" => ResumeRecording(),
@@ -199,6 +207,48 @@ public sealed class UiBridge
         return new ManualRatingResult(matchId, rating);
     }
 
+    /// <summary>
+    /// Permanently removes a recording: its video file, then its library row (markers cascade). The file
+    /// is resolved server-side from trusted repository state — the WebView only ever supplies the opaque
+    /// match id, never a path. File deletion is best-effort so an already-gone or briefly locked file
+    /// cannot strand the row; the row is the source of truth the retention engine reads.
+    /// </summary>
+    private async Task<DeletedResult> DeleteMatchAsync(long matchId, CancellationToken ct)
+    {
+        var detail = await _repository.GetMatchAsync(matchId, ct).ConfigureAwait(false)
+            ?? throw new RpcFault(-32004, $"Match {matchId} was not found.");
+
+        TryDeleteVideoFile(matchId, detail.Match.VideoPath);
+        await _repository.DeleteMatchAsync(matchId, ct).ConfigureAwait(false);
+        _videoPaths.TryRemove(matchId, out _);
+        return new DeletedResult(matchId);
+    }
+
+    private void TryDeleteVideoFile(long matchId, string? videoPath)
+    {
+        if (string.IsNullOrWhiteSpace(videoPath))
+        {
+            return;
+        }
+
+        try
+        {
+            var fullPath = Path.GetFullPath(videoPath);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
+        catch (Exception ex) when (ex is IOException
+            or UnauthorizedAccessException
+            or ArgumentException
+            or NotSupportedException
+            or PathTooLongException)
+        {
+            Diagnostic?.Invoke($"Could not delete the video file for match {matchId}: {ex.Message}");
+        }
+    }
+
     private async Task<RatingInfoResult> GetRatingAsync(BgGameType mode, CancellationToken ct)
     {
         // v1's provider is the null one, so this reports Disabled with a null rating; the interface is
@@ -245,6 +295,58 @@ public sealed class UiBridge
         settings.GameOnlyAudio,
         settings.MixMicrophone);
 
+    private async Task<StoragePreviewResult> GetStoragePreviewAsync(CancellationToken ct)
+    {
+        var preview = await _storagePlanner.PreviewAsync(ct).ConfigureAwait(false);
+        return new StoragePreviewResult(
+            preview.Volumes.Select(v => new StorageVolumeResult(
+                MapVolumeRole(v.Role), v.UsedBytes, v.FreeBytes, v.CapBytes, v.IsOnline, v.MatchCount)).ToList(),
+            preview.PlannedMoves.Select(m => new PlannedEvictionResult(m.MatchId, m.SizeBytes)).ToList(),
+            preview.PlannedDeletes.Select(d => new PlannedEvictionResult(d.MatchId, d.SizeBytes)).ToList(),
+            preview.RecordingBelowFloor);
+    }
+
+    private StorageSettingsResult GetStorageSettings() => MapStorage(_settings.Current.Storage);
+
+    /// <summary>
+    /// Persists the retention caps. Archive-drive management (adding/removing folders) is a separate,
+    /// path-picking concern and stays read-only here. Like the recording settings, changes take effect on
+    /// the next launch because the running storage engine captured its options at startup — the UI says so.
+    /// </summary>
+    private async Task<StorageSettingsResult> SetStorageSettingsAsync(JsonElement parameters, CancellationToken ct)
+    {
+        var current = _settings.Current;
+        var next = current with
+        {
+            Storage = current.Storage with
+            {
+                RecordingCapBytes = RequiredInt64InRange(parameters, "recordingCapBytes", 1, long.MaxValue),
+                RecordingReserveBytes = RequiredInt64InRange(parameters, "recordingReserveBytes", 0, long.MaxValue),
+                HotSetSize = RequiredInt32InRange(parameters, "hotSetSize", 0, 1000),
+                TotalCapBytes = RequiredNullablePositiveInt64(parameters, "totalCapBytes"),
+            },
+        };
+
+        var saved = await _settings.UpdateAsync(next, ct).ConfigureAwait(false);
+        return MapStorage(saved.Storage);
+    }
+
+    private static StorageSettingsResult MapStorage(StorageOptions storage) => new(
+        storage.RecordingCapBytes,
+        storage.RecordingReserveBytes,
+        storage.HotSetSize,
+        storage.TotalCapBytes,
+        storage.ArchiveVolumes
+            .Select(a => new ArchiveVolumeResult(a.Directory, a.CapBytes, a.ReserveBytes, a.Priority))
+            .ToList());
+
+    private static string MapVolumeRole(VolumeRole role) => role switch
+    {
+        VolumeRole.Recording => "recording",
+        VolumeRole.Archive => "archive",
+        _ => "recording",
+    };
+
     private async Task<RecorderStateResult> StopRecordingAsync()
     {
         await _coordinator.StopCurrentRecordingAsync().ConfigureAwait(false);
@@ -266,6 +368,11 @@ public sealed class UiBridge
     private LibraryMatchSummary MapSummary(MatchRecord match)
     {
         string? mediaUrl = null;
+        // "Offline" = the row expects a playable video but the file is not currently reachable (its
+        // archive drive is unplugged), as distinct from VideoStatus.Missing (permanently gone). Derived
+        // from the same File.Exists probe that gates the media URL, so it is always current — no stored
+        // flag to go stale when a drive is plugged or pulled between writes.
+        var isOffline = false;
         if (match.VideoStatus != VideoStatus.Missing && !string.IsNullOrWhiteSpace(match.VideoPath))
         {
             try
@@ -279,6 +386,7 @@ public sealed class UiBridge
                 else
                 {
                     _videoPaths.TryRemove(match.Id, out _);
+                    isOffline = true;
                 }
             }
             catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
@@ -315,7 +423,8 @@ public sealed class UiBridge
             match.VideoDuration is { } duration ? (long)duration.TotalMilliseconds : null,
             match.Starred,
             match.ManualRating,
-            mediaUrl);
+            mediaUrl,
+            isOffline);
     }
 
     private static string MapMarkerKind(MarkerKind kind) => kind switch
@@ -404,6 +513,37 @@ public sealed class UiBridge
             parsed > max)
         {
             throw RpcFault.InvalidParams($"{propertyName} must be an integer between {min} and {max}.");
+        }
+
+        return parsed;
+    }
+
+    private static long RequiredInt64InRange(JsonElement parameters, string propertyName, long min, long max)
+    {
+        var value = RequiredProperty(parameters, propertyName);
+        if (value.ValueKind != JsonValueKind.Number ||
+            !value.TryGetInt64(out var parsed) ||
+            parsed < min ||
+            parsed > max)
+        {
+            throw RpcFault.InvalidParams($"{propertyName} must be an integer between {min} and {max}.");
+        }
+
+        return parsed;
+    }
+
+    /// <summary>A cap that must be present but may be JSON null (no cap) or a strictly positive integer.</summary>
+    private static long? RequiredNullablePositiveInt64(JsonElement parameters, string propertyName)
+    {
+        var value = RequiredProperty(parameters, propertyName);
+        if (value.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+
+        if (value.ValueKind != JsonValueKind.Number || !value.TryGetInt64(out var parsed) || parsed < 1)
+        {
+            throw RpcFault.InvalidParams($"{propertyName} must be null or a positive integer.");
         }
 
         return parsed;

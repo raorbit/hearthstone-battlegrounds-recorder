@@ -21,7 +21,8 @@ public sealed record LibraryMatchSummary(
     long? VideoDurationMs,
     bool Starred,
     int? ManualRating,
-    string? MediaUrl);
+    string? MediaUrl,
+    bool IsOffline);
 
 /// <summary>Selected-match payload, including the persisted seek markers.</summary>
 public sealed record LibraryMatchDetail(
@@ -52,3 +53,37 @@ public sealed record SettingsResult(
     int BitrateMbps,
     bool GameOnlyAudio,
     bool MixMicrophone);
+
+/// <summary>Confirms a match was removed from the library.</summary>
+public sealed record DeletedResult(long MatchId);
+
+/// <summary>The editable retention caps (M5). Archive drives are surfaced read-only.</summary>
+public sealed record StorageSettingsResult(
+    long RecordingCapBytes,
+    long RecordingReserveBytes,
+    int HotSetSize,
+    long? TotalCapBytes,
+    IReadOnlyList<ArchiveVolumeResult> ArchiveVolumes);
+
+public sealed record ArchiveVolumeResult(string Directory, long CapBytes, long ReserveBytes, int Priority);
+
+/// <summary>
+/// The storage tab's usage bars and eviction preview: per-volume managed usage plus the moves and
+/// deletes retention would perform right now (nothing is executed). Volumes are identified by role only,
+/// never by absolute path.
+/// </summary>
+public sealed record StoragePreviewResult(
+    IReadOnlyList<StorageVolumeResult> Volumes,
+    IReadOnlyList<PlannedEvictionResult> PlannedMoves,
+    IReadOnlyList<PlannedEvictionResult> PlannedDeletes,
+    bool RecordingBelowFloor);
+
+public sealed record StorageVolumeResult(
+    string Role,
+    long UsedBytes,
+    long FreeBytes,
+    long CapBytes,
+    bool IsOnline,
+    int MatchCount);
+
+public sealed record PlannedEvictionResult(long MatchId, long SizeBytes);
