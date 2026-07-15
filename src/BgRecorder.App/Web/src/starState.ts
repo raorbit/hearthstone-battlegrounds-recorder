@@ -43,6 +43,29 @@ export function protectStarredFromStaleRead(
   return { ...match, starred: mutation.starred };
 }
 
+/**
+ * Drops committed mutations that no in-flight read still depends on, keeping the history bounded. A
+ * read depends on a mutation exactly when it would protect that match's optimistic value: the
+ * mutation is newer than the read's fence, or the read captured the match as pending. Pending
+ * mutations are always kept. The map is mutated in place so the caller's ref identity is preserved.
+ */
+export function pruneStarMutations(
+  mutations: Map<number, StarMutation>,
+  outstandingFences: readonly StarReadFence[],
+): void {
+  for (const [matchId, mutation] of mutations) {
+    if (mutation.pending) {
+      continue;
+    }
+    const stillNeeded = outstandingFences.some(
+      (fence) => mutation.version > fence.version || fence.pendingMatchIds.has(matchId),
+    );
+    if (!stillNeeded) {
+      mutations.delete(matchId);
+    }
+  }
+}
+
 /** The match row is committed before the coordinator leaves Finalizing. */
 export function shouldReloadLibraryAfterStateChange(
   previousState: CoordinatorState,
