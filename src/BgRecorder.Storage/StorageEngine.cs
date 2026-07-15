@@ -52,7 +52,15 @@ public sealed class StorageEngine
         var records = await _matches.ListMatchesAsync(ct).ConfigureAwait(false);
         var byId = records.ToDictionary(r => r.Id);
 
-        var volumes = BuildVolumes();
+        var (volumes, recordingOnline) = BuildVolumes();
+        if (!recordingOnline)
+        {
+            // The recording drive's free space could not be read. A phantom "0 bytes free" would look
+            // like a low-space emergency and delete recordings, so refuse to act until we can measure.
+            Diagnostic?.Invoke("Retention skipped: the recording volume's free space could not be read.");
+            return new EnforcementReport(0, 0, false);
+        }
+
         var stored = new List<StoredMatch>();
         foreach (var record in records)
         {
@@ -112,8 +120,9 @@ public sealed class StorageEngine
         return new EnforcementReport(moves, deletes, plan.RecordingBelowFloor);
     }
 
-    private IReadOnlyList<ManagedVolume> BuildVolumes()
+    private (IReadOnlyList<ManagedVolume> Volumes, bool RecordingOnline) BuildVolumes()
     {
+        var (recordingOnline, recordingFree) = Probe(_recordingDir);
         var volumes = new List<ManagedVolume>
         {
             new()
@@ -122,8 +131,8 @@ public sealed class StorageEngine
                 Role = VolumeRole.Recording,
                 CapBytes = _options.RecordingCapBytes,
                 ReserveBytes = _options.RecordingReserveBytes,
-                FreeBytes = Probe(_recordingDir).Free,
-                IsOnline = true,
+                FreeBytes = recordingFree,
+                IsOnline = recordingOnline,
             },
         };
 
@@ -142,7 +151,7 @@ public sealed class StorageEngine
             });
         }
 
-        return volumes;
+        return (volumes, recordingOnline);
     }
 
     private static string? ResolveVolumeId(MatchRecord record, IReadOnlyList<ManagedVolume> volumes)
@@ -162,7 +171,12 @@ public sealed class StorageEngine
             return null;
         }
 
-        return volumes.FirstOrDefault(v => IsUnder(matchDir, v.Id))?.Id;
+        // Match the most-specific (longest) volume so a match under an archive nested inside the
+        // recording folder is attributed to the archive, not the recording tier that also contains it.
+        return volumes
+            .Where(v => IsUnder(matchDir, v.Id))
+            .OrderByDescending(v => v.Id.Length)
+            .FirstOrDefault()?.Id;
     }
 
     private (bool Online, long Free) Probe(string directory)

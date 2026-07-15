@@ -100,15 +100,72 @@ public sealed class StorageEngineTests
         Assert.True(fs.Has(@"C:\lib\m1.mp4"));
     }
 
-    private static StorageEngine BuildEngine(FakeFileSystem fs, FakeMatchStore store, StorageOptions options)
+    [Fact]
+    public async Task A_recording_drive_probe_failure_deletes_nothing()
     {
-        var mover = new ArchiveMover(fs, new FakeMoverJournal(), store);
-        return new StorageEngine(store, new RetentionPolicy(), mover, new FakeFreeSpaceProbe(200 * GB), fs, RecordingDir, options);
+        // A phantom "0 bytes free" from a transient probe error must not look like a low-space
+        // emergency and delete recordings — the pass is skipped until free space can be measured.
+        var fs = new FakeFileSystem();
+        fs.Seed(@"C:\lib\m1.mp4", [1]);
+        fs.Seed(@"C:\lib\m2.mp4", [2]);
+        var store = new FakeMatchStore(
+            Match(1, @"C:\lib\m1.mp4", 5, ageDays: 2),
+            Match(2, @"C:\lib\m2.mp4", 5, ageDays: 1));
+        var engine = BuildEngine(
+            fs, store,
+            new StorageOptions { RecordingCapBytes = 1 * GB, RecordingReserveBytes = 10 * GB, HotSetSize = 0 },
+            new FakeFreeSpaceProbe(200 * GB, throwForDir: RecordingDir));
+
+        var report = await engine.EnforceAsync();
+
+        Assert.Equal(0, report.DeletesExecuted);
+        Assert.Equal(0, report.MovesExecuted);
+        Assert.True(fs.Has(@"C:\lib\m1.mp4"));
+        Assert.NotNull(store.TryGet(1));
     }
 
-    private sealed class FakeFreeSpaceProbe(long free) : IFreeSpaceProbe
+    [Fact]
+    public async Task A_match_under_an_archive_nested_in_the_recording_dir_is_attributed_to_the_archive()
     {
-        public long GetAvailableFreeBytes(string path) => free;
+        // recordingDir=C:\lib, archive=C:\lib\arc. The match lives on the archive; it must not be
+        // counted against — or evicted from — the recording tier that also contains its path.
+        var fs = new FakeFileSystem();
+        fs.Seed(@"C:\lib\arc\m1.mp4", [1]);
+        var store = new FakeMatchStore(Match(1, @"C:\lib\arc\m1.mp4", 5, ageDays: 1));
+        var engine = BuildEngine(fs, store, new StorageOptions
+        {
+            RecordingCapBytes = 1 * GB,          // tiny: if m1 were on the recording tier it would be evicted
+            RecordingReserveBytes = 1 * GB,
+            HotSetSize = 0,
+            ArchiveVolumes = [new ArchiveVolumeOptions { Directory = @"C:\lib\arc", CapBytes = 100 * GB, ReserveBytes = 1 * GB }],
+        });
+
+        var report = await engine.EnforceAsync();
+
+        Assert.Equal(0, report.DeletesExecuted);
+        Assert.Equal(0, report.MovesExecuted);
+        Assert.True(fs.Has(@"C:\lib\arc\m1.mp4"));
+        Assert.NotNull(store.TryGet(1));
+    }
+
+    private static StorageEngine BuildEngine(
+        FakeFileSystem fs, FakeMatchStore store, StorageOptions options, IFreeSpaceProbe? probe = null)
+    {
+        var mover = new ArchiveMover(fs, new FakeMoverJournal(), store);
+        return new StorageEngine(store, new RetentionPolicy(), mover, probe ?? new FakeFreeSpaceProbe(200 * GB), fs, RecordingDir, options);
+    }
+
+    private sealed class FakeFreeSpaceProbe(long free, string? throwForDir = null) : IFreeSpaceProbe
+    {
+        public long GetAvailableFreeBytes(string path)
+        {
+            if (throwForDir is not null &&
+                string.Equals(Path.GetFullPath(path), Path.GetFullPath(throwForDir), StringComparison.OrdinalIgnoreCase))
+            {
+                throw new IOException("drive not ready");
+            }
+            return free;
+        }
     }
 
     private sealed class FakeMatchStore : IMatchStore
