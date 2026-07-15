@@ -21,6 +21,7 @@ public sealed class GameEventSource : IGameEventSource
     private readonly string _installDir;
     private readonly TimeSpan _poll;
     private readonly TimeSpan _rediscover;
+    private readonly Func<string, FileStream> _open;
 
     private CancellationTokenSource? _cts;
     private Task? _loop;
@@ -35,10 +36,17 @@ public sealed class GameEventSource : IGameEventSource
     public event Action<string>? Diagnostic;
 
     public GameEventSource(string installDir, TimeSpan? pollInterval = null, TimeSpan? rediscoverInterval = null)
+        : this(installDir, pollInterval, rediscoverInterval, DefaultOpen)
+    {
+    }
+
+    /// <summary>Test seam: overrides how <c>Power.log</c> is opened so a transient open failure can be simulated.</summary>
+    internal GameEventSource(string installDir, TimeSpan? pollInterval, TimeSpan? rediscoverInterval, Func<string, FileStream> open)
     {
         _installDir = installDir;
         _poll = pollInterval ?? DefaultPoll;
         _rediscover = rediscoverInterval ?? DefaultRediscover;
+        _open = open;
     }
 
     public Task StartAsync(CancellationToken ct)
@@ -128,7 +136,7 @@ public sealed class GameEventSource : IGameEventSource
                         {
                             // Same session, stream lost to a transient error: reopen and resume from `pos`
                             // (DrainAndParse re-seeks on shrink) without re-announcing or resetting the parser.
-                            fs = Open(currentPath!);
+                            fs = _open(currentPath!);
                         }
 
                         sinceRediscover = Environment.TickCount64;
@@ -245,12 +253,12 @@ public sealed class GameEventSource : IGameEventSource
     /// Opens the log read-only, sharing read+write+delete so a passive tailer never blocks the game appending
     /// to — or rotating away — its own Power.log (FileShare.Delete lets the game rename/replace it under us).
     /// </summary>
-    private static FileStream Open(string path) =>
+    private static FileStream DefaultOpen(string path) =>
         new(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
 
-    private static FileStream OpenAtEnd(string path, out long pos)
+    private FileStream OpenAtEnd(string path, out long pos)
     {
-        var fs = Open(path);
+        var fs = _open(path);
         pos = fs.Length;
         return fs;
     }
