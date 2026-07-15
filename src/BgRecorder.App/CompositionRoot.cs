@@ -5,6 +5,7 @@ using BgRecorder.Core.Audio;
 using BgRecorder.Core.Capture;
 using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
+using BgRecorder.Core.Rating;
 using BgRecorder.Core.Session;
 using Serilog;
 
@@ -61,6 +62,10 @@ internal static class CompositionRoot
         IDiskSafety diskSafety = new DiskSafety(settings.StagingDir, repository);
         IGameProcessLocator locator = new HearthstoneProcessLocator();
 
+        // v1 ships without automatic MMR (M1 licensing decision): the null provider satisfies the
+        // interface so the degradation UX renders, and the clean-room reader slots in post-v1.
+        IRatingProvider ratingProvider = new NullRatingProvider();
+
         var recovery = new StartupRecovery(muxer, assembler, repository, settings);
         var recoveryReport = await recovery.RunAsync(ct);
         Log.Information("Startup crash-recovery pass complete: {Count} staged session(s) examined", recoveryReport.Sessions.Count);
@@ -81,6 +86,7 @@ internal static class CompositionRoot
             Source = source,
             Coordinator = coordinator,
             Repository = repository,
+            RatingProvider = ratingProvider,
             LibraryDir = settings.LibraryDir,
         };
     }
@@ -148,6 +154,7 @@ internal sealed class AppServices : IAsyncDisposable
     public required IGameEventSource Source { get; init; }
     public required ISessionCoordinator Coordinator { get; init; }
     public required IMatchRepository Repository { get; init; }
+    public required IRatingProvider RatingProvider { get; init; }
     public required string LibraryDir { get; init; }
 
     public async ValueTask DisposeAsync()

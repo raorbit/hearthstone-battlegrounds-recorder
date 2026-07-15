@@ -186,6 +186,10 @@ class MockRpcClient implements RpcClient {
         return { rating } as RpcMethodMap[M]["result"];
       }
 
+      case "rating.get":
+        // v1 ships the null provider: automatic MMR is disabled, ratings come from manual entry.
+        return { health: "disabled", rating: null, sampledAt: null } as RpcMethodMap[M]["result"];
+
       case "recorder.stop":
         this.setState("finalizing");
         await wait(700);

@@ -9,6 +9,7 @@ export type CoordinatorState =
 export type GameType = "notBattlegrounds" | "solo" | "duos";
 export type VideoStatus = "complete" | "incomplete" | "missing";
 export type MarkerKind = "combatStart" | "turnStart" | "matchEnd";
+export type RatingHealth = "disabled" | "ok" | "attachFailed" | "patchBroken";
 
 /**
  * Native enum values are accepted as numbers as well as strings so the SPA remains compatible
@@ -71,6 +72,10 @@ export interface RpcMethodMap {
   "library.setManualRating": {
     params: { matchId: number; rating: number | null };
     result: null | { rating: number | null };
+  };
+  "rating.get": {
+    params: { mode: "solo" | "duos" };
+    result: { health: RatingHealth; rating: number | null; sampledAt: string | null };
   };
   "recorder.stop": {
     params: undefined;

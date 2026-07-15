@@ -1566,3 +1566,22 @@ tr:focus-visible,
   font-size: 9.5px;
   line-height: 1.45;
 }
+
+.rating-card__health {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+.rating-card__health::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
