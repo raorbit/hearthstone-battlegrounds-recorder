@@ -236,18 +236,37 @@ internal sealed class FakeRepository : IMatchRepository
     public Task UpdateVideoStatusAsync(long matchId, VideoStatus status, CancellationToken ct = default) => Task.CompletedTask;
 
     public Task<IReadOnlyList<MatchRecord>> ListMatchesAsync(CancellationToken ct = default) => Task.FromResult(Matches);
+
+    public Task<MatchDetailRecord?> GetMatchAsync(long matchId, CancellationToken ct = default)
+    {
+        var match = Matches.FirstOrDefault(candidate => candidate.Id == matchId);
+        return Task.FromResult(match is null ? null : new MatchDetailRecord(match, []));
+    }
+
+    public Task UpdateStarredAsync(long matchId, bool starred, CancellationToken ct = default)
+    {
+        Matches = Matches
+            .Select(match => match.Id == matchId ? match with { Starred = starred } : match)
+            .ToList();
+        return Task.CompletedTask;
+    }
 }
 
 internal sealed class FakeDiskSafety : IDiskSafety
 {
     public ArmCheckResult ArmResult = new(true, null);
+    public int ArmCheckCount;
     public Action? LowSpaceCallback;
     public int WatchdogStartCount;
     public int WatchdogDisposeCount;
     /// <summary>Makes the watchdog Dispose throw — an unguarded early step of FinalizeAsync — to exercise the finally-block disposal.</summary>
     public bool WatchdogDisposeThrows;
 
-    public ArmCheckResult CheckCanArm() => ArmResult;
+    public ArmCheckResult CheckCanArm()
+    {
+        ArmCheckCount++;
+        return ArmResult;
+    }
 
     public IDisposable StartWatchdog(Action onLowSpace)
     {

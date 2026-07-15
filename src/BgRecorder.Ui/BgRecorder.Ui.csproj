@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
+  </ItemGroup>
+</Project>

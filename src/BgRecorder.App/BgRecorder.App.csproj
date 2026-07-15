@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
+    <WebProjectDir>$(MSBuildProjectDirectory)\Web</WebProjectDir>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Web\node_modules\**;Web\dist\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,8 +14,56 @@
     <ProjectReference Include="..\BgRecorder.Audio\BgRecorder.Audio.csproj" />
     <ProjectReference Include="..\BgRecorder.Session\BgRecorder.Session.csproj" />
     <ProjectReference Include="..\BgRecorder.Data\BgRecorder.Data.csproj" />
+    <ProjectReference Include="..\BgRecorder.Ui\BgRecorder.Ui.csproj" />
     <PackageReference Include="H.NotifyIcon.Wpf" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" />
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
   </ItemGroup>
+
+  <!-- Keep the TypeScript toolchain explicit while excluding npm internals from MSBuild's default items. -->
+  <ItemGroup>
+    <WebSource Include="Web\package.json;Web\package-lock.json;Web\tsconfig.json;Web\vite.config.ts;Web\index.html;Web\src\**\*" />
+  </ItemGroup>
+
+  <!--
+    WebView2 must work from a clean checkout, so a normal desktop build produces the offline Vite
+    bundle when it is absent or stale. The committed npm lockfile makes dependency restoration
+    reproducible; source-only changes rebuild the bundle without reinstalling node_modules.
+  -->
+  <Target Name="RestoreWebDependencies"
+          Inputs="$(WebProjectDir)\package.json;$(WebProjectDir)\package-lock.json"
+          Outputs="$(WebProjectDir)\node_modules\.package-lock.json"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec Command="npm.cmd ci --no-audit --no-fund" WorkingDirectory="$(WebProjectDir)" />
+  </Target>
+
+  <Target Name="BuildWebAssets"
+          BeforeTargets="BeforeBuild"
+          DependsOnTargets="RestoreWebDependencies"
+          Inputs="@(WebSource)"
+          Outputs="$(WebProjectDir)\dist\index.html"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec Command="npm.cmd run build" WorkingDirectory="$(WebProjectDir)" />
+  </Target>
+
+  <Target Name="CopyWebAssetsToOutput" AfterTargets="Build" DependsOnTargets="BuildWebAssets">
+    <ItemGroup>
+      <_WebAsset Include="$(WebProjectDir)\dist\**\*" />
+    </ItemGroup>
+    <RemoveDir Directories="$(OutDir)Web" />
+    <Copy SourceFiles="@(_WebAsset)"
+          DestinationFiles="@(_WebAsset->'$(OutDir)Web\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="CopyWebAssetsToPublish" AfterTargets="Publish" DependsOnTargets="BuildWebAssets">
+    <ItemGroup>
+      <_PublishedWebAsset Include="$(WebProjectDir)\dist\**\*" />
+    </ItemGroup>
+    <RemoveDir Directories="$(PublishDir)Web" />
+    <Copy SourceFiles="@(_PublishedWebAsset)"
+          DestinationFiles="@(_PublishedWebAsset->'$(PublishDir)Web\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
 </Project>

@@ -159,6 +159,26 @@ public sealed class SessionCoordinatorTests
     }
 
     [Fact]
+    public async Task ResumeNow_WhenStorageIsUnsafe_TransitionsToStorageBlocked()
+    {
+        await using var h = new CoordinatorHarness();
+        await h.StartAsync();
+        await h.WaitForStateAsync(CoordinatorState.Armed);
+
+        h.Coordinator.PauseAutoRecording();
+        await h.WaitForStateAsync(CoordinatorState.Paused);
+        h.DiskSafety.ArmResult = new ArmCheckResult(false, "staging volume below floor");
+
+        h.Coordinator.ResumeNow();
+        await h.WaitForStateAsync(CoordinatorState.StorageBlocked);
+
+        Assert.Equal(
+            new[] { CoordinatorState.Armed, CoordinatorState.Paused, CoordinatorState.StorageBlocked },
+            h.StateSequence());
+        Assert.Contains(h.Diagnostics, d => d.Contains("staging volume below floor"));
+    }
+
+    [Fact]
     public async Task ResumeNow_DuringRecording_CancelsAPendingPause()
     {
         await using var h = new CoordinatorHarness();
@@ -200,22 +220,108 @@ public sealed class SessionCoordinatorTests
     }
 
     [Fact]
-    public async Task DiskFloorRefusal_ArmsNothingAndSurfacesReason()
+    public async Task InitialDiskFloorRefusal_EntersStorageBlockedAndCapturesNothing()
     {
         await using var h = new CoordinatorHarness();
         h.DiskSafety.ArmResult = new ArmCheckResult(false, "Free space 3.2 GB is below the 10 GB safety floor");
         await h.StartAsync();
-        await h.WaitForStateAsync(CoordinatorState.Armed);
+        await h.WaitForStateAsync(CoordinatorState.StorageBlocked);
 
         h.Source.Raise(new MatchStarted(Ev.T0));
         h.Source.Raise(new GameTypeResolved(Ev.T0.AddSeconds(1), BgGameType.Solo));
         await h.DrainAsync();
 
         Assert.Equal(0, h.Recorder.StartCount);
-        Assert.Equal(CoordinatorState.Armed, h.Coordinator.State);
-        Assert.Equal(new[] { CoordinatorState.Armed }, h.StateSequence());
+        Assert.Equal(0, h.Audio.StartCount);
+        Assert.Equal(CoordinatorState.StorageBlocked, h.Coordinator.State);
+        Assert.Equal(new[] { CoordinatorState.StorageBlocked }, h.StateSequence());
         Assert.Contains(h.Diagnostics, d => d.Contains("below the 10 GB safety floor"));
+        Assert.Single(h.Diagnostics, d => d.Contains("storage safety"));
+        Assert.Equal(2, h.DiskSafety.ArmCheckCount); // initialize + blocked MatchStarted recovery probe
         Assert.False(Directory.Exists(h.StagingDir));
+    }
+
+    [Fact]
+    public async Task DiskRaceAfterMatchStarted_TransitionsToStorageBlockedBeforeCapture()
+    {
+        await using var h = new CoordinatorHarness();
+        await h.StartAsync();
+        await h.WaitForStateAsync(CoordinatorState.Armed);
+
+        h.Source.Raise(new MatchStarted(Ev.T0));
+        await h.DrainAsync(); // match buffered while the initial gate is still healthy
+        h.DiskSafety.ArmResult = new ArmCheckResult(false, "free space dropped before capture start");
+        h.Source.Raise(new GameTypeResolved(Ev.T0.AddSeconds(1), BgGameType.Solo));
+        await h.WaitForStateAsync(CoordinatorState.StorageBlocked);
+
+        Assert.Equal(0, h.Recorder.StartCount);
+        Assert.Equal(0, h.Audio.StartCount);
+        Assert.Equal(
+            new[] { CoordinatorState.Armed, CoordinatorState.StorageBlocked },
+            h.StateSequence());
+        Assert.Contains(h.Diagnostics, d => d.Contains("free space dropped before capture start"));
+    }
+
+    [Fact]
+    public async Task PauseAutoRecording_FromStorageBlocked_TransitionsToPaused()
+    {
+        await using var h = new CoordinatorHarness();
+        h.DiskSafety.ArmResult = new ArmCheckResult(false, "storage full");
+        await h.StartAsync();
+        await h.WaitForStateAsync(CoordinatorState.StorageBlocked);
+
+        h.Coordinator.PauseAutoRecording();
+        await h.WaitForStateAsync(CoordinatorState.Paused);
+
+        Assert.Equal(
+            new[] { CoordinatorState.StorageBlocked, CoordinatorState.Paused },
+            h.StateSequence());
+    }
+
+    [Fact]
+    public async Task StorageBlocked_RecoversOnNextMatchAndRecordsThatMatch()
+    {
+        await using var h = new CoordinatorHarness();
+        h.DiskSafety.ArmResult = new ArmCheckResult(false, "storage full");
+        await h.StartAsync();
+        await h.WaitForStateAsync(CoordinatorState.StorageBlocked);
+
+        h.DiskSafety.ArmResult = new ArmCheckResult(true, null);
+        await h.StartMatchAsync();
+
+        Assert.Equal(CoordinatorState.Recording, h.Coordinator.State);
+        Assert.Equal(1, h.Recorder.StartCount);
+        Assert.Equal(
+            new[]
+            {
+                CoordinatorState.StorageBlocked,
+                CoordinatorState.Armed,
+                CoordinatorState.Recording,
+            },
+            h.StateSequence());
+    }
+
+    [Fact]
+    public async Task Finalize_WhenStorageHasFallenBelowFloor_EndsStorageBlocked()
+    {
+        await using var h = new CoordinatorHarness();
+        await h.StartAsync();
+        await h.StartMatchAsync();
+        h.DiskSafety.ArmResult = new ArmCheckResult(false, "storage fell below floor during the match");
+
+        h.Source.Raise(new MatchEnded(Ev.T0.AddMinutes(12), 3, PlayState.Lost, Truncated: false));
+        await h.WaitForStateAsync(CoordinatorState.StorageBlocked);
+
+        Assert.Single(h.Repository.Inserted);
+        Assert.Equal(
+            new[]
+            {
+                CoordinatorState.Armed,
+                CoordinatorState.Recording,
+                CoordinatorState.Finalizing,
+                CoordinatorState.StorageBlocked,
+            },
+            h.StateSequence());
     }
 
     [Fact]

@@ -114,7 +114,7 @@ public sealed class WindowResolverTests
     }
 
     [Fact]
-    public void Minimized_game_window_scores_below_a_non_minimized_game_window()
+    public void Non_minimized_game_window_is_preferred_when_main_window_is_minimized()
     {
         var minimizedMain = new WindowCandidate(GameMainHandle, "Hearthstone", GamePid, IsValid: true, IsMinimized: true);
         var liveSecondary = new WindowCandidate(0x8888, "Hearthstone", GamePid, IsValid: true, IsMinimized: false);
@@ -181,17 +181,39 @@ public sealed class WindowResolverTests
     }
 
     [Fact]
-    public void Minimized_game_window_is_chosen_over_an_unrelated_window()
+    public void Only_minimized_game_window_is_rejected_with_specific_reason()
     {
-        // Regression: previously the -5000 minimized penalty cancelled the identity score to zero,
-        // letting an unrelated zero-scored window win the tie. Now the unrelated window is excluded,
-        // so a present-but-minimized game window is still selected over something unrelated.
         var minimizedGame = new WindowCandidate(GameMainHandle, "Hearthstone", GamePid, IsValid: true, IsMinimized: true);
         var unrelated = new WindowCandidate(0xEEEE, "Some Other App", 4444, IsValid: true, IsMinimized: false);
         var candidates = new List<WindowCandidate> { unrelated, minimizedGame };
 
-        var pick = WindowResolver.Resolve(candidates, GamePid, GameMainHandle, "Hearthstone");
+        var resolution = WindowResolver.ResolveWithReason(candidates, GamePid, GameMainHandle, "Hearthstone");
 
-        Assert.Equal(GameMainHandle, pick!.Handle);
+        Assert.Null(resolution.Candidate);
+        Assert.Equal(WindowResolutionFailure.TargetMinimized, resolution.Failure);
+        Assert.Null(WindowResolver.Resolve(candidates, GamePid, GameMainHandle, "Hearthstone"));
+    }
+
+    [Fact]
+    public void Minimized_foreign_title_match_does_not_spoof_target_minimized_reason()
+    {
+        var minimizedTracker = new WindowCandidate(
+            0x9999, "Hearthstone Deck Tracker", TrackerPid, IsValid: true, IsMinimized: true);
+
+        var resolution = WindowResolver.ResolveWithReason(
+            [minimizedTracker], GamePid, GameMainHandle, "Hearthstone");
+
+        Assert.Null(resolution.Candidate);
+        Assert.Equal(WindowResolutionFailure.NoEligibleWindow, resolution.Failure);
+    }
+
+    [Fact]
+    public void Minimized_identity_match_scores_as_excluded()
+    {
+        var minimizedGame = Game(minimized: true);
+
+        int score = WindowResolver.Score(minimizedGame, GamePid, GameMainHandle, "Hearthstone");
+
+        Assert.Equal(int.MinValue, score);
     }
 }

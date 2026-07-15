@@ -46,8 +46,9 @@ public sealed class SqliteMatchRepository : IMatchRepository
     /// Bring an existing <c>matches</c> table up to the current column set. A database created by an
     /// earlier build may predate the <c>session_id</c> / <c>started_at_utc</c> columns; because
     /// <c>CREATE TABLE IF NOT EXISTS</c> leaves such a table untouched, the insert/list/recovery
-    /// queries would otherwise fail with "no such column". Each step is guarded by the table's actual
-    /// columns, so this is a no-op on a freshly created database and safe to run on every startup.
+    /// queries would otherwise fail with "no such column". Column additions are guarded by the
+    /// table's actual shape, while constraint creation and backfill are independently idempotent, so
+    /// this is safe to resume after an interrupted migration and safe to run on every startup.
     /// </summary>
     private static async Task MigrateSchemaAsync(SqliteConnection conn, CancellationToken ct)
     {
@@ -57,31 +58,35 @@ public sealed class SqliteMatchRepository : IMatchRepository
 
         if (!columns.Contains("session_id"))
         {
-            // ADD COLUMN can't carry an inline UNIQUE, so enforce uniqueness with a partial index
-            // (NULLs exempt, matching the fresh schema's `session_id TEXT NULL UNIQUE`).
             await conn.ExecuteAsync(new CommandDefinition(
                 "ALTER TABLE matches ADD COLUMN session_id TEXT NULL;", cancellationToken: ct));
-            await conn.ExecuteAsync(new CommandDefinition(
-                "CREATE UNIQUE INDEX IF NOT EXISTS ux_matches_session_id ON matches(session_id) WHERE session_id IS NOT NULL;",
-                cancellationToken: ct));
         }
+
+        // ADD COLUMN can't carry an inline UNIQUE, so use one named partial index as the canonical
+        // constraint for both fresh and migrated schemas (NULLs remain exempt). Keep this step
+        // independent from the ADD COLUMN: if the process stopped after ALTER TABLE, the next startup
+        // still creates the index.
+        await conn.ExecuteAsync(new CommandDefinition(
+            "CREATE UNIQUE INDEX IF NOT EXISTS ux_matches_session_id ON matches(session_id) WHERE session_id IS NOT NULL;",
+            cancellationToken: ct));
 
         if (!columns.Contains("started_at_utc"))
         {
             await conn.ExecuteAsync(new CommandDefinition(
                 "ALTER TABLE matches ADD COLUMN started_at_utc TEXT NULL;", cancellationToken: ct));
-            // Backfill the sort key from the existing offset-preserving started_at, normalized to a
-            // UTC "O" instant exactly as new inserts write it, so ordering stays consistent.
-            var rows = await conn.QueryAsync(new CommandDefinition(
-                "SELECT id, started_at FROM matches WHERE started_at_utc IS NULL;", cancellationToken: ct));
-            foreach (var row in rows)
-            {
-                var utc = ParseTimestamp((string)row.started_at)
-                    .ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
-                await conn.ExecuteAsync(new CommandDefinition(
-                    "UPDATE matches SET started_at_utc = @utc WHERE id = @id;",
-                    new { utc, id = (long)row.id }, cancellationToken: ct));
-            }
+        }
+
+        // Backfill independently from adding the column so an interrupted prior migration resumes.
+        // The WHERE guard also makes this a cheap, idempotent no-op once every row is populated.
+        var rows = await conn.QueryAsync(new CommandDefinition(
+            "SELECT id, started_at FROM matches WHERE started_at_utc IS NULL;", cancellationToken: ct));
+        foreach (var row in rows)
+        {
+            var utc = ParseTimestamp((string)row.started_at)
+                .ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
+            await conn.ExecuteAsync(new CommandDefinition(
+                "UPDATE matches SET started_at_utc = @utc WHERE id = @id;",
+                new { utc, id = (long)row.id }, cancellationToken: ct));
         }
     }
 
@@ -153,6 +158,47 @@ public sealed class SqliteMatchRepository : IMatchRepository
         return rows.Select(MapRow).ToList();
     }
 
+    public async Task<MatchDetailRecord?> GetMatchAsync(long matchId, CancellationToken ct = default)
+    {
+        await using var conn = await OpenConnectionAsync(ct);
+        await using var tx = await conn.BeginTransactionAsync(ct);
+
+        var match = await conn.QuerySingleOrDefaultAsync<MatchRow>(new CommandDefinition(
+            GetMatchSql,
+            new { id = matchId },
+            tx,
+            cancellationToken: ct));
+
+        if (match is null)
+        {
+            await tx.CommitAsync(ct);
+            return null;
+        }
+
+        var markerRows = await conn.QueryAsync<MarkerRow>(new CommandDefinition(
+            GetMarkersSql,
+            new { match_id = matchId },
+            tx,
+            cancellationToken: ct));
+
+        await tx.CommitAsync(ct);
+        return new MatchDetailRecord(MapRow(match), markerRows.Select(MapMarker).ToList());
+    }
+
+    public async Task UpdateStarredAsync(long matchId, bool starred, CancellationToken ct = default)
+    {
+        await using var conn = await OpenConnectionAsync(ct);
+        await using var tx = await conn.BeginTransactionAsync(ct);
+
+        await conn.ExecuteAsync(new CommandDefinition(
+            UpdateStarredSql,
+            new { id = matchId, starred = starred ? 1 : 0 },
+            tx,
+            cancellationToken: ct));
+
+        await tx.CommitAsync(ct);
+    }
+
     private async Task<SqliteConnection> OpenConnectionAsync(CancellationToken ct)
     {
         var conn = new SqliteConnection(_connectionString);
@@ -219,6 +265,12 @@ public sealed class SqliteMatchRepository : IMatchRepository
         ManualRating = row.manual_rating,
     };
 
+    private static MarkerRecord MapMarker(MarkerRow row) => new(
+        row.match_id,
+        (MarkerKind)row.kind,
+        row.at_ms,
+        row.tavern_turn);
+
     private static DateTimeOffset ParseTimestamp(string value) =>
         DateTimeOffset.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
@@ -243,6 +295,16 @@ public sealed class SqliteMatchRepository : IMatchRepository
         public int? manual_rating { get; init; }
     }
 
+    /// <summary>Column-shaped marker DTO; the id is selected only to define stable tie ordering.</summary>
+    private sealed class MarkerRow
+    {
+        public long id { get; init; }
+        public long match_id { get; init; }
+        public int kind { get; init; }
+        public long at_ms { get; init; }
+        public int tavern_turn { get; init; }
+    }
+
     private const string SchemaSql = """
         CREATE TABLE IF NOT EXISTS schema_version (
             version INTEGER NOT NULL
@@ -250,7 +312,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
 
         CREATE TABLE IF NOT EXISTS matches (
             id                INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id        TEXT    NULL UNIQUE,
+            session_id        TEXT    NULL,
             started_at        TEXT    NOT NULL,
             started_at_utc    TEXT    NOT NULL,
             ended_at          TEXT    NULL,
@@ -307,5 +369,26 @@ public sealed class SqliteMatchRepository : IMatchRepository
                starred, manual_rating
         FROM matches
         ORDER BY started_at_utc DESC, id DESC;
+        """;
+
+    private const string GetMatchSql = """
+        SELECT id, session_id, started_at, ended_at, game_type, hero_card_id, place, tavern_turns,
+               play_state, truncated, video_status, video_path, video_size_bytes, video_duration_ms,
+               starred, manual_rating
+        FROM matches
+        WHERE id = @id;
+        """;
+
+    private const string GetMarkersSql = """
+        SELECT id, match_id, kind, at_ms, tavern_turn
+        FROM markers
+        WHERE match_id = @match_id
+        ORDER BY at_ms, id;
+        """;
+
+    private const string UpdateStarredSql = """
+        UPDATE matches
+        SET starred = @starred
+        WHERE id = @id;
         """;
 }

@@ -10,6 +10,9 @@ public interface ISessionCoordinator : IAsyncDisposable
 
     event Action<CoordinatorState>? StateChanged;
 
+    /// <summary>Human-readable operational warning or degradation detail.</summary>
+    event Action<string>? Diagnostic;
+
     Task StartAsync(CancellationToken ct);
 
     /// <summary>"Stop this recording": finalize the current match early, stay armed for the next one.</summary>
@@ -36,6 +39,12 @@ public enum CoordinatorState
 
     /// <summary>Auto-recording paused by the user (distinct tray glyph).</summary>
     Paused = 4,
+
+    /// <summary>
+    /// Hearthstone is available, but the staging volume is below its safety floor (or free
+    /// space could not be determined), so new recordings are disarmed until storage recovers.
+    /// </summary>
+    StorageBlocked = 5,
 }
 
 /// <summary>Disk-safety gate: floor check before arming, watchdog during recording.</summary>

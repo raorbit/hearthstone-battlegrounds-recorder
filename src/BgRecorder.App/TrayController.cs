@@ -63,6 +63,18 @@ internal sealed class TrayController : IDisposable
         }
     }
 
+    public void ShowWarningBalloon(string title, string message)
+    {
+        try
+        {
+            _icon.ShowNotification(title, message, NotificationIcon.Warning);
+        }
+        catch
+        {
+            // Notifications are best-effort; the persistent tooltip/state remains available.
+        }
+    }
+
     private ContextMenu BuildMenu()
     {
         _statusItem = new MenuItem { Header = "Starting…", IsEnabled = false };
@@ -73,7 +85,7 @@ internal sealed class TrayController : IDisposable
         _pauseResumeItem = new MenuItem { Header = "Pause auto-recording" };
         _pauseResumeItem.Click += (_, _) => PauseResumeRequested?.Invoke();
 
-        var openItem = new MenuItem { Header = "Open library folder" };
+        var openItem = new MenuItem { Header = "Open library" };
         openItem.Click += (_, _) => OpenLibraryRequested?.Invoke();
 
         var exitItem = new MenuItem { Header = "Exit" };
@@ -97,6 +109,7 @@ internal sealed class TrayController : IDisposable
         _glyphs[CoordinatorState.Recording] = CreateGlyph(Color.FromArgb(208, 48, 44), slashed: false);
         _glyphs[CoordinatorState.Finalizing] = CreateGlyph(Color.FromArgb(232, 158, 28), slashed: false);
         _glyphs[CoordinatorState.Paused] = CreateGlyph(Color.FromArgb(56, 158, 72), slashed: true);
+        _glyphs[CoordinatorState.StorageBlocked] = CreateGlyph(Color.FromArgb(224, 122, 111), slashed: true);
     }
 
     private static string ToolTipFor(CoordinatorState state) => state switch
@@ -106,6 +119,7 @@ internal sealed class TrayController : IDisposable
         CoordinatorState.Recording => "BG Recorder — recording",
         CoordinatorState.Finalizing => "BG Recorder — finalizing",
         CoordinatorState.Paused => "BG Recorder — auto-recording paused",
+        CoordinatorState.StorageBlocked => "BG Recorder — recording blocked by low storage",
         _ => "BG Recorder",
     };
 
@@ -116,6 +130,7 @@ internal sealed class TrayController : IDisposable
         CoordinatorState.Recording => "Recording this match",
         CoordinatorState.Finalizing => "Finalizing recording…",
         CoordinatorState.Paused => "Auto-recording paused",
+        CoordinatorState.StorageBlocked => "Storage safety block — recording disabled",
         _ => "Starting…",
     };
 

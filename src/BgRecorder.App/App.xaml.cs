@@ -1,8 +1,8 @@
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using BgRecorder.Core.Session;
+using BgRecorder.Ui;
 using Serilog;
 
 namespace BgRecorder.App;
@@ -33,6 +33,9 @@ public partial class App : Application
     private Mutex? _singleInstanceMutex;
     private TrayController? _tray;
     private AppServices? _services;
+    private UiBridge? _uiBridge;
+    private LibraryWindow? _libraryWindow;
+    private DateTimeOffset _lastAttentionUtc;
     private bool _isSmoke;
     private int _exitCode;
     private bool _shuttingDown;
@@ -125,6 +128,7 @@ public partial class App : Application
         {
             _services = await CompositionRoot.BuildAsync(_cts.Token);
             _services.Coordinator.StateChanged += OnCoordinatorStateChanged;
+            _services.Coordinator.Diagnostic += OnCoordinatorDiagnostic;
             ApplyState(_services.Coordinator.State);
             Log.Information("Bootstrap complete; coordinator state {State}", _services.Coordinator.State);
         }
@@ -152,12 +156,29 @@ public partial class App : Application
     private void OnCoordinatorStateChanged(CoordinatorState state)
         => Dispatcher.InvokeAsync(() => ApplyState(state));
 
+    private void OnCoordinatorDiagnostic(string message)
+        => Dispatcher.InvokeAsync(() =>
+        {
+            _lastAttentionUtc = DateTimeOffset.UtcNow;
+            _tray?.ShowWarningBalloon("BG Recorder needs attention", message);
+        });
+
     private void ApplyState(CoordinatorState state)
     {
         Log.Information("Coordinator state -> {State}", state);
         try
         {
             _tray?.SetState(state);
+            if (state == CoordinatorState.StorageBlocked &&
+                DateTimeOffset.UtcNow - _lastAttentionUtc > TimeSpan.FromSeconds(2))
+            {
+                // Initialization can discover the block before App subscribes to Diagnostic. The
+                // state/tooltip stays persistent; this one-time balloon makes the initial block visible.
+                _lastAttentionUtc = DateTimeOffset.UtcNow;
+                _tray?.ShowWarningBalloon(
+                    "Recording paused for disk safety",
+                    "Free space is below the safety floor. BG Recorder will recheck before the next match.");
+            }
         }
         catch (Exception ex)
         {
@@ -213,18 +234,44 @@ public partial class App : Application
 
     private void OnOpenLibrary()
     {
-        var dir = _services?.LibraryDir ?? new Core.AppSettings().LibraryDir;
+        var services = _services;
+        if (services is null)
+        {
+            Log.Warning("Open library requested before application bootstrap completed");
+            return;
+        }
+
         try
         {
-            Directory.CreateDirectory(dir);
-            Process.Start(new ProcessStartInfo { FileName = dir, UseShellExecute = true });
-            Log.Information("Opened library folder {Dir}", dir);
+            if (_libraryWindow is null)
+            {
+                _uiBridge ??= new UiBridge(services.Repository, services.Coordinator);
+                _uiBridge.Diagnostic -= OnUiDiagnostic;
+                _uiBridge.Diagnostic += OnUiDiagnostic;
+
+                var assetsDirectory = Path.Combine(AppContext.BaseDirectory, "Web");
+                _libraryWindow = new LibraryWindow(_uiBridge, services.Coordinator, assetsDirectory);
+                _libraryWindow.Closed += (_, _) => _libraryWindow = null;
+                _libraryWindow.Show();
+                Log.Information("Opened library window");
+            }
+            else
+            {
+                if (_libraryWindow.WindowState == WindowState.Minimized)
+                {
+                    _libraryWindow.WindowState = WindowState.Normal;
+                }
+
+                _libraryWindow.Activate();
+            }
         }
         catch (Exception ex)
         {
-            Log.Warning(ex, "Could not open library folder {Dir}", dir);
+            Log.Warning(ex, "Could not open library window");
         }
     }
+
+    private static void OnUiDiagnostic(string message) => Log.Warning("Library UI: {Message}", message);
 
     private void RequestShutdown(int exitCode)
     {
@@ -274,6 +321,16 @@ public partial class App : Application
 
         try
         {
+            _libraryWindow?.Close();
+            _libraryWindow = null;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Error closing the library window during shutdown");
+        }
+
+        try
+        {
             // Dispose off the dispatcher thread with a bounded wait so a slow subsystem teardown can
             // never hang shutdown or deadlock on the UI thread. A normal exit has already finalized the
             // recording (FinalizeThenShutdownAsync); this generous bound is the backstop for any other
@@ -283,6 +340,8 @@ public partial class App : Application
             if (services is not null)
             {
                 _services = null;
+                services.Coordinator.StateChanged -= OnCoordinatorStateChanged;
+                services.Coordinator.Diagnostic -= OnCoordinatorDiagnostic;
                 if (!Task.Run(async () => await services.DisposeAsync()).Wait(ShutdownFinalizeTimeout))
                 {
                     Log.Warning("Subsystem teardown did not finish within {Seconds}s; any staged files will be recovered next launch",

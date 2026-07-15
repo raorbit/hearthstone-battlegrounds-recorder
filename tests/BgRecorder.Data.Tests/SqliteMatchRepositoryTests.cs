@@ -122,6 +122,89 @@ public sealed class SqliteMatchRepositoryTests
     }
 
     [Fact]
+    public async Task GetMatch_returns_match_and_markers_ordered_by_offset_then_insertion()
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            var match = SampleMatch();
+            var insertedMarkers = new MarkerRecord[]
+            {
+                new(0, MarkerKind.CombatStart, 45_000, 1),
+                new(0, MarkerKind.MatchEnd, 90_000, 3),
+                new(0, MarkerKind.TurnStart, 0, 1),
+                new(0, MarkerKind.CombatStart, 45_000, 2),
+            };
+
+            var id = await repo.InsertMatchAsync(match, insertedMarkers);
+
+            var detail = Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(id));
+            Assert.Equal(match with { Id = id }, detail.Match);
+            Assert.Equal(
+                new MarkerRecord[]
+                {
+                    new(id, MarkerKind.TurnStart, 0, 1),
+                    new(id, MarkerKind.CombatStart, 45_000, 1),
+                    new(id, MarkerKind.CombatStart, 45_000, 2),
+                    new(id, MarkerKind.MatchEnd, 90_000, 3),
+                },
+                detail.Markers);
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
+    public async Task GetMatch_returns_null_when_match_does_not_exist()
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            await repo.InsertMatchAsync(SampleMatch(), SampleMarkers());
+
+            Assert.Null(await repo.GetMatchAsync(long.MaxValue));
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task UpdateStarred_changes_only_target_flag_and_preserves_both_rows_markers(bool starred)
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            var targetId = await repo.InsertMatchAsync(
+                SampleMatch() with { HeroCardId = "TARGET", Starred = !starred },
+                SampleMarkers());
+            var otherId = await repo.InsertMatchAsync(
+                SampleMatch() with
+                {
+                    HeroCardId = "OTHER",
+                    StartedAt = SampleMatch().StartedAt.AddMinutes(1),
+                    Starred = starred,
+                },
+                [new MarkerRecord(0, MarkerKind.CombatStart, 12_345, 2)]);
+
+            var targetBefore = Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(targetId));
+            var otherBefore = Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(otherId));
+
+            await repo.UpdateStarredAsync(targetId, starred);
+
+            var targetAfter = Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(targetId));
+            var otherAfter = Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(otherId));
+            Assert.Equal(targetBefore.Match with { Starred = starred }, targetAfter.Match);
+            Assert.Equal(targetBefore.Markers, targetAfter.Markers);
+            Assert.Equal(otherBefore.Match, otherAfter.Match);
+            Assert.Equal(otherBefore.Markers, otherAfter.Markers);
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
     public async Task Nullable_fields_round_trip_as_null()
     {
         var db = NewDbPath();
@@ -435,6 +518,141 @@ public sealed class SqliteMatchRepositoryTests
             await using var check = OpenRaw(db);
             Assert.Equal(0L, await check.ExecuteScalarAsync<long>(
                 "SELECT COUNT(*) FROM matches WHERE started_at_utc IS NULL;"));
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
+    public async Task Initialize_resumes_when_session_id_exists_without_unique_index()
+    {
+        var db = NewDbPath();
+        try
+        {
+            await using (var raw = OpenRaw(db))
+            {
+                await raw.ExecuteAsync("""
+                    CREATE TABLE schema_version (version INTEGER NOT NULL);
+                    INSERT INTO schema_version (version) VALUES (1);
+                    CREATE TABLE matches (
+                        id                INTEGER PRIMARY KEY AUTOINCREMENT,
+                        session_id        TEXT    NULL,
+                        started_at        TEXT    NOT NULL,
+                        started_at_utc    TEXT    NULL,
+                        ended_at          TEXT    NULL,
+                        game_type         INTEGER NOT NULL,
+                        hero_card_id      TEXT    NULL,
+                        place             INTEGER NULL,
+                        tavern_turns      INTEGER NOT NULL,
+                        play_state        INTEGER NOT NULL,
+                        truncated         INTEGER NOT NULL,
+                        video_status      INTEGER NOT NULL,
+                        video_path        TEXT    NULL,
+                        video_size_bytes  INTEGER NULL,
+                        video_duration_ms INTEGER NULL,
+                        starred           INTEGER NOT NULL DEFAULT 0,
+                        manual_rating     INTEGER NULL,
+                        created_at        TEXT    NOT NULL
+                    );
+                    INSERT INTO matches (
+                        session_id, started_at, started_at_utc, game_type, hero_card_id,
+                        tavern_turns, play_state, truncated, video_status, created_at)
+                    VALUES (
+                        'resume-session', '2026-07-14T09:15:30.0000000-07:00',
+                        '2026-07-14T16:15:30.0000000+00:00', 1, 'PRESERVED',
+                        11, 1, 0, 0, '2026-07-14T16:15:30.0000000+00:00');
+                    """);
+            }
+
+            var repo = new SqliteMatchRepository(db);
+            await repo.InitializeAsync();
+            await repo.InitializeAsync(); // repeat proves the resumed step is idempotent
+
+            var preserved = Assert.Single(await repo.ListMatchesAsync());
+            Assert.Equal("resume-session", preserved.SessionId);
+            Assert.Equal("PRESERVED", preserved.HeroCardId);
+
+            await using var check = OpenRaw(db);
+            Assert.Equal(1L, await check.ExecuteScalarAsync<long>("""
+                SELECT COUNT(*) FROM sqlite_master
+                WHERE type = 'index' AND name = 'ux_matches_session_id';
+                """));
+            await Assert.ThrowsAsync<SqliteException>(async () => await check.ExecuteAsync("""
+                INSERT INTO matches (
+                    session_id, started_at, started_at_utc, game_type, tavern_turns,
+                    play_state, truncated, video_status, created_at)
+                VALUES (
+                    'resume-session', '2026-07-14T10:00:00.0000000-07:00',
+                    '2026-07-14T17:00:00.0000000+00:00', 1, 1, 1, 0, 0,
+                    '2026-07-14T17:00:00.0000000+00:00');
+                """));
+            Assert.Equal(1L, await check.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM matches;"));
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
+    public async Task Initialize_resumes_when_started_at_utc_exists_with_null_rows()
+    {
+        var db = NewDbPath();
+        try
+        {
+            await using (var raw = OpenRaw(db))
+            {
+                await raw.ExecuteAsync("""
+                    CREATE TABLE schema_version (version INTEGER NOT NULL);
+                    INSERT INTO schema_version (version) VALUES (1);
+                    CREATE TABLE matches (
+                        id                INTEGER PRIMARY KEY AUTOINCREMENT,
+                        session_id        TEXT    NULL UNIQUE,
+                        started_at        TEXT    NOT NULL,
+                        started_at_utc    TEXT    NULL,
+                        ended_at          TEXT    NULL,
+                        game_type         INTEGER NOT NULL,
+                        hero_card_id      TEXT    NULL,
+                        place             INTEGER NULL,
+                        tavern_turns      INTEGER NOT NULL,
+                        play_state        INTEGER NOT NULL,
+                        truncated         INTEGER NOT NULL,
+                        video_status      INTEGER NOT NULL,
+                        video_path        TEXT    NULL,
+                        video_size_bytes  INTEGER NULL,
+                        video_duration_ms INTEGER NULL,
+                        starred           INTEGER NOT NULL DEFAULT 0,
+                        manual_rating     INTEGER NULL,
+                        created_at        TEXT    NOT NULL
+                    );
+                    INSERT INTO matches (
+                        session_id, started_at, started_at_utc, game_type, hero_card_id,
+                        tavern_turns, play_state, truncated, video_status, created_at)
+                    VALUES
+                        ('resume-utc-1', '2026-07-14T09:15:30.0000000-07:00', NULL, 1, 'FIRST',
+                         11, 1, 0, 0, '2026-07-14T16:15:30.0000000+00:00'),
+                        ('resume-utc-2', '2026-07-14T18:45:00.0000000+05:30', NULL, 2, 'SECOND',
+                         9, 2, 0, 0, '2026-07-14T13:15:00.0000000+00:00');
+                    """);
+            }
+
+            var repo = new SqliteMatchRepository(db);
+            await repo.InitializeAsync();
+            await repo.InitializeAsync(); // a completed backfill is an idempotent no-op
+
+            var rows = await repo.ListMatchesAsync();
+            Assert.Equal(2, rows.Count);
+            Assert.Contains(rows, row => row.HeroCardId == "FIRST" && row.SessionId == "resume-utc-1");
+            Assert.Contains(rows, row => row.HeroCardId == "SECOND" && row.SessionId == "resume-utc-2");
+
+            await using var check = OpenRaw(db);
+            Assert.Equal(0L, await check.ExecuteScalarAsync<long>(
+                "SELECT COUNT(*) FROM matches WHERE started_at_utc IS NULL;"));
+            var backfilled = (await check.QueryAsync<(string StartedAt, string StartedAtUtc)>(
+                "SELECT started_at AS StartedAt, started_at_utc AS StartedAtUtc FROM matches ORDER BY id;"))
+                .ToList();
+            Assert.Equal(
+                DateTimeOffset.Parse(backfilled[0].StartedAt).ToUniversalTime(),
+                DateTimeOffset.Parse(backfilled[0].StartedAtUtc));
+            Assert.Equal(
+                DateTimeOffset.Parse(backfilled[1].StartedAt).ToUniversalTime(),
+                DateTimeOffset.Parse(backfilled[1].StartedAtUtc));
         }
         finally { Cleanup(db); }
     }

@@ -22,6 +22,9 @@
     <Project Path="src/BgRecorder.Session/BgRecorder.Session.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
+    <Project Path="src/BgRecorder.Ui/BgRecorder.Ui.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BgRecorder.Audio.Tests/BgRecorder.Audio.Tests.csproj">
@@ -40,6 +43,9 @@
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
     <Project Path="tests/BgRecorder.Session.Tests/BgRecorder.Session.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="tests/BgRecorder.Ui.Tests/BgRecorder.Ui.Tests.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
   </Folder>

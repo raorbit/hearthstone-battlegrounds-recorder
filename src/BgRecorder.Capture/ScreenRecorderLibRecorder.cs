@@ -29,10 +29,18 @@ public sealed class ScreenRecorderLibRecorder : IRecorder
         var candidates = NativeWindows.Enumerate();
         var mainHandle = NativeWindows.MainWindowHandleOf(target.ProcessId);
 
-        var window = WindowResolver.Resolve(candidates, target.ProcessId, mainHandle, target.WindowTitleHint)
-            ?? throw new WindowNotFoundException(
-                $"No recordable window found for process {target.ProcessId} " +
-                $"(title hint \"{target.WindowTitleHint}\").");
+        var resolution = WindowResolver.ResolveWithReason(
+            candidates, target.ProcessId, mainHandle, target.WindowTitleHint);
+        var window = resolution.Candidate;
+        if (window is null)
+        {
+            throw new WindowNotFoundException(
+                resolution.Failure == WindowResolutionFailure.TargetMinimized
+                    ? $"The Hearthstone window for process {target.ProcessId} is minimized. " +
+                      "Restore it before the next match; minimized window capture would produce a black recording."
+                    : $"No recordable window found for process {target.ProcessId} " +
+                      $"(title hint \"{target.WindowTitleHint}\").");
+        }
 
         // Partial files must never land outside staging: make sure the folder exists first.
         RecorderOptionsFactory.EnsureStagingDirectory(stagingMp4Path);

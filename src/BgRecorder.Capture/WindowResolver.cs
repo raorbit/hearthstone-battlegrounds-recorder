@@ -17,6 +17,17 @@ public sealed record WindowCandidate(
     bool IsValid,
     bool IsMinimized);
 
+/// <summary>Why no capture target could be selected.</summary>
+internal enum WindowResolutionFailure
+{
+    None = 0,
+    NoEligibleWindow = 1,
+    TargetMinimized = 2,
+}
+
+/// <summary>A capture candidate together with a specific failure reason when none is safe to use.</summary>
+internal sealed record WindowResolution(WindowCandidate? Candidate, WindowResolutionFailure Failure);
+
 /// <summary>
 /// Picks the window to record. Both the game and any running deck-tracker overlay carry a
 /// title containing "Hearthstone", so a naive substring match grabs the wrong (tiny, transparent)
@@ -43,18 +54,38 @@ public static class WindowResolver
         int targetProcessId,
         nint mainWindowHandle,
         string? titleHint)
+        => ResolveWithReason(candidates, targetProcessId, mainWindowHandle, titleHint).Candidate;
+
+    /// <summary>
+    /// Choose the best non-minimized target and retain enough failure detail for the capture layer
+    /// to tell the user to restore Hearthstone instead of reporting a misleading generic miss.
+    /// </summary>
+    internal static WindowResolution ResolveWithReason(
+        IReadOnlyList<WindowCandidate> candidates,
+        int targetProcessId,
+        nint mainWindowHandle,
+        string? titleHint)
     {
         ArgumentNullException.ThrowIfNull(candidates);
 
         WindowCandidate? best = null;
         int bestScore = Exclude;
         int bestTitleLen = int.MaxValue;
+        bool minimizedIdentityMatch = false;
 
         foreach (var c in candidates)
         {
-            int score = Score(c, targetProcessId, mainWindowHandle, titleHint);
+            int score = ScoreIdentity(c, targetProcessId, mainWindowHandle, titleHint);
             if (score == Exclude)
                 continue;
+
+            // A minimized WGC source is known to yield black/frozen output. It is still useful as a
+            // diagnostic signal, but it must never become the selected capture target.
+            if (c.IsMinimized)
+            {
+                minimizedIdentityMatch = true;
+                continue;
+            }
 
             int titleLen = c.Title?.Length ?? int.MaxValue;
             // Higher score wins; on a tie the shorter title wins ("Hearthstone" beats
@@ -69,11 +100,31 @@ public static class WindowResolver
             }
         }
 
-        return best;
+        return best is not null
+            ? new WindowResolution(best, WindowResolutionFailure.None)
+            : new WindowResolution(
+                null,
+                minimizedIdentityMatch
+                    ? WindowResolutionFailure.TargetMinimized
+                    : WindowResolutionFailure.NoEligibleWindow);
     }
 
     /// <summary>Rank one candidate. Returns <see cref="Exclude"/> for windows that must not be recorded.</summary>
     public static int Score(
+        WindowCandidate candidate,
+        int targetProcessId,
+        nint mainWindowHandle,
+        string? titleHint)
+    {
+        int score = ScoreIdentity(candidate, targetProcessId, mainWindowHandle, titleHint);
+        return score == Exclude || candidate.IsMinimized ? Exclude : score;
+    }
+
+    /// <summary>
+    /// Scores identity only. Minimized identity matches remain distinguishable here so
+    /// <see cref="ResolveWithReason"/> can return <see cref="WindowResolutionFailure.TargetMinimized"/>.
+    /// </summary>
+    private static int ScoreIdentity(
         WindowCandidate candidate,
         int targetProcessId,
         nint mainWindowHandle,
@@ -129,12 +180,6 @@ public static class WindowResolver
         // leak). Reject it so Resolve yields null and the caller raises its "window not found" path.
         if (!hasIdentityMatch)
             return Exclude;
-
-        // Never prefer a minimized window: capturing it produces black frames. This penalty only
-        // ranks a minimized identity match below a live one; it can drive the score to zero or below
-        // but never re-excludes it, so a minimized-but-present game window still beats nothing at all.
-        if (candidate.IsMinimized)
-            score -= 5000;
 
         return score;
     }

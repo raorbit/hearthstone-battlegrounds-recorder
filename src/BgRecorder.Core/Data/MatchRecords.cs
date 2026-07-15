@@ -43,6 +43,12 @@ public enum VideoStatus
 
 public sealed record MarkerRecord(long MatchId, MarkerKind Kind, long AtMs, int TavernTurn);
 
+/// <summary>
+/// A library match together with the timeline markers needed by the player. Marker ordering is
+/// defined by the repository: ascending video offset, then insertion order for equal offsets.
+/// </summary>
+public sealed record MatchDetailRecord(MatchRecord Match, IReadOnlyList<MarkerRecord> Markers);
+
 public enum MarkerKind
 {
     CombatStart = 0,
@@ -68,6 +74,12 @@ public interface IMatchRepository
     Task UpdateVideoStatusAsync(long matchId, VideoStatus status, CancellationToken ct = default);
 
     Task<IReadOnlyList<MatchRecord>> ListMatchesAsync(CancellationToken ct = default);
+
+    /// <summary>Returns one match and its ordered timeline markers, or null when it does not exist.</summary>
+    Task<MatchDetailRecord?> GetMatchAsync(long matchId, CancellationToken ct = default);
+
+    /// <summary>Updates only the retention-star flag for the requested match.</summary>
+    Task UpdateStarredAsync(long matchId, bool starred, CancellationToken ct = default);
 }
 
 /// <summary>What the finalized recording looked like, for marker-offset math and the files row.</summary>

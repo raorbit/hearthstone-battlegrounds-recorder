@@ -45,6 +45,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
     // ---- State below is owned exclusively by the loop task. ----
     private CoordinatorState _state = CoordinatorState.GameNotFound;
     private bool _pauseRequested;
+    private string? _lastStorageBlockReason;
     private List<GameEvent>? _matchEvents; // non-null from MatchStarted until the match resolves/finalizes
     private RecordingContext? _recording;
     private readonly List<TaskCompletionSource> _stopWaiters = [];
@@ -168,7 +169,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
                 switch (cmd)
                 {
                     case InitializeCmd:
-                        SetState(_locator.FindGame() is null ? CoordinatorState.GameNotFound : CoordinatorState.Armed);
+                        RefreshReadyState();
                         break;
                     case GameEventCmd(var e):
                         await HandleGameEventAsync(e).ConfigureAwait(false);
@@ -247,9 +248,9 @@ public sealed class SessionCoordinator : ISessionCoordinator
         switch (e)
         {
             case LogSessionChanged:
-                if (_state == CoordinatorState.GameNotFound)
+                if (_state is CoordinatorState.GameNotFound or CoordinatorState.StorageBlocked)
                 {
-                    SetState(CoordinatorState.Armed);
+                    RefreshReadyState();
                 }
                 break;
 
@@ -261,12 +262,15 @@ public sealed class SessionCoordinator : ISessionCoordinator
                     Report("A new match started while still recording; finalizing the previous match.");
                     await FinalizeAsync().ConfigureAwait(false);
                 }
-                if (_state is CoordinatorState.Armed or CoordinatorState.GameNotFound)
+                // A match boundary is also the recovery probe for StorageBlocked. If free space
+                // recovered, arm and buffer this same match; otherwise skip it without ever opening
+                // a capture session. GameNotFound similarly rechecks the process + storage gates.
+                if (_state is CoordinatorState.GameNotFound or CoordinatorState.StorageBlocked)
                 {
-                    if (_state == CoordinatorState.GameNotFound)
-                    {
-                        SetState(CoordinatorState.Armed); // events flowing means the game is back
-                    }
+                    RefreshReadyState();
+                }
+                if (_state == CoordinatorState.Armed)
+                {
                     _matchEvents = [e];
                 }
                 break;
@@ -345,7 +349,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
         {
             _pauseRequested = true; // the current recording finishes; no new arms after
         }
-        else if (_state is CoordinatorState.Armed or CoordinatorState.GameNotFound)
+        else if (_state is CoordinatorState.Armed or CoordinatorState.GameNotFound or CoordinatorState.StorageBlocked)
         {
             // Disarm any match buffered between MatchStarted and GameTypeResolved too,
             // otherwise the pending GameTypeResolved would start a recording while Paused.
@@ -359,7 +363,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
         _pauseRequested = false; // cancels a pending mid-recording pause too
         if (_state == CoordinatorState.Paused)
         {
-            SetState(_locator.FindGame() is null ? CoordinatorState.GameNotFound : CoordinatorState.Armed);
+            RefreshReadyState();
         }
     }
 
@@ -370,21 +374,26 @@ public sealed class SessionCoordinator : ISessionCoordinator
         var events = _matchEvents!;
         var matchStartedAt = events.OfType<MatchStarted>().FirstOrDefault()?.Timestamp ?? events[0].Timestamp;
 
-        var check = _diskSafety.CheckCanArm();
-        if (!check.CanArm)
-        {
-            Report($"Not recording this match: {check.Reason ?? "insufficient free disk space"}");
-            _matchEvents = null;
-            return; // stay Armed; the next match re-checks
-        }
-
         var target = _locator.FindGame();
         if (target is null)
         {
             Report("Not recording this match: the game window could not be found.");
             _matchEvents = null;
+            _lastStorageBlockReason = null;
+            SetState(CoordinatorState.GameNotFound);
             return;
         }
+
+        // Recheck immediately before opening capture handles. Storage may have crossed the floor
+        // after MatchStarted was buffered, even though the previous ready-state check passed.
+        var check = _diskSafety.CheckCanArm();
+        if (!check.CanArm)
+        {
+            _matchEvents = null;
+            EnterStorageBlocked(check.Reason);
+            return;
+        }
+        _lastStorageBlockReason = null;
 
         var sessionId = Guid.NewGuid().ToString("N");
         var sessionDir = Path.Combine(_settings.StagingDir, sessionId);
@@ -539,13 +548,16 @@ public sealed class SessionCoordinator : ISessionCoordinator
             _recording = null;
             _matchEvents = null;
 
-            var next = _pauseRequested
-                ? CoordinatorState.Paused
-                : _locator.FindGame() is null
-                    ? CoordinatorState.GameNotFound
-                    : CoordinatorState.Armed;
+            var pauseRequested = _pauseRequested;
             _pauseRequested = false;
-            SetState(next);
+            if (pauseRequested)
+            {
+                SetState(CoordinatorState.Paused);
+            }
+            else
+            {
+                RefreshReadyState();
+            }
 
             foreach (var waiter in _stopWaiters)
             {
@@ -707,6 +719,48 @@ public sealed class SessionCoordinator : ISessionCoordinator
         }
         _state = state;
         StateChanged?.Invoke(state);
+    }
+
+    /// <summary>
+    /// Select the safe idle state. A running game is necessary but not sufficient for Armed:
+    /// storage must pass its floor check every time the coordinator would otherwise re-arm.
+    /// </summary>
+    private void RefreshReadyState()
+    {
+        if (_locator.FindGame() is null)
+        {
+            _lastStorageBlockReason = null;
+            SetState(CoordinatorState.GameNotFound);
+            return;
+        }
+
+        var check = _diskSafety.CheckCanArm();
+        if (!check.CanArm)
+        {
+            EnterStorageBlocked(check.Reason);
+            return;
+        }
+
+        _lastStorageBlockReason = null;
+        SetState(CoordinatorState.Armed);
+    }
+
+    private void EnterStorageBlocked(string? reason)
+    {
+        var detail = string.IsNullOrWhiteSpace(reason)
+            ? "insufficient free space on the staging volume"
+            : reason;
+
+        // Discovery polls and repeated match events can re-run the gate. Surface a changed reason or
+        // a fresh transition, but do not repeat the identical warning while already blocked.
+        if (_state != CoordinatorState.StorageBlocked
+            || !string.Equals(_lastStorageBlockReason, detail, StringComparison.Ordinal))
+        {
+            Report($"Auto-recording is blocked by storage safety: {detail}");
+        }
+
+        _lastStorageBlockReason = detail;
+        SetState(CoordinatorState.StorageBlocked);
     }
 
     private void Report(string message) => Diagnostic?.Invoke(message);

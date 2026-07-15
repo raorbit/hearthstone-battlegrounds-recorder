@@ -181,5 +181,11 @@ public sealed class DiskSafetyTests
 
         public Task<IReadOnlyList<MatchRecord>> ListMatchesAsync(CancellationToken ct = default)
             => throw new InvalidOperationException("db down");
+
+        public Task<MatchDetailRecord?> GetMatchAsync(long matchId, CancellationToken ct = default)
+            => throw new InvalidOperationException("db down");
+
+        public Task UpdateStarredAsync(long matchId, bool starred, CancellationToken ct = default)
+            => throw new InvalidOperationException("db down");
     }
 }

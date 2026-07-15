@@ -80,6 +80,7 @@ internal static class CompositionRoot
             Settings = settings,
             Source = source,
             Coordinator = coordinator,
+            Repository = repository,
             LibraryDir = settings.LibraryDir,
         };
     }
@@ -146,6 +147,7 @@ internal sealed class AppServices : IAsyncDisposable
     public required AppSettings Settings { get; init; }
     public required IGameEventSource Source { get; init; }
     public required ISessionCoordinator Coordinator { get; init; }
+    public required IMatchRepository Repository { get; init; }
     public required string LibraryDir { get; init; }
 
     public async ValueTask DisposeAsync()

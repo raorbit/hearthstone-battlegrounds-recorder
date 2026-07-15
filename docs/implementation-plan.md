@@ -22,7 +22,7 @@ Plan for building the recorder described by the [design prototype](../design/) w
 
 Why .NET: the memory-reading route to MMR is C#-native and the reference ecosystem (HDT, hslog's C# siblings, HearthDb) is C#, so parsing-fidelity questions are answered by reading proven code — but note the licensing boundary: HDT source is **read for understanding, never copied** (All Rights Reserved). Why WebView2 for UI: the finished HTML prototype ports almost directly, and HTML5 video is a far better player substrate than WPF MediaElement (frame-accurate seeking, easy marker overlays). The prototype's dc-runtime and unpkg React are design-tool artifacts and are not shipped.
 
-**Dependency licensing gate (M1 exit requirement).** This is an MIT project; every shipped dependency needs a compatible license and known binary provenance before it is treated as available. Current state: ScreenRecorderLib MIT ✅; NAudio MIT ✅; hslog MIT ✅ (reference only, Python); SQLite/Dapper/Serilog/Velopack ✅; **HearthMirror ❌** — HDT is All-Rights-Reserved and no separately-licensed package exists, so it is *not* usable without HearthSim's permission; **libobs ⚠️** GPL-2.0+ (isolated process only, never linked); **ffmpeg+libx264 ⚠️** GPL binary (child process OK; distributing it requires GPL compliance for the binary). M1 must record a GO/NO-GO per dependency in `spikes/DECISIONS.md`.
+**Dependency licensing gate (M1 exit requirement).** This is an MIT project; every shipped dependency needs a compatible license and known binary provenance before it is treated as available. Current state: ScreenRecorderLib MIT ✅; NAudio MIT ✅; hslog MIT ✅ (reference only, Python); SQLite/Dapper/Serilog/Velopack ✅; WebView2 redistributable license ✅; Preact MIT ✅; Vite MIT and TypeScript Apache-2.0 ✅ (build tooling only); **HearthMirror ❌** — HDT is All-Rights-Reserved and no separately-licensed package exists, so it is *not* usable without HearthSim's permission; **libobs ⚠️** GPL-2.0+ (isolated process only, never linked); **ffmpeg+libx264 ⚠️** GPL binary (child process OK; distributing it requires GPL compliance for the binary). M1 must record a GO/NO-GO per dependency in `spikes/DECISIONS.md`.
 
 ## Architecture
 
@@ -79,6 +79,8 @@ Four independent `dotnet run` console apps under `/spikes`, each with a written 
 
 Solution structure (`Core` / `App` / `Tests`); productionize the parser with fixture-driven tests; recording state machine incl. stop-vs-pause semantics; CaptureEngine on the chosen route; SQLite schema v1; onboarding writes log.config (**merge, never clobber** an existing file) + the prototype's live test-feed verifier; tray icon with state.
 
+**Progress (2026-07-14):** the implementation baseline is in place through the tray shell, capture/audio/finalize pipeline, SQLite library writes, merge-safe `log.config`, and crash recovery. The safety floor now checks storage before every arm transition and immediately before capture, exposes a persistent `StorageBlocked` state with diagnostics, rejects a minimized-only Hearthstone window rather than creating a likely-black recording, and repairs interrupted schema-v1 backfill/index work idempotently at startup. Remaining before the M2 exit can be signed off: wire the onboarding live test-feed verifier and collect the real-session, A/V-sync, low-space, and PresentMon evidence below.
+
 Because "post-M2 boundaries are shippable" and this app records unattended, M2 also owns the safety floor:
 
 - **Audio productionized, not just spiked**: the Spike D route muxed into recordings with acceptance criteria — A/V sync within ±100 ms over a 30-min session, audio-device loss mid-recording handled without killing the video, mic mixing per settings, and the Windows 10 system-loopback fallback path exercised.
@@ -90,6 +92,8 @@ Because "post-M2 boundaries are shippable" and this app records unattended, M2 a
 ### M3 — Library UI and VOD player
 
 Port the prototype to the SPA; RPC bridge; buckets/search/segment filters; design + build the date filter the prototype left unmodeled; player with combat/damage markers and turn ticks, final-board strip, keyboard shortcuts; clips as **virtual marker ranges** (no file copies); thumbnails on finalize. Validate multi-GB `<video>` range-seeking in week one (the milestone's risk item).
+
+**Progress (2026-07-14):** a risk-first vertical slice is implemented. The tray opens a singleton WebView2 window containing an offline TypeScript/Preact/Vite SPA; typed JSON-RPC provides library list/detail/star and recorder stop/pause/resume operations; the UI supplies all/solo/duos/starred buckets plus search, placement, and date filters; and recovered/unclassified rows remain visible. Match detail plays local video through an opaque match-id URL with native 200/206/416 handling, bounded 64-bit range streams, and marker seeking. Build-time web asset generation and focused repository/RPC/range tests are included. This is not the M3 exit: real multi-GB seek/scrub behavior, marker accuracy over five live matches, thumbnails, damage/final-board presentation, keyboard shortcuts, and virtual clips remain.
 
 **Exit:** every recorded match browsable; smooth scrubbing on multi-GB VODs; markers within ±2 s of true combat start across 5 real matches; filters return correct subsets.
 
