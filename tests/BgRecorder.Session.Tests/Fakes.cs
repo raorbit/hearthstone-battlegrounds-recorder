@@ -3,6 +3,7 @@ using BgRecorder.Core.Capture;
 using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
 using BgRecorder.Core.Session;
+using BgRecorder.Core.Storage;
 using BgRecorder.Session;
 
 namespace BgRecorder.Session.Tests;
@@ -248,6 +249,20 @@ internal sealed class FakeRepository : IMatchRepository
         Matches = Matches
             .Select(match => match.Id == matchId ? match with { Starred = starred } : match)
             .ToList();
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default)
+    {
+        Matches = Matches
+            .Select(match => match.Id == matchId ? match with { VideoPath = videoPath } : match)
+            .ToList();
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteMatchAsync(long matchId, CancellationToken ct = default)
+    {
+        Matches = Matches.Where(match => match.Id != matchId).ToList();
         return Task.CompletedTask;
     }
 

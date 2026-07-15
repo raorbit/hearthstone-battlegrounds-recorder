@@ -7,6 +7,7 @@ using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
 using BgRecorder.Core.Rating;
 using BgRecorder.Core.Session;
+using BgRecorder.Core.Storage;
 using Serilog;
 
 // Concrete subsystems. Keeping every concrete-type reference in this one file means a
@@ -17,6 +18,7 @@ using BgRecorder.Audio;
 using BgRecorder.Audio.Muxing;
 using BgRecorder.Data;
 using BgRecorder.Session;
+using BgRecorder.Storage;
 
 namespace BgRecorder.App;
 
@@ -80,6 +82,36 @@ internal static class CompositionRoot
         await coordinator.StartAsync(ct);
         Log.Information("Session coordinator started; initial state {State}", coordinator.State);
 
+        // Storage retention (M5): reconcile any crash-interrupted archive move, then keep the library
+        // within its caps. Enforcement re-runs after each finalize; failures are logged, never fatal.
+        IFileSystem fileSystem = new PhysicalFileSystem();
+        var moverJournal = new SqliteMoverJournal(dbPath);
+        await moverJournal.InitializeAsync(ct);
+        var mover = new ArchiveMover(fileSystem, moverJournal, repository);
+        mover.Diagnostic += message => Log.Warning("Archive mover: {Message}", message);
+        var storageEngine = new StorageEngine(
+            repository,
+            new RetentionPolicy(),
+            mover,
+            new DriveFreeSpaceProbe(),
+            fileSystem,
+            settings.LibraryDir,
+            settings.Storage);
+        storageEngine.Diagnostic += message => Log.Warning("Storage engine: {Message}", message);
+
+        try
+        {
+            await storageEngine.ReconcileAsync(ct);
+            Log.Information("Storage retention reconciliation complete");
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Storage retention reconciliation failed (non-fatal)");
+        }
+
+        var storageEnforcer = new StorageEnforcer(storageEngine, coordinator);
+        storageEnforcer.TriggerEnforce(); // initial catch-up pass
+
         return new AppServices
         {
             Settings = settings,
@@ -87,6 +119,7 @@ internal static class CompositionRoot
             Coordinator = coordinator,
             Repository = repository,
             RatingProvider = ratingProvider,
+            StorageEnforcer = storageEnforcer,
             LibraryDir = settings.LibraryDir,
         };
     }
@@ -155,10 +188,14 @@ internal sealed class AppServices : IAsyncDisposable
     public required ISessionCoordinator Coordinator { get; init; }
     public required IMatchRepository Repository { get; init; }
     public required IRatingProvider RatingProvider { get; init; }
+    public required StorageEnforcer StorageEnforcer { get; init; }
     public required string LibraryDir { get; init; }
 
     public async ValueTask DisposeAsync()
     {
+        // Unsubscribe retention from the coordinator before the coordinator itself is torn down.
+        StorageEnforcer.Dispose();
+
         try
         {
             await Coordinator.DisposeAsync();

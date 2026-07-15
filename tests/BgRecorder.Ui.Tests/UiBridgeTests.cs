@@ -259,6 +259,18 @@ public sealed class UiBridgeTests
             return Task.CompletedTask;
         }
 
+        public Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default)
+        {
+            if (matchId == _match.Id)
+            {
+                _match = _match with { VideoPath = videoPath };
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteMatchAsync(long matchId, CancellationToken ct = default) => Task.CompletedTask;
+
         public (long MatchId, int? Rating)? LastManualRatingUpdate { get; private set; }
 
         public Task UpdateManualRatingAsync(long matchId, int? rating, CancellationToken ct = default)

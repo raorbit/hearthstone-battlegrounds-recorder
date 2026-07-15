@@ -1,3 +1,5 @@
+using BgRecorder.Core.Storage;
+
 namespace BgRecorder.Core;
 
 /// <summary>Persisted settings (JSON in %AppData%\BgRecorder). M2 surface only; M6 grows this.</summary>
@@ -20,4 +22,7 @@ public sealed record AppSettings
 
     /// <summary>Default OFF per the plan's privacy-respecting defaults.</summary>
     public bool MixMicrophone { get; init; }
+
+    /// <summary>Retention and archive-drive configuration (M5). Defaults bound a single recording drive.</summary>
+    public StorageOptions Storage { get; init; } = new();
 }

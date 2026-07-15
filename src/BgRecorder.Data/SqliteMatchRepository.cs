@@ -199,6 +199,26 @@ public sealed class SqliteMatchRepository : IMatchRepository
         await tx.CommitAsync(ct);
     }
 
+    public async Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(videoPath);
+        await using var conn = await OpenConnectionAsync(ct);
+        await conn.ExecuteAsync(new CommandDefinition(
+            "UPDATE matches SET video_path = @video_path WHERE id = @id;",
+            new { id = matchId, video_path = videoPath },
+            cancellationToken: ct));
+    }
+
+    public async Task DeleteMatchAsync(long matchId, CancellationToken ct = default)
+    {
+        // Markers are removed by the ON DELETE CASCADE foreign key (foreign_keys is on per connection).
+        await using var conn = await OpenConnectionAsync(ct);
+        await conn.ExecuteAsync(new CommandDefinition(
+            "DELETE FROM matches WHERE id = @id;",
+            new { id = matchId },
+            cancellationToken: ct));
+    }
+
     public async Task UpdateManualRatingAsync(long matchId, int? rating, CancellationToken ct = default)
     {
         await using var conn = await OpenConnectionAsync(ct);
