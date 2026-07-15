@@ -219,6 +219,20 @@ public sealed class SqliteMatchRepository : IMatchRepository
             cancellationToken: ct));
     }
 
+    public async Task UpdateManualRatingAsync(long matchId, int? rating, CancellationToken ct = default)
+    {
+        await using var conn = await OpenConnectionAsync(ct);
+        await using var tx = await conn.BeginTransactionAsync(ct);
+
+        await conn.ExecuteAsync(new CommandDefinition(
+            UpdateManualRatingSql,
+            new { id = matchId, rating },
+            tx,
+            cancellationToken: ct));
+
+        await tx.CommitAsync(ct);
+    }
+
     private async Task<SqliteConnection> OpenConnectionAsync(CancellationToken ct)
     {
         var conn = new SqliteConnection(_connectionString);
@@ -409,6 +423,12 @@ public sealed class SqliteMatchRepository : IMatchRepository
     private const string UpdateStarredSql = """
         UPDATE matches
         SET starred = @starred
+        WHERE id = @id;
+        """;
+
+    private const string UpdateManualRatingSql = """
+        UPDATE matches
+        SET manual_rating = @rating
         WHERE id = @id;
         """;
 }

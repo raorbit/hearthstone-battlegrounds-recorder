@@ -98,6 +98,12 @@ public interface IMatchRepository : IMatchStore
 
     /// <summary>Updates only the retention-star flag for the requested match.</summary>
     Task UpdateStarredAsync(long matchId, bool starred, CancellationToken ct = default);
+
+    /// <summary>
+    /// Sets or clears the manual rating for the requested match — v1's only rating source (automatic
+    /// MMR is a post-v1 route per the M1 licensing decision). A null value clears the rating.
+    /// </summary>
+    Task UpdateManualRatingAsync(long matchId, int? rating, CancellationToken ct = default);
 }
 
 /// <summary>What the finalized recording looked like, for marker-offset math and the files row.</summary>

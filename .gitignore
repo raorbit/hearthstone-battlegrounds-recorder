@@ -24,6 +24,9 @@ recordings/
 *.mkv
 *.wav
 
+# ...but the committed, synthetic muxer/thumbnail test fixture is an explicit exception.
+!tests/BgRecorder.Audio.Tests/fixtures/sample-h264.mp4
+
 # Unsanitized game logs, local databases, dumps (sanitized fixtures are committed explicitly)
 fixtures/raw/
 *.log

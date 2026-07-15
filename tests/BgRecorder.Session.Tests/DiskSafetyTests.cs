@@ -193,5 +193,8 @@ public sealed class DiskSafetyTests
 
         public Task DeleteMatchAsync(long matchId, CancellationToken ct = default)
             => throw new InvalidOperationException("db down");
+
+        public Task UpdateManualRatingAsync(long matchId, int? rating, CancellationToken ct = default)
+            => throw new InvalidOperationException("db down");
     }
 }

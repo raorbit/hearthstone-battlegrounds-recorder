@@ -1,6 +1,7 @@
 using System.Text.Json;
 using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
+using BgRecorder.Core.Rating;
 using BgRecorder.Core.Session;
 using BgRecorder.Ui;
 using Xunit;
@@ -17,7 +18,7 @@ public sealed class UiBridgeTests
         {
             var match = SampleMatch(videoPath);
             var repository = new FakeRepository(match);
-            var bridge = new UiBridge(repository, new FakeCoordinator { State = CoordinatorState.Armed });
+            var bridge = new UiBridge(repository, new FakeCoordinator { State = CoordinatorState.Armed }, new NullRatingProvider());
 
             var json = await bridge.HandleRequestAsync(Request("1", "library.list"));
             using var document = JsonDocument.Parse(json);
@@ -45,7 +46,7 @@ public sealed class UiBridgeTests
         var repository = new FakeRepository(
             match,
             [new MarkerRecord(match.Id, MarkerKind.CombatStart, 75_000, 2)]);
-        var bridge = new UiBridge(repository, new FakeCoordinator());
+        var bridge = new UiBridge(repository, new FakeCoordinator(), new NullRatingProvider());
 
         var json = await bridge.HandleRequestAsync(Request(
             "detail",
@@ -63,7 +64,7 @@ public sealed class UiBridgeTests
     public async Task Set_starred_mutates_only_through_the_repository_contract()
     {
         var repository = new FakeRepository(SampleMatch(videoPath: null));
-        var bridge = new UiBridge(repository, new FakeCoordinator());
+        var bridge = new UiBridge(repository, new FakeCoordinator(), new NullRatingProvider());
 
         var json = await bridge.HandleRequestAsync(Request(
             "star",
@@ -77,10 +78,85 @@ public sealed class UiBridgeTests
     }
 
     [Fact]
+    public async Task Set_manual_rating_persists_through_the_repository_contract()
+    {
+        var repository = new FakeRepository(SampleMatch(videoPath: null));
+        var bridge = new UiBridge(repository, new FakeCoordinator(), new NullRatingProvider());
+
+        var json = await bridge.HandleRequestAsync(Request(
+            "rate",
+            "library.setManualRating",
+            new { matchId = 42, rating = 4200 }));
+        using var document = JsonDocument.Parse(json);
+
+        Assert.NotNull(repository.LastManualRatingUpdate);
+        Assert.Equal((42L, (int?)4200), repository.LastManualRatingUpdate.Value);
+        Assert.Equal(4200, document.RootElement.GetProperty("result").GetProperty("rating").GetInt32());
+    }
+
+    [Fact]
+    public async Task Set_manual_rating_to_null_clears_it()
+    {
+        var repository = new FakeRepository(SampleMatch(videoPath: null) with { ManualRating = 5000 });
+        var bridge = new UiBridge(repository, new FakeCoordinator(), new NullRatingProvider());
+
+        var json = await bridge.HandleRequestAsync(Request(
+            "rate",
+            "library.setManualRating",
+            new { matchId = 42, rating = (int?)null }));
+        using var document = JsonDocument.Parse(json);
+
+        Assert.NotNull(repository.LastManualRatingUpdate);
+        Assert.Equal((42L, (int?)null), repository.LastManualRatingUpdate.Value);
+        Assert.Equal(JsonValueKind.Null, document.RootElement.GetProperty("result").GetProperty("rating").ValueKind);
+    }
+
+    [Theory]
+    [InlineData(-5)]
+    [InlineData(100_001)]
+    public async Task Set_manual_rating_rejects_out_of_range_values(int rating)
+    {
+        var repository = new FakeRepository(SampleMatch(videoPath: null));
+        var bridge = new UiBridge(repository, new FakeCoordinator(), new NullRatingProvider());
+
+        var json = await bridge.HandleRequestAsync(Request(
+            "rate",
+            "library.setManualRating",
+            new { matchId = 42, rating }));
+
+        Assert.Contains("\"code\":-32602", json);
+        Assert.Null(repository.LastManualRatingUpdate);
+    }
+
+    [Fact]
+    public async Task Rating_get_projects_the_null_provider_as_disabled()
+    {
+        var bridge = new UiBridge(new FakeRepository(SampleMatch(null)), new FakeCoordinator(), new NullRatingProvider());
+
+        var json = await bridge.HandleRequestAsync(Request("rating", "rating.get", new { mode = "solo" }));
+        using var document = JsonDocument.Parse(json);
+        var result = document.RootElement.GetProperty("result");
+
+        Assert.Equal("disabled", result.GetProperty("health").GetString());
+        Assert.Equal(JsonValueKind.Null, result.GetProperty("rating").ValueKind);
+        Assert.Equal(JsonValueKind.Null, result.GetProperty("sampledAt").ValueKind);
+    }
+
+    [Fact]
+    public async Task Rating_get_rejects_an_unknown_mode()
+    {
+        var bridge = new UiBridge(new FakeRepository(SampleMatch(null)), new FakeCoordinator(), new NullRatingProvider());
+
+        var json = await bridge.HandleRequestAsync(Request("rating", "rating.get", new { mode = "ranked" }));
+
+        Assert.Contains("\"code\":-32602", json);
+    }
+
+    [Fact]
     public async Task Recorder_commands_return_the_coordinator_state()
     {
         var coordinator = new FakeCoordinator { State = CoordinatorState.Recording };
-        var bridge = new UiBridge(new FakeRepository(SampleMatch(null)), coordinator);
+        var bridge = new UiBridge(new FakeRepository(SampleMatch(null)), coordinator, new NullRatingProvider());
 
         var stop = await bridge.HandleRequestAsync(Request("stop", "recorder.stop"));
         var pause = await bridge.HandleRequestAsync(Request("pause", "recorder.pause"));
@@ -95,7 +171,7 @@ public sealed class UiBridgeTests
     [Fact]
     public async Task Invalid_requests_return_json_rpc_errors_without_native_details()
     {
-        var bridge = new UiBridge(new FakeRepository(SampleMatch(null)), new FakeCoordinator());
+        var bridge = new UiBridge(new FakeRepository(SampleMatch(null)), new FakeCoordinator(), new NullRatingProvider());
 
         var malformed = await bridge.HandleRequestAsync("not json");
         var unknown = await bridge.HandleRequestAsync(Request("x", "library.nope"));
@@ -194,6 +270,19 @@ public sealed class UiBridgeTests
         }
 
         public Task DeleteMatchAsync(long matchId, CancellationToken ct = default) => Task.CompletedTask;
+
+        public (long MatchId, int? Rating)? LastManualRatingUpdate { get; private set; }
+
+        public Task UpdateManualRatingAsync(long matchId, int? rating, CancellationToken ct = default)
+        {
+            LastManualRatingUpdate = (matchId, rating);
+            if (matchId == _match.Id)
+            {
+                _match = _match with { ManualRating = rating };
+            }
+
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class FakeCoordinator : ISessionCoordinator

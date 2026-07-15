@@ -2,24 +2,34 @@ import { type JSX } from "preact";
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { bridge } from "./bridge";
 import {
-  createStarReadFence,
+  createReadFence,
   isCoordinatorSnapshotCurrent,
+  protectManualRatingFromStaleRead,
   protectStarredFromStaleRead,
-  pruneStarMutations,
+  pruneMutations,
   shouldReloadLibraryAfterStateChange,
+  type RatingMutation,
+  type ReadFence,
   type StarMutation,
-  type StarReadFence,
 } from "./starState";
 import {
   type CoordinatorState,
+  type GameType,
   type Marker,
   type MatchDetailResult,
   type MatchSummary,
+  type RatingHealth,
   normalizeCoordinatorState,
   normalizeGameType,
   normalizeMarkerKind,
   normalizeVideoStatus,
 } from "./types";
+
+/** The per-field read fences a single async library read is guarded by. */
+interface ReadFences {
+  star: ReadFence;
+  rating: ReadFence;
+}
 
 type Bucket = "all" | "solo" | "duos" | "starred";
 type Segment = "all" | "top" | "bottom";
@@ -282,15 +292,157 @@ function BucketButton({ active, count, label, onClick }: BucketButtonProps): JSX
   );
 }
 
+interface RatingEditorProps {
+  match: MatchSummary;
+  pending: boolean;
+  onSet(rating: number | null): void;
+}
+
+/** Inline per-match manual rating entry — v1's only rating source. Commits on blur/Enter. */
+function RatingEditor({ match, pending, onSet }: RatingEditorProps): JSX.Element {
+  const [draft, setDraft] = useState(match.manualRating?.toString() ?? "");
+  // Escape blurs the input to defocus it, which would otherwise fire onBlur → commit against the
+  // still-typed draft. This ref makes that one commit a no-op so Escape truly discards the edit.
+  const cancellingRef = useRef(false);
+
+  useEffect(() => {
+    setDraft(match.manualRating?.toString() ?? "");
+  }, [match.id, match.manualRating]);
+
+  const revert = (): void => setDraft(match.manualRating?.toString() ?? "");
+
+  const commit = (): void => {
+    if (cancellingRef.current) {
+      cancellingRef.current = false;
+      return; // this blur came from an Escape cancellation; discard the typed value
+    }
+    const trimmed = draft.trim();
+    if (trimmed === "") {
+      onSet(null);
+      return;
+    }
+    const value = Number(trimmed);
+    if (!Number.isInteger(value) || value < 0 || value > 100_000) {
+      revert();
+      return;
+    }
+    onSet(value);
+  };
+
+  return (
+    <label class="rating-editor">
+      <span class="rating-editor__label">Rating</span>
+      <input
+        class="rating-editor__input mono"
+        type="number"
+        inputMode="numeric"
+        min={0}
+        max={100_000}
+        step={1}
+        value={draft}
+        placeholder="—"
+        disabled={pending}
+        aria-label="Manual rating for this match"
+        onInput={(event) => setDraft(event.currentTarget.value)}
+        onBlur={commit}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            event.currentTarget.blur();
+          } else if (event.key === "Escape") {
+            cancellingRef.current = true;
+            revert();
+            event.currentTarget.blur();
+          }
+        }}
+      />
+      {pending && <span class="spinner spinner--small" aria-hidden="true" />}
+    </label>
+  );
+}
+
+interface RatingCardProps {
+  matches: MatchSummary[];
+  bucket: Bucket;
+  health: RatingHealth | null;
+}
+
+/**
+ * Per-mode manual-rating summary. Follows the active solo/duos bucket (the plan's "strictly
+ * per-mode" card); with no manual entries it shows the degraded "—". When the rating provider is not
+ * OK (v1 always ships it disabled) a non-blocking "automatic MMR unavailable" note is shown.
+ */
+function RatingCard({ matches, bucket, health }: RatingCardProps): JSX.Element {
+  const mode: GameType = bucket === "duos" ? "duos" : "solo";
+  const modeLabel = mode === "duos" ? "Duos" : "Solo";
+  const rated = matches
+    .filter((candidate) => normalizeGameType(candidate.gameType) === mode && candidate.manualRating !== null)
+    .slice()
+    .sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime());
+  const healthNote = health !== null && health !== "ok"
+    ? <p class="rating-card__health">Automatic MMR unavailable — recordings unaffected.</p>
+    : null;
+
+  if (rated.length === 0) {
+    return (
+      <section class="rating-card" aria-label={`${modeLabel} rating`}>
+        <div class="rating-card__head">
+          <span class="rating-card__mode">{modeLabel} rating</span>
+          <span class="rating-card__value rating-card__value--empty">—</span>
+        </div>
+        <p class="rating-card__note">No manual ratings yet — add one on any {modeLabel.toLowerCase()} match to track it here.</p>
+        {healthNote}
+      </section>
+    );
+  }
+
+  const values = rated.slice(-12).map((candidate) => candidate.manualRating as number);
+  const latest = values[values.length - 1];
+  const delta = values.length > 1 ? latest - values[values.length - 2] : null;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const points = values
+    .map((value, index) => {
+      const x = values.length === 1 ? 100 : (index / (values.length - 1)) * 100;
+      const y = 100 - ((value - min) / range) * 100;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+
+  return (
+    <section class="rating-card" aria-label={`${modeLabel} rating`}>
+      <div class="rating-card__head">
+        <span class="rating-card__mode">{modeLabel} rating</span>
+        <span class="rating-card__value mono">{latest.toLocaleString()}</span>
+        {delta !== null && delta !== 0 && (
+          <span class={`rating-card__delta rating-card__delta--${delta > 0 ? "up" : "down"}`}>
+            {delta > 0 ? "▲" : "▼"} {Math.abs(delta).toLocaleString()}
+          </span>
+        )}
+      </div>
+      {values.length > 1 && (
+        <svg class="rating-card__spark" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline points={points} />
+        </svg>
+      )}
+      <p class="rating-card__note">Manual entries · {rated.length} rated {modeLabel.toLowerCase()} {rated.length === 1 ? "match" : "matches"}</p>
+      {healthNote}
+    </section>
+  );
+}
+
 interface PlayerProps {
   match: MatchSummary | null;
   detail: MatchDetailResult | null;
   loading: boolean;
   error: string | null;
+  ratingPending: boolean;
   onRetry(): void;
+  onSetRating(match: MatchSummary, rating: number | null): void;
 }
 
-function Player({ match, detail, loading, error, onRetry }: PlayerProps): JSX.Element {
+function Player({ match, detail, loading, error, ratingPending, onRetry, onSetRating }: PlayerProps): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [mediaDuration, setMediaDuration] = useState(0);
@@ -411,6 +563,13 @@ function Player({ match, detail, loading, error, onRetry }: PlayerProps): JSX.El
             <span>{formatDate(activeMatch?.startedAt ?? "")} · {formatDuration(activeMatch?.videoDurationMs ?? null)}</span>
           </div>
         </div>
+        {activeMatch && (
+          <RatingEditor
+            match={activeMatch}
+            pending={ratingPending}
+            onSet={(rating) => onSetRating(activeMatch, rating)}
+          />
+        )}
         <div class="player-details__clock" aria-label="Playback time">
           {formatDuration(Math.round(currentTime * 1_000))} / {formatDuration(durationMs || activeMatch?.videoDurationMs || null)}
         </div>
@@ -569,36 +728,52 @@ export function App(): JSX.Element {
   const [listLoaded, setListLoaded] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
   const [starPending, setStarPending] = useState<ReadonlySet<number>>(new Set());
+  const [ratingPending, setRatingPending] = useState<ReadonlySet<number>>(new Set());
+  const [ratingHealth, setRatingHealth] = useState<RatingHealth | null>(null);
   const [pendingCommand, setPendingCommand] = useState<RecorderCommand | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const coordinatorStateRef = useRef<CoordinatorState>(coordinatorState);
   const coordinatorNotificationVersionRef = useRef(0);
   const listRequestVersionRef = useRef(0);
-  const starMutationVersionRef = useRef(0);
+  const mutationVersionRef = useRef(0);
   const starMutationsRef = useRef(new Map<number, StarMutation>());
-  const outstandingFencesRef = useRef<StarReadFence[]>([]);
+  const ratingMutationsRef = useRef(new Map<number, RatingMutation>());
+  const outstandingFencesRef = useRef<ReadFences[]>([]);
 
-  // A fenced async read (library.list / library.get) registers its fence so committed star history
-  // is retained until every read that could still be racing it has settled, then pruned.
-  const beginStarReadFence = useCallback((): StarReadFence => {
-    const fence = createStarReadFence(starMutationVersionRef.current, starMutationsRef.current);
-    outstandingFencesRef.current.push(fence);
-    return fence;
+  // A fenced async read (library.list / library.get) registers one fence per optimistic field so
+  // committed history is retained until every read that could still be racing it has settled, then
+  // pruned. Star and rating share one monotonic mutation-version clock but track separate maps.
+  const beginReadFences = useCallback((): ReadFences => {
+    const fences: ReadFences = {
+      star: createReadFence(mutationVersionRef.current, starMutationsRef.current),
+      rating: createReadFence(mutationVersionRef.current, ratingMutationsRef.current),
+    };
+    outstandingFencesRef.current.push(fences);
+    return fences;
   }, []);
 
-  const endStarReadFence = useCallback((fence: StarReadFence): void => {
-    const fences = outstandingFencesRef.current;
-    const index = fences.indexOf(fence);
+  const endReadFences = useCallback((fences: ReadFences): void => {
+    const list = outstandingFencesRef.current;
+    const index = list.indexOf(fences);
     if (index >= 0) {
-      fences.splice(index, 1);
+      list.splice(index, 1);
     }
-    pruneStarMutations(starMutationsRef.current, fences);
+    pruneMutations(starMutationsRef.current, list.map((entry) => entry.star));
+    pruneMutations(ratingMutationsRef.current, list.map((entry) => entry.rating));
   }, []);
+
+  // Applies both field guards so a slower list/detail read cannot overwrite a newer optimistic edit.
+  const protectMatch = useCallback((match: MatchSummary, fences: ReadFences): MatchSummary =>
+    protectManualRatingFromStaleRead(
+      protectStarredFromStaleRead(match, fences.star, starMutationsRef.current),
+      fences.rating,
+      ratingMutationsRef.current,
+    ), []);
 
   const loadLibrary = useCallback(async (): Promise<void> => {
     const requestVersion = ++listRequestVersionRef.current;
     const coordinatorNotificationVersion = coordinatorNotificationVersionRef.current;
-    const starFence = beginStarReadFence();
+    const fences = beginReadFences();
     setListLoading(true);
     setListError(null);
     try {
@@ -607,11 +782,7 @@ export function App(): JSX.Element {
         return;
       }
 
-      setMatches(result.matches.map((match) => protectStarredFromStaleRead(
-        match,
-        starFence,
-        starMutationsRef.current,
-      )));
+      setMatches(result.matches.map((match) => protectMatch(match, fences)));
       setListLoaded(true);
 
       // A recorder notification is newer than the state bundled into any list request that was
@@ -639,12 +810,12 @@ export function App(): JSX.Element {
         setListLoaded(true);
       }
     } finally {
-      endStarReadFence(starFence);
+      endReadFences(fences);
       if (requestVersion === listRequestVersionRef.current) {
         setListLoading(false);
       }
     }
-  }, [beginStarReadFence, endStarReadFence]);
+  }, [beginReadFences, endReadFences, protectMatch]);
 
   // A coordinator transition observed locally (a command reply or a native notification) is newer
   // than the coordinatorState bundled into any library.list already in flight. Bumping the
@@ -724,16 +895,12 @@ export function App(): JSX.Element {
     setDetail(null);
     setDetailError(null);
     setDetailLoading(true);
-    const starFence = beginStarReadFence();
+    const fences = beginReadFences();
 
     void bridge.request("library.get", { matchId: selectedId })
       .then((result) => {
         if (!cancelled) {
-          const protectedMatch = protectStarredFromStaleRead(
-            result.match,
-            starFence,
-            starMutationsRef.current,
-          );
+          const protectedMatch = protectMatch(result.match, fences);
           setDetail({ ...result, match: protectedMatch });
           setMatches((current) => current.map((match) =>
             match.id === result.match.id ? protectedMatch : match));
@@ -745,7 +912,7 @@ export function App(): JSX.Element {
         }
       })
       .finally(() => {
-        endStarReadFence(starFence);
+        endReadFences(fences);
         if (!cancelled) {
           setDetailLoading(false);
         }
@@ -754,7 +921,26 @@ export function App(): JSX.Element {
     return () => {
       cancelled = true;
     };
-  }, [detailVersion, selectedId, beginStarReadFence, endStarReadFence]);
+  }, [detailVersion, selectedId, beginReadFences, endReadFences, protectMatch]);
+
+  const ratingMode: GameType = bucket === "duos" ? "duos" : "solo";
+  useEffect(() => {
+    let cancelled = false;
+    void bridge.request("rating.get", { mode: ratingMode })
+      .then((info) => {
+        if (!cancelled) {
+          setRatingHealth(info.health);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setRatingHealth(null);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [ratingMode]);
 
   const selectedMatch = matches.find((match) => match.id === selectedId) ?? null;
   const soloCount = matches.filter((match) => normalizeGameType(match.gameType) === "solo").length;
@@ -800,7 +986,7 @@ export function App(): JSX.Element {
     }
 
     const starred = !match.starred;
-    const mutationVersion = ++starMutationVersionRef.current;
+    const mutationVersion = ++mutationVersionRef.current;
     starMutationsRef.current.set(match.id, {
       version: mutationVersion,
       starred,
@@ -850,6 +1036,60 @@ export function App(): JSX.Element {
     } finally {
       if (!starMutationsRef.current.get(match.id)?.pending) {
         setStarPending((current) => {
+          const next = new Set(current);
+          next.delete(match.id);
+          return next;
+        });
+      }
+    }
+  };
+
+  const handleSetManualRating = async (match: MatchSummary, rating: number | null): Promise<void> => {
+    if (ratingMutationsRef.current.get(match.id)?.pending || rating === match.manualRating) {
+      return;
+    }
+
+    const previous = match.manualRating;
+    const mutationVersion = ++mutationVersionRef.current;
+    ratingMutationsRef.current.set(match.id, { version: mutationVersion, rating, pending: true });
+    setRatingPending((current) => new Set(current).add(match.id));
+    setMatches((current) => current.map((candidate) => candidate.id === match.id
+      ? { ...candidate, manualRating: rating }
+      : candidate));
+    setDetail((current) => current?.match.id === match.id
+      ? { ...current, match: { ...current.match, manualRating: rating } }
+      : current);
+
+    try {
+      const result = await bridge.request("library.setManualRating", { matchId: match.id, rating });
+      const confirmed = result?.rating ?? rating;
+      const mutation = ratingMutationsRef.current.get(match.id);
+      if (mutation?.version === mutationVersion) {
+        ratingMutationsRef.current.set(match.id, { version: mutationVersion, rating: confirmed, pending: false });
+        setMatches((current) => current.map((candidate) => candidate.id === match.id
+          ? { ...candidate, manualRating: confirmed }
+          : candidate));
+        setDetail((current) => current?.match.id === match.id
+          ? { ...current, match: { ...current.match, manualRating: confirmed } }
+          : current);
+      }
+    } catch (error) {
+      const mutation = ratingMutationsRef.current.get(match.id);
+      if (mutation?.version === mutationVersion) {
+        // Roll back to the pre-edit value as the latest completed mutation so a much older list or
+        // detail read that returns afterward cannot resurrect the rejected value.
+        ratingMutationsRef.current.set(match.id, { version: mutationVersion, rating: previous, pending: false });
+        setMatches((current) => current.map((candidate) => candidate.id === match.id
+          ? { ...candidate, manualRating: previous }
+          : candidate));
+        setDetail((current) => current?.match.id === match.id
+          ? { ...current, match: { ...current.match, manualRating: previous } }
+          : current);
+      }
+      setNotice({ tone: "error", text: `Could not update rating: ${asErrorMessage(error)}` });
+    } finally {
+      if (!ratingMutationsRef.current.get(match.id)?.pending) {
+        setRatingPending((current) => {
           const next = new Set(current);
           next.delete(match.id);
           return next;
@@ -921,6 +1161,8 @@ export function App(): JSX.Element {
             <BucketButton active={bucket === "starred"} count={starredCount} label="Starred" onClick={() => setBucket("starred")} />
           </nav>
 
+          <RatingCard matches={matches} bucket={bucket} health={ratingHealth} />
+
           <div class="sidebar-note">
             <strong>Local by design</strong>
             <span>Recordings and metadata stay on this PC.</span>
@@ -933,7 +1175,9 @@ export function App(): JSX.Element {
             detail={detail}
             loading={detailLoading}
             error={detailError}
+            ratingPending={selectedMatch !== null && ratingPending.has(selectedMatch.id)}
             onRetry={() => setDetailVersion((value) => value + 1)}
+            onSetRating={(match, rating) => void handleSetManualRating(match, rating)}
           />
 
           <section class="library-panel" aria-label="Recordings">

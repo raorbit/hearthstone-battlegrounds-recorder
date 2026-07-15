@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Text.Json;
 using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
+using BgRecorder.Core.Rating;
 using BgRecorder.Core.Session;
 
 namespace BgRecorder.Ui;
@@ -19,12 +20,14 @@ public sealed class UiBridge
 
     private readonly IMatchRepository _repository;
     private readonly ISessionCoordinator _coordinator;
+    private readonly IRatingProvider _ratingProvider;
     private readonly ConcurrentDictionary<long, string> _videoPaths = new();
 
-    public UiBridge(IMatchRepository repository, ISessionCoordinator coordinator)
+    public UiBridge(IMatchRepository repository, ISessionCoordinator coordinator, IRatingProvider ratingProvider)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _coordinator = coordinator ?? throw new ArgumentNullException(nameof(coordinator));
+        _ratingProvider = ratingProvider ?? throw new ArgumentNullException(nameof(ratingProvider));
     }
 
     public event Action<string>? Diagnostic;
@@ -133,6 +136,12 @@ public sealed class UiBridge
                     RequiredBoolean(parameters, "starred"),
                     ct)
                 .ConfigureAwait(false),
+            "library.setManualRating" => await SetManualRatingAsync(
+                    RequiredInt64(parameters, "matchId"),
+                    RequiredNullableRating(parameters, "rating"),
+                    ct)
+                .ConfigureAwait(false),
+            "rating.get" => await GetRatingAsync(RequiredMode(parameters, "mode"), ct).ConfigureAwait(false),
             "recorder.stop" => await StopRecordingAsync().ConfigureAwait(false),
             "recorder.pause" => PauseRecording(),
             "recorder.resume" => ResumeRecording(),
@@ -167,6 +176,35 @@ public sealed class UiBridge
         await _repository.UpdateStarredAsync(matchId, starred, ct).ConfigureAwait(false);
         return new StarredResult(matchId, starred);
     }
+
+    private async Task<ManualRatingResult> SetManualRatingAsync(long matchId, int? rating, CancellationToken ct)
+    {
+        // Distinguish a stale UI row from a mutation that legitimately affects zero rows, mirroring
+        // the starred path. Recording never depends on rating, so this is a pure metadata edit.
+        if (await _repository.GetMatchAsync(matchId, ct).ConfigureAwait(false) is null)
+        {
+            throw new RpcFault(-32004, $"Match {matchId} was not found.");
+        }
+
+        await _repository.UpdateManualRatingAsync(matchId, rating, ct).ConfigureAwait(false);
+        return new ManualRatingResult(matchId, rating);
+    }
+
+    private async Task<RatingInfoResult> GetRatingAsync(BgGameType mode, CancellationToken ct)
+    {
+        // v1's provider is the null one, so this reports Disabled with a null rating; the interface is
+        // wired end to end so a post-v1 clean-room reader lights the same path up without UI changes.
+        var snapshot = await _ratingProvider.TryGetAsync(mode, ct).ConfigureAwait(false);
+        return new RatingInfoResult(MapHealth(_ratingProvider.Health), snapshot?.Rating, snapshot?.SampledAt);
+    }
+
+    private static string MapHealth(RatingHealth health) => health switch
+    {
+        RatingHealth.Ok => "ok",
+        RatingHealth.AttachFailed => "attachFailed",
+        RatingHealth.PatchBroken => "patchBroken",
+        _ => "disabled",
+    };
 
     private async Task<RecorderStateResult> StopRecordingAsync()
     {
@@ -269,6 +307,42 @@ public sealed class UiBridge
         }
 
         return parsed;
+    }
+
+    /// <summary>
+    /// A rating parameter that must be present but may be JSON null (clear the rating) or a
+    /// non-negative integer within a sane bound. Rejects fractional, negative, or absurd values.
+    /// </summary>
+    private static int? RequiredNullableRating(JsonElement parameters, string propertyName)
+    {
+        var value = RequiredProperty(parameters, propertyName);
+        if (value.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+
+        if (value.ValueKind != JsonValueKind.Number ||
+            !value.TryGetInt32(out var parsed) ||
+            parsed < 0 ||
+            parsed > 100_000)
+        {
+            throw RpcFault.InvalidParams($"{propertyName} must be null or an integer between 0 and 100000.");
+        }
+
+        return parsed;
+    }
+
+    private static BgGameType RequiredMode(JsonElement parameters, string propertyName)
+    {
+        var value = RequiredProperty(parameters, propertyName);
+        return value.ValueKind == JsonValueKind.String
+            ? value.GetString() switch
+            {
+                "solo" => BgGameType.Solo,
+                "duos" => BgGameType.Duos,
+                _ => throw RpcFault.InvalidParams($"{propertyName} must be 'solo' or 'duos'."),
+            }
+            : throw RpcFault.InvalidParams($"{propertyName} must be 'solo' or 'duos'.");
     }
 
     private static bool RequiredBoolean(JsonElement parameters, string propertyName)

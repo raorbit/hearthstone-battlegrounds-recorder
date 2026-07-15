@@ -33,3 +33,8 @@ public sealed record LibraryMarker(string Kind, long AtMs, int TavernTurn);
 public sealed record RecorderStateResult(string State);
 
 public sealed record StarredResult(long MatchId, bool Starred);
+
+public sealed record ManualRatingResult(long MatchId, int? Rating);
+
+/// <summary>Optional rating-provider projection. v1 always reports "disabled" with a null rating.</summary>
+public sealed record RatingInfoResult(string Health, int? Rating, DateTimeOffset? SampledAt);
