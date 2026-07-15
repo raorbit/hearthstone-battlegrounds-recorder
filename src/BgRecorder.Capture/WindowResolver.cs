@@ -101,12 +101,25 @@ public static class WindowResolver
             hasIdentityMatch = true;
         }
 
-        // Title hint is only a tie-breaker / fallback when process info is unavailable.
+        // Title hint. When the game's process identity is known (its PID or main-window handle), a
+        // title match is only a score tie-breaker among the game's own windows — it must NOT make a
+        // foreign-process window eligible on its own. Otherwise a deck-tracker overlay whose title
+        // also starts with "Hearthstone", running in another process, would be treated as the game
+        // and recorded whenever the game itself has no eligible window. Only when no process identity
+        // is available at all does the title stand in as the sole identity signal.
+        bool processIdentityKnown = targetProcessId != 0 || mainWindowHandle != nint.Zero;
         if (!string.IsNullOrEmpty(titleHint) && candidate.Title is { Length: > 0 } title)
         {
-            if (title.Equals(titleHint, Ci)) { score += 200; hasIdentityMatch = true; }
-            else if (title.StartsWith(titleHint, Ci)) { score += 60; hasIdentityMatch = true; }
-            else if (title.Contains(titleHint, Ci)) { score += 30; hasIdentityMatch = true; }
+            int titleScore =
+                title.Equals(titleHint, Ci) ? 200 :
+                title.StartsWith(titleHint, Ci) ? 60 :
+                title.Contains(titleHint, Ci) ? 30 : 0;
+            if (titleScore > 0)
+            {
+                score += titleScore;
+                if (!processIdentityKnown)
+                    hasIdentityMatch = true;
+            }
         }
 
         // A window matching NO identity signal (not the game's main window, not owned by the game

@@ -144,6 +144,32 @@ public sealed class WindowResolverTests
     }
 
     [Fact]
+    public void Rejects_foreign_process_hearthstone_titled_window_when_the_game_window_is_absent()
+    {
+        // The game process is known (PID + main handle) but has no eligible window right now
+        // (startup / loading / a fullscreen transition). A deck-tracker window from ANOTHER process
+        // still carries a "Hearthstone…" title — it must not be treated as the game and recorded.
+        // Resolve returns null so the caller raises its "window not found" path instead.
+        var tracker = TrackerOverlay("Hearthstone Deck Tracker");
+
+        var pick = WindowResolver.Resolve([tracker], GamePid, GameMainHandle, "Hearthstone");
+
+        Assert.Null(pick);
+    }
+
+    [Fact]
+    public void Foreign_titled_window_is_excluded_when_process_identity_is_known()
+    {
+        // Direct scoring check: with the game's PID/handle known, a same-titled foreign-process
+        // window earns no identity credit from its title and is rejected outright.
+        var tracker = TrackerOverlay("Hearthstone Deck Tracker");
+
+        int score = WindowResolver.Score(tracker, GamePid, GameMainHandle, "Hearthstone");
+
+        Assert.Equal(int.MinValue, score);
+    }
+
+    [Fact]
     public void Scores_a_window_with_no_identity_signal_as_excluded()
     {
         // Direct check on the scoring floor: a window matching nothing is rejected, not scored zero.
