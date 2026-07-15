@@ -21,7 +21,16 @@ public partial class App : Application
     /// </summary>
     private static readonly TimeSpan ShutdownFinalizeTimeout = TimeSpan.FromSeconds(45);
 
+    /// <summary>
+    /// Session-scoped single-instance guard. Two instances would run startup recovery over the same
+    /// staging root concurrently and could mux to the same deterministic library path, letting the
+    /// losing insert delete the winner's VOD. Holding this named mutex keeps a second launch from
+    /// getting that far.
+    /// </summary>
+    private const string SingleInstanceMutexName = @"Local\BgRecorder.SingleInstance";
+
     private readonly CancellationTokenSource _cts = new();
+    private Mutex? _singleInstanceMutex;
     private TrayController? _tray;
     private AppServices? _services;
     private bool _isSmoke;
@@ -38,6 +47,20 @@ public partial class App : Application
             .Any(a => string.Equals(a, "--smoke", StringComparison.OrdinalIgnoreCase));
         Log.Information("BgRecorder starting (version {Version}, smoke={Smoke})",
             typeof(App).Assembly.GetName().Version, _isSmoke);
+
+        // Single-instance guard: the first instance creates the named mutex; any later launch sees it
+        // already exists and exits before touching the staging root, so recovery and library writes
+        // never race a second process. A crashed instance's handle is released by the OS, so the next
+        // launch cleanly becomes the owner.
+        _singleInstanceMutex = new Mutex(initiallyOwned: true, SingleInstanceMutexName, out bool createdNew);
+        if (!createdNew)
+        {
+            Log.Warning("Another BgRecorder instance is already running; exiting this one to avoid duplicate recording and startup-recovery races.");
+            _singleInstanceMutex.Dispose();
+            _singleInstanceMutex = null;
+            Shutdown(0);
+            return;
+        }
 
         try
         {
@@ -283,6 +306,7 @@ public partial class App : Application
 
         Environment.ExitCode = _exitCode;
         _cts.Dispose();
+        _singleInstanceMutex?.Dispose(); // releases the single-instance guard for the next launch
         Log.Information("BgRecorder exited with code {Code}", _exitCode);
         Log.CloseAndFlush();
         base.OnExit(e);
