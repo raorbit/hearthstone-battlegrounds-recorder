@@ -1460,3 +1460,109 @@ tr:focus-visible,
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Per-match manual rating entry, sitting in the player detail bar. */
+.rating-editor {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.rating-editor__label {
+  color: var(--text-faint);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rating-editor__input {
+  width: 68px;
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--bg-control);
+  color: var(--text-soft);
+  font-size: 11px;
+  text-align: right;
+}
+
+.rating-editor__input:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.rating-editor__input:disabled {
+  opacity: 0.5;
+}
+
+/* Per-mode rating summary in the sidebar. */
+.rating-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+}
+
+.rating-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.rating-card__mode {
+  flex: 1 1 auto;
+  color: var(--text-faint);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rating-card__value {
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.rating-card__value--empty {
+  color: var(--text-muted);
+}
+
+.rating-card__delta {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.rating-card__delta--up {
+  color: var(--green);
+}
+
+.rating-card__delta--down {
+  color: var(--red);
+}
+
+.rating-card__spark {
+  width: 100%;
+  height: 34px;
+}
+
+.rating-card__spark polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.rating-card__note {
+  margin: 0;
+  color: var(--text-faint);
+  font-size: 9.5px;
+  line-height: 1.45;
+}

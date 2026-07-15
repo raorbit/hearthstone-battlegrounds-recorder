@@ -12,10 +12,11 @@ const code = output.find((item) => item.type === "chunk")?.code;
 assert.ok(code, "starState.ts did not produce an executable test chunk");
 const moduleUrl = `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`;
 const {
-  createStarReadFence,
+  createReadFence,
   isCoordinatorSnapshotCurrent,
+  protectManualRatingFromStaleRead,
   protectStarredFromStaleRead,
-  pruneStarMutations,
+  pruneMutations,
   shouldReloadLibraryAfterStateChange,
 } = await import(moduleUrl);
 
@@ -38,7 +39,7 @@ function match(starred = false) {
 
 test("a mutation begun after a read protects its optimistic value", () => {
   const mutations = new Map();
-  const fence = createStarReadFence(0, mutations);
+  const fence = createReadFence(0, mutations);
   mutations.set(42, { version: 1, starred: true, pending: false });
 
   assert.equal(protectStarredFromStaleRead(match(false), fence, mutations).starred, true);
@@ -46,7 +47,7 @@ test("a mutation begun after a read protects its optimistic value", () => {
 
 test("a mutation pending when a read starts stays protected after it commits", () => {
   const mutations = new Map([[42, { version: 1, starred: true, pending: true }]]);
-  const fence = createStarReadFence(1, mutations);
+  const fence = createReadFence(1, mutations);
   mutations.set(42, { version: 1, starred: true, pending: false });
 
   assert.equal(protectStarredFromStaleRead(match(false), fence, mutations).starred, true);
@@ -54,14 +55,14 @@ test("a mutation pending when a read starts stays protected after it commits", (
 
 test("a read started after a committed mutation is authoritative", () => {
   const mutations = new Map([[42, { version: 1, starred: true, pending: false }]]);
-  const fence = createStarReadFence(1, mutations);
+  const fence = createReadFence(1, mutations);
 
   assert.equal(protectStarredFromStaleRead(match(false), fence, mutations).starred, false);
 });
 
 test("a failed second toggle keeps the earlier success ahead of a pre-success read", () => {
   const mutations = new Map();
-  const preSuccessFence = createStarReadFence(0, mutations);
+  const preSuccessFence = createReadFence(0, mutations);
 
   mutations.set(42, { version: 1, starred: true, pending: false });
   // The second toggle tried to write false, failed, and completed by rolling back to true.
@@ -73,36 +74,60 @@ test("a failed second toggle keeps the earlier success ahead of a pre-success re
   );
 });
 
+test("a rating mutation begun after a read protects its optimistic value", () => {
+  const mutations = new Map();
+  const fence = createReadFence(0, mutations);
+  mutations.set(42, { version: 1, rating: 4200, pending: false });
+
+  assert.equal(protectManualRatingFromStaleRead(match(), fence, mutations).manualRating, 4200);
+});
+
+test("a rating read started after a committed mutation is authoritative", () => {
+  const mutations = new Map([[42, { version: 1, rating: 4200, pending: false }]]);
+  const fence = createReadFence(1, mutations);
+
+  assert.equal(protectManualRatingFromStaleRead(match(), fence, mutations).manualRating, null);
+});
+
+test("a pending rating clear stays protected as null after a stale read lands", () => {
+  const mutations = new Map([[42, { version: 1, rating: null, pending: true }]]);
+  const fence = createReadFence(1, mutations);
+  mutations.set(42, { version: 1, rating: null, pending: false });
+
+  const stale = { ...match(), manualRating: 6000 };
+  assert.equal(protectManualRatingFromStaleRead(stale, fence, mutations).manualRating, null);
+});
+
 test("prune drops a committed mutation when no reads are outstanding", () => {
   const mutations = new Map([[42, { version: 1, starred: true, pending: false }]]);
-  pruneStarMutations(mutations, []);
+  pruneMutations(mutations, []);
   assert.equal(mutations.has(42), false);
 });
 
 test("prune keeps a pending mutation", () => {
   const mutations = new Map([[42, { version: 3, starred: true, pending: true }]]);
-  pruneStarMutations(mutations, []);
+  pruneMutations(mutations, []);
   assert.equal(mutations.has(42), true);
 });
 
 test("prune keeps a mutation newer than an outstanding read's fence", () => {
   const mutations = new Map([[42, { version: 5, starred: true, pending: false }]]);
   // A read that began at fence version 4 predates this mutation and would still protect it.
-  pruneStarMutations(mutations, [{ version: 4, pendingMatchIds: new Set() }]);
+  pruneMutations(mutations, [{ version: 4, pendingMatchIds: new Set() }]);
   assert.equal(mutations.has(42), true);
 });
 
 test("prune keeps a mutation an outstanding read captured as pending", () => {
   const mutations = new Map([[42, { version: 2, starred: true, pending: false }]]);
   // The read started while 42 was still pending, so it must keep protecting 42 after it commits.
-  pruneStarMutations(mutations, [{ version: 9, pendingMatchIds: new Set([42]) }]);
+  pruneMutations(mutations, [{ version: 9, pendingMatchIds: new Set([42]) }]);
   assert.equal(mutations.has(42), true);
 });
 
 test("prune drops a committed mutation once every outstanding read is authoritative for it", () => {
   const mutations = new Map([[42, { version: 2, starred: true, pending: false }]]);
   // A read begun at fence version 2 that did not capture 42 as pending already reads the commit.
-  pruneStarMutations(mutations, [{ version: 2, pendingMatchIds: new Set() }]);
+  pruneMutations(mutations, [{ version: 2, pendingMatchIds: new Set() }]);
   assert.equal(mutations.has(42), false);
 });
 
@@ -110,7 +135,7 @@ test("prune keeps a mutation if any one outstanding read still needs it", () => 
   const mutations = new Map([[42, { version: 5, starred: true, pending: false }]]);
   const authoritative = { version: 9, pendingMatchIds: new Set() };
   const stale = { version: 4, pendingMatchIds: new Set() };
-  pruneStarMutations(mutations, [authoritative, stale]);
+  pruneMutations(mutations, [authoritative, stale]);
   assert.equal(mutations.has(42), true);
 });
 

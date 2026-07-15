@@ -68,6 +68,10 @@ export interface RpcMethodMap {
     params: { matchId: number; starred: boolean };
     result: null | { starred: boolean };
   };
+  "library.setManualRating": {
+    params: { matchId: number; rating: number | null };
+    result: null | { rating: number | null };
+  };
   "recorder.stop": {
     params: undefined;
     result: RecorderCommandResult;
