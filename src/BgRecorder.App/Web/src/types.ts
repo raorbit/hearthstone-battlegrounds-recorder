@@ -36,6 +36,8 @@ export interface MatchSummary {
   mediaUrl: string | null;
   /** The row expects a playable video but its drive is currently unreachable (distinct from "missing"). */
   isOffline: boolean;
+  /** Opaque route to a generated still thumbnail, or null when none was produced. */
+  thumbnailUrl: string | null;
 }
 
 export interface Marker {

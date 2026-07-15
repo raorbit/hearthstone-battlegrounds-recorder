@@ -554,6 +554,7 @@ function Player({ match, detail, loading, error, ratingPending, videoRef, onRetr
           ref={videoRef}
           class="player-video"
           src={activeMatch?.mediaUrl ?? undefined}
+          poster={activeMatch?.thumbnailUrl ?? undefined}
           controls
           preload="metadata"
           onLoadedMetadata={(event) => {

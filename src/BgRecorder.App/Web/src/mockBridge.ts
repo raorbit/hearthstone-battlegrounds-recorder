@@ -34,6 +34,7 @@ const mockMatches: MatchSummary[] = [
     manualRating: 6_412,
     mediaUrl: null,
     isOffline: false,
+    thumbnailUrl: null,
   },
   {
     id: 102,
@@ -49,6 +50,7 @@ const mockMatches: MatchSummary[] = [
     manualRating: null,
     mediaUrl: null,
     isOffline: false,
+    thumbnailUrl: null,
   },
   {
     id: 103,
@@ -64,6 +66,7 @@ const mockMatches: MatchSummary[] = [
     manualRating: 5_944,
     mediaUrl: null,
     isOffline: false,
+    thumbnailUrl: null,
   },
   {
     id: 104,
@@ -79,6 +82,7 @@ const mockMatches: MatchSummary[] = [
     manualRating: 6_220,
     mediaUrl: null,
     isOffline: true, // preview demo: a completed recording whose archive drive is unplugged
+    thumbnailUrl: null,
   },
   {
     id: 105,
@@ -94,6 +98,7 @@ const mockMatches: MatchSummary[] = [
     manualRating: null,
     mediaUrl: null,
     isOffline: false,
+    thumbnailUrl: null,
   },
   {
     id: 106,
@@ -109,6 +114,7 @@ const mockMatches: MatchSummary[] = [
     manualRating: null,
     mediaUrl: null,
     isOffline: false,
+    thumbnailUrl: null,
   },
 ];
 

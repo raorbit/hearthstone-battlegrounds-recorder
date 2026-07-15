@@ -22,7 +22,8 @@ public sealed record LibraryMatchSummary(
     bool Starred,
     int? ManualRating,
     string? MediaUrl,
-    bool IsOffline);
+    bool IsOffline,
+    string? ThumbnailUrl);
 
 /// <summary>Selected-match payload, including the persisted seek markers.</summary>
 public sealed record LibraryMatchDetail(

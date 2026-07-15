@@ -26,6 +26,7 @@ public sealed class UiBridge
     private readonly ISettingsService _settings;
     private readonly IStoragePlanner _storagePlanner;
     private readonly ConcurrentDictionary<long, string> _videoPaths = new();
+    private readonly ConcurrentDictionary<long, string> _thumbnailPaths = new();
 
     public UiBridge(
         IMatchRepository repository,
@@ -137,6 +138,19 @@ public sealed class UiBridge
         return false;
     }
 
+    /// <summary>Resolves an opaque thumbnail route the same way as the media route — id in, trusted path out.</summary>
+    public bool TryResolveThumbnailPath(long matchId, out string path)
+    {
+        if (_thumbnailPaths.TryGetValue(matchId, out var candidate) && File.Exists(candidate))
+        {
+            path = candidate;
+            return true;
+        }
+
+        path = string.Empty;
+        return false;
+    }
+
     private async Task<object> DispatchAsync(string method, JsonElement parameters, CancellationToken ct)
         => method switch
         {
@@ -218,22 +232,24 @@ public sealed class UiBridge
         var detail = await _repository.GetMatchAsync(matchId, ct).ConfigureAwait(false)
             ?? throw new RpcFault(-32004, $"Match {matchId} was not found.");
 
-        TryDeleteVideoFile(matchId, detail.Match.VideoPath);
+        TryDeleteMatchFile(matchId, detail.Match.VideoPath, "video");
+        TryDeleteMatchFile(matchId, detail.Match.ThumbnailPath, "thumbnail");
         await _repository.DeleteMatchAsync(matchId, ct).ConfigureAwait(false);
         _videoPaths.TryRemove(matchId, out _);
+        _thumbnailPaths.TryRemove(matchId, out _);
         return new DeletedResult(matchId);
     }
 
-    private void TryDeleteVideoFile(long matchId, string? videoPath)
+    private void TryDeleteMatchFile(long matchId, string? path, string kind)
     {
-        if (string.IsNullOrWhiteSpace(videoPath))
+        if (string.IsNullOrWhiteSpace(path))
         {
             return;
         }
 
         try
         {
-            var fullPath = Path.GetFullPath(videoPath);
+            var fullPath = Path.GetFullPath(path);
             if (File.Exists(fullPath))
             {
                 File.Delete(fullPath);
@@ -245,7 +261,7 @@ public sealed class UiBridge
             or NotSupportedException
             or PathTooLongException)
         {
-            Diagnostic?.Invoke($"Could not delete the video file for match {matchId}: {ex.Message}");
+            Diagnostic?.Invoke($"Could not delete the {kind} file for match {matchId}: {ex.Message}");
         }
     }
 
@@ -424,7 +440,35 @@ public sealed class UiBridge
             match.Starred,
             match.ManualRating,
             mediaUrl,
-            isOffline);
+            isOffline,
+            MapThumbnailUrl(match));
+    }
+
+    /// <summary>
+    /// Caches the trusted thumbnail path and returns an opaque route, or null when there is no readable
+    /// thumbnail. Mirrors the media-URL boundary: the WebView only ever gets the id, never the path.
+    /// </summary>
+    private string? MapThumbnailUrl(MatchRecord match)
+    {
+        if (!string.IsNullOrWhiteSpace(match.ThumbnailPath))
+        {
+            try
+            {
+                var fullPath = Path.GetFullPath(match.ThumbnailPath);
+                if (File.Exists(fullPath))
+                {
+                    _thumbnailPaths[match.Id] = fullPath;
+                    return $"{MediaOrigin}/thumbnails/{match.Id}";
+                }
+            }
+            catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+            {
+                Diagnostic?.Invoke($"Ignored invalid thumbnail path for match {match.Id}: {ex.Message}");
+            }
+        }
+
+        _thumbnailPaths.TryRemove(match.Id, out _);
+        return null;
     }
 
     private static string MapMarkerKind(MarkerKind kind) => kind switch
