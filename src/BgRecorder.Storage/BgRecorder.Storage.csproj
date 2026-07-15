@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Storage subsystem: the pure retention policy plus the journaled mover / engine (behind Core interfaces). -->
+  <ItemGroup>
+    <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BgRecorder.Storage.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>
