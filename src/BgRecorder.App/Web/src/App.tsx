@@ -301,6 +301,9 @@ interface RatingEditorProps {
 /** Inline per-match manual rating entry — v1's only rating source. Commits on blur/Enter. */
 function RatingEditor({ match, pending, onSet }: RatingEditorProps): JSX.Element {
   const [draft, setDraft] = useState(match.manualRating?.toString() ?? "");
+  // Escape blurs the input to defocus it, which would otherwise fire onBlur → commit against the
+  // still-typed draft. This ref makes that one commit a no-op so Escape truly discards the edit.
+  const cancellingRef = useRef(false);
 
   useEffect(() => {
     setDraft(match.manualRating?.toString() ?? "");
@@ -309,6 +312,10 @@ function RatingEditor({ match, pending, onSet }: RatingEditorProps): JSX.Element
   const revert = (): void => setDraft(match.manualRating?.toString() ?? "");
 
   const commit = (): void => {
+    if (cancellingRef.current) {
+      cancellingRef.current = false;
+      return; // this blur came from an Escape cancellation; discard the typed value
+    }
     const trimmed = draft.trim();
     if (trimmed === "") {
       onSet(null);
@@ -343,6 +350,7 @@ function RatingEditor({ match, pending, onSet }: RatingEditorProps): JSX.Element
             event.preventDefault();
             event.currentTarget.blur();
           } else if (event.key === "Escape") {
+            cancellingRef.current = true;
             revert();
             event.currentTarget.blur();
           }
