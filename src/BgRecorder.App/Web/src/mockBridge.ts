@@ -176,6 +176,16 @@ class MockRpcClient implements RpcClient {
         return { starred } as RpcMethodMap[M]["result"];
       }
 
+      case "library.setManualRating": {
+        const { matchId, rating } = params as RpcMethodMap["library.setManualRating"]["params"];
+        const match = mockMatches.find((candidate) => candidate.id === matchId);
+        if (!match) {
+          throw new Error(`Mock match ${matchId} was not found.`);
+        }
+        match.manualRating = rating;
+        return { rating } as RpcMethodMap[M]["result"];
+      }
+
       case "recorder.stop":
         this.setState("finalizing");
         await wait(700);
