@@ -10,7 +10,7 @@ public sealed class JsonSettingsServiceTests
 
     private static void Cleanup(string path)
     {
-        foreach (var p in new[] { path, path + ".tmp" })
+        foreach (var p in new[] { path, path + ".tmp", path + ".corrupt" })
         {
             try { if (File.Exists(p)) File.Delete(p); } catch { /* best effort in tests */ }
         }
@@ -69,16 +69,44 @@ public sealed class JsonSettingsServiceTests
     }
 
     [Fact]
-    public void A_corrupt_file_falls_back_to_defaults_without_throwing()
+    public void A_corrupt_file_is_preserved_not_overwritten()
     {
         var path = NewPath();
         try
         {
-            File.WriteAllText(path, "{ this is not valid json ");
+            const string original = "{ \"LibraryDir\": \"D:/my vods\", oops trailing junk ";
+            File.WriteAllText(path, original);
+
+            var service = new JsonSettingsService(path);
+
+            // Falls back to defaults in memory, without throwing.
+            Assert.Equal(new AppSettings(), service.Current);
+
+            // The unreadable original must NOT be destroyed: it is preserved as a .corrupt sidecar the
+            // user can recover from, and a fresh, valid defaults file is written in its place.
+            Assert.True(File.Exists(path + ".corrupt"));
+            Assert.Equal(original, File.ReadAllText(path + ".corrupt"));
+            Assert.True(File.Exists(path));
+            Assert.NotNull(new JsonSettingsService(path).Current); // the replacement file is valid
+        }
+        finally
+        {
+            Cleanup(path);
+        }
+    }
+
+    [Fact]
+    public void An_empty_file_is_treated_as_unreadable_and_preserved()
+    {
+        var path = NewPath();
+        try
+        {
+            File.WriteAllText(path, string.Empty);
 
             var service = new JsonSettingsService(path);
 
             Assert.Equal(new AppSettings(), service.Current);
+            Assert.True(File.Exists(path + ".corrupt"));
         }
         finally
         {
