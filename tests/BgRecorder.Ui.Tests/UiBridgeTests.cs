@@ -77,6 +77,57 @@ public sealed class UiBridgeTests
     }
 
     [Fact]
+    public async Task Set_manual_rating_persists_through_the_repository_contract()
+    {
+        var repository = new FakeRepository(SampleMatch(videoPath: null));
+        var bridge = new UiBridge(repository, new FakeCoordinator());
+
+        var json = await bridge.HandleRequestAsync(Request(
+            "rate",
+            "library.setManualRating",
+            new { matchId = 42, rating = 4200 }));
+        using var document = JsonDocument.Parse(json);
+
+        Assert.NotNull(repository.LastManualRatingUpdate);
+        Assert.Equal((42L, (int?)4200), repository.LastManualRatingUpdate.Value);
+        Assert.Equal(4200, document.RootElement.GetProperty("result").GetProperty("rating").GetInt32());
+    }
+
+    [Fact]
+    public async Task Set_manual_rating_to_null_clears_it()
+    {
+        var repository = new FakeRepository(SampleMatch(videoPath: null) with { ManualRating = 5000 });
+        var bridge = new UiBridge(repository, new FakeCoordinator());
+
+        var json = await bridge.HandleRequestAsync(Request(
+            "rate",
+            "library.setManualRating",
+            new { matchId = 42, rating = (int?)null }));
+        using var document = JsonDocument.Parse(json);
+
+        Assert.NotNull(repository.LastManualRatingUpdate);
+        Assert.Equal((42L, (int?)null), repository.LastManualRatingUpdate.Value);
+        Assert.Equal(JsonValueKind.Null, document.RootElement.GetProperty("result").GetProperty("rating").ValueKind);
+    }
+
+    [Theory]
+    [InlineData(-5)]
+    [InlineData(100_001)]
+    public async Task Set_manual_rating_rejects_out_of_range_values(int rating)
+    {
+        var repository = new FakeRepository(SampleMatch(videoPath: null));
+        var bridge = new UiBridge(repository, new FakeCoordinator());
+
+        var json = await bridge.HandleRequestAsync(Request(
+            "rate",
+            "library.setManualRating",
+            new { matchId = 42, rating }));
+
+        Assert.Contains("\"code\":-32602", json);
+        Assert.Null(repository.LastManualRatingUpdate);
+    }
+
+    [Fact]
     public async Task Recorder_commands_return_the_coordinator_state()
     {
         var coordinator = new FakeCoordinator { State = CoordinatorState.Recording };
@@ -178,6 +229,19 @@ public sealed class UiBridgeTests
             if (matchId == _match.Id)
             {
                 _match = _match with { Starred = starred };
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public (long MatchId, int? Rating)? LastManualRatingUpdate { get; private set; }
+
+        public Task UpdateManualRatingAsync(long matchId, int? rating, CancellationToken ct = default)
+        {
+            LastManualRatingUpdate = (matchId, rating);
+            if (matchId == _match.Id)
+            {
+                _match = _match with { ManualRating = rating };
             }
 
             return Task.CompletedTask;
