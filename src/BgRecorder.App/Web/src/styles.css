@@ -1938,3 +1938,60 @@ tr:focus-visible,
   color: #e7a49b;
   font-size: 10.5px;
 }
+
+/* Virtual-clip strip under the timeline: one chip per fight, plays a bounded segment of the VOD. */
+.clips {
+  display: flex;
+  height: 38px;
+  flex: 0 0 38px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-raised);
+}
+
+.clips__label {
+  flex: 0 0 auto;
+  color: var(--text-faint);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.clips__strip {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.clip-chip {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 24px;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-control);
+  color: var(--text-soft);
+  font-size: 10px;
+  font-weight: 600;
+  transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+}
+
+.clip-chip:hover {
+  border-color: rgba(91, 191, 106, 0.4);
+  background: rgba(91, 191, 106, 0.06);
+  color: var(--text);
+}
+
+.clip-chip__play {
+  color: var(--green);
+  font-size: 8px;
+}

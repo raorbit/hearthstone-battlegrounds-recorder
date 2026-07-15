@@ -450,21 +450,31 @@ interface PlayerProps {
   loading: boolean;
   error: string | null;
   ratingPending: boolean;
+  videoRef: { current: HTMLVideoElement | null };
   onRetry(): void;
   onSetRating(match: MatchSummary, rating: number | null): void;
 }
 
-function Player({ match, detail, loading, error, ratingPending, onRetry, onSetRating }: PlayerProps): JSX.Element {
-  const videoRef = useRef<HTMLVideoElement>(null);
+/** A play-only segment of the VOD (no file is cut) — a single fight, combat-start to the next marker. */
+interface Clip {
+  turn: number;
+  startMs: number;
+  endMs: number;
+}
+
+function Player({ match, detail, loading, error, ratingPending, videoRef, onRetry, onSetRating }: PlayerProps): JSX.Element {
   const [currentTime, setCurrentTime] = useState(0);
   const [mediaDuration, setMediaDuration] = useState(0);
   const [mediaError, setMediaError] = useState<string | null>(null);
+  // When set, playback auto-pauses once currentTime reaches this ms — the end of a virtual clip.
+  const [clipEnd, setClipEnd] = useState<number | null>(null);
   const activeMatch = detail?.match ?? match;
 
   useEffect(() => {
     setCurrentTime(0);
     setMediaDuration(0);
     setMediaError(null);
+    setClipEnd(null);
   }, [activeMatch?.id, activeMatch?.mediaUrl]);
 
   const durationMs = mediaDuration > 0
@@ -488,13 +498,42 @@ function Player({ match, detail, loading, error, ratingPending, onRetry, onSetRa
     }
   };
 
+  // A manual seek cancels any active clip so playback no longer auto-pauses at the old clip end.
+  const seekManually = (milliseconds: number): void => {
+    setClipEnd(null);
+    seekTo(milliseconds);
+  };
+
+  // Virtual clip: seek to the fight's start, arm the auto-pause at its end, and start playing. No file
+  // is extracted — it's just a bounded playback of the existing VOD.
+  const playClip = (clip: Clip): void => {
+    setClipEnd(clip.endMs);
+    seekTo(clip.startMs);
+    const video = videoRef.current;
+    if (video && mediaAvailable) {
+      void video.play().catch(() => {
+        // Autoplay/seek can reject (no media in preview, or a transient state); the timeline still moved.
+      });
+    }
+  };
+
+  const markers = detail?.markers ?? [];
+  const clips: Clip[] = markers
+    .map((marker, index) => ({ marker, next: markers[index + 1] }))
+    .filter(({ marker }) => normalizeMarkerKind(marker.kind) === "combatStart")
+    .map(({ marker, next }) => ({
+      turn: marker.tavernTurn,
+      startMs: marker.atMs,
+      endMs: next ? next.atMs : durationMs,
+    }));
+
   const handleTimelineClick = (event: JSX.TargetedMouseEvent<HTMLDivElement>): void => {
     if (durationMs <= 0) {
       return;
     }
     const bounds = event.currentTarget.getBoundingClientRect();
     const ratio = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
-    seekTo(durationMs * ratio);
+    seekManually(durationMs * ratio);
   };
 
   if (!match) {
@@ -521,7 +560,14 @@ function Player({ match, detail, loading, error, ratingPending, onRetry, onSetRa
             setMediaDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0);
             setMediaError(null);
           }}
-          onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+          onTimeUpdate={(event) => {
+            const seconds = event.currentTarget.currentTime;
+            setCurrentTime(seconds);
+            if (clipEnd !== null && seconds * 1_000 >= clipEnd) {
+              event.currentTarget.pause();
+              setClipEnd(null);
+            }
+          }}
           onError={() => setMediaError("The recording could not be opened.")}
         >
           Your browser does not support HTML5 video playback.
@@ -603,7 +649,7 @@ function Player({ match, detail, loading, error, ratingPending, onRetry, onSetRa
                 aria-label={`Seek to ${markerLabel(marker)} at ${formatDuration(marker.atMs)}`}
                 onClick={(event) => {
                   event.stopPropagation();
-                  seekTo(marker.atMs);
+                  seekManually(marker.atMs);
                 }}
               />
             );
@@ -616,6 +662,27 @@ function Player({ match, detail, loading, error, ratingPending, onRetry, onSetRa
           <span><i class="legend-swatch legend-swatch--end" />Match end</span>
         </div>
       </div>
+
+      {clips.length > 0 && (
+        <div class="clips" aria-label="Combat clips">
+          <span class="clips__label">Fights</span>
+          <div class="clips__strip">
+            {clips.map((clip, index) => (
+              <button
+                key={`clip-${clip.turn}-${clip.startMs}-${index}`}
+                class="clip-chip"
+                type="button"
+                title={`Play turn ${clip.turn} fight (${formatDuration(clip.startMs)}–${formatDuration(clip.endMs)})`}
+                aria-label={`Play turn ${clip.turn} fight`}
+                onClick={() => playClip(clip)}
+              >
+                <span class="clip-chip__play" aria-hidden="true">▶</span>
+                Turn {clip.turn}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -1342,6 +1409,8 @@ export function App(): JSX.Element {
   // Ids removed via delete. A library.list already in flight (or a later refresh) must not resurrect a
   // deleted row; deletion is permanent, so these are filtered out of every list result for the session.
   const deletedIdsRef = useRef(new Set<number>());
+  // The selected recording's <video>, shared with the Player so keyboard shortcuts can drive playback.
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // A fenced async read (library.list / library.get) registers one fence per optimistic field so
   // committed history is retained until every read that could still be racing it has settled, then
@@ -1546,6 +1615,87 @@ export function App(): JSX.Element {
       cancelled = true;
     };
   }, [ratingMode]);
+
+  // Global keyboard shortcuts. Arrow/Home/End navigate the visible match list; Space and ←/→ drive the
+  // selected recording's playback, and [ ] jump between markers. Typing targets are always left alone,
+  // and playback keys defer to a focused control, row, or the video's own native controls.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      const target = document.activeElement;
+      const tag = target?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (target as HTMLElement | null)?.isContentEditable) {
+        return;
+      }
+      if (view !== "library") {
+        return;
+      }
+
+      const ids = visibleMatches.map((match) => match.id);
+      const index = selectedId === null ? -1 : ids.indexOf(selectedId);
+      if (ids.length > 0) {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          setSelectedId(ids[Math.min(ids.length - 1, index + 1)] ?? ids[0]);
+          return;
+        }
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          setSelectedId(index <= 0 ? ids[0] : ids[index - 1]);
+          return;
+        }
+        if (event.key === "Home") {
+          event.preventDefault();
+          setSelectedId(ids[0]);
+          return;
+        }
+        if (event.key === "End") {
+          event.preventDefault();
+          setSelectedId(ids[ids.length - 1]);
+          return;
+        }
+      }
+
+      // Playback keys defer to a focused control/row and to the video's native controls.
+      if (tag === "BUTTON" || tag === "TR" || tag === "A" || target === videoRef.current) {
+        return;
+      }
+      const video = videoRef.current;
+      if (!video) {
+        return;
+      }
+      if (event.key === " ") {
+        event.preventDefault();
+        if (video.paused) {
+          void video.play().catch(() => undefined);
+        } else {
+          video.pause();
+        }
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        video.currentTime = Math.max(0, video.currentTime - 5);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        const max = Number.isFinite(video.duration) ? video.duration : video.currentTime + 5;
+        video.currentTime = Math.min(max, video.currentTime + 5);
+      } else if (event.key === "[" || event.key === "]") {
+        const marks = (detail?.markers ?? []).map((marker) => marker.atMs).sort((a, b) => a - b);
+        if (marks.length === 0) {
+          return;
+        }
+        event.preventDefault();
+        const nowMs = video.currentTime * 1_000;
+        const next = event.key === "]"
+          ? marks.find((atMs) => atMs > nowMs + 250)
+          : [...marks].reverse().find((atMs) => atMs < nowMs - 250);
+        if (next !== undefined) {
+          video.currentTime = next / 1_000;
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [view, visibleMatches, selectedId, detail]);
 
   const selectedMatch = matches.find((match) => match.id === selectedId) ?? null;
   const soloCount = matches.filter((match) => normalizeGameType(match.gameType) === "solo").length;
@@ -1842,6 +1992,7 @@ export function App(): JSX.Element {
             loading={detailLoading}
             error={detailError}
             ratingPending={selectedMatch !== null && ratingPending.has(selectedMatch.id)}
+            videoRef={videoRef}
             onRetry={() => setDetailVersion((value) => value + 1)}
             onSetRating={(match, rating) => void handleSetManualRating(match, rating)}
           />
