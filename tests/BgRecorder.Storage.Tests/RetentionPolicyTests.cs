@@ -239,4 +239,60 @@ public sealed class RetentionPolicyTests
         var move = Assert.Single(plan.Moves);
         Assert.Equal("ARC2", move.ToVolumeId); // ARC1 lacks cap headroom for a 5 GB match
     }
+
+    [Fact]
+    public void The_total_cap_never_deletes_a_match_on_an_offline_archive()
+    {
+        // Rule 7: an unplugged archive keeps everything. The total-cap pass must not target its rows.
+        var plan = Policy.Plan(State(
+            [
+                Rec(capGb: 100, reserveGb: 5, freeGb: 100),
+                Arc("ARC", capGb: 100, reserveGb: 5, freeGb: 100, online: false),
+            ],
+            [M(1, "ARC", 5, ageDays: 3), M(2, "ARC", 5, ageDays: 2), M(3, "REC", 5, ageDays: 1)],
+            hotSet: 1,
+            totalCapGb: 8));
+
+        Assert.Empty(plan.Deletes);
+        Assert.Empty(plan.Moves);
+    }
+
+    [Fact]
+    public void A_match_on_an_unmanaged_volume_is_ignored_rather_than_crashing_the_total_cap_pass()
+    {
+        // "GHOST" is a dropped drive whose rows still exist; it must not be a deletion candidate and
+        // must not throw when its bytes cannot be reconciled against a managed volume.
+        var plan = Policy.Plan(State(
+            [Rec(capGb: 100, reserveGb: 5, freeGb: 100)],
+            [M(1, "GHOST", 5, ageDays: 3), M(2, "REC", 5, ageDays: 1)],
+            hotSet: 1,
+            totalCapGb: 4));
+
+        Assert.DoesNotContain(plan.Deletes, d => d.MatchId == 1);
+    }
+
+    [Fact]
+    public void More_than_one_recording_volume_plans_nothing_rather_than_crashing()
+    {
+        var plan = Policy.Plan(State(
+            [Rec(1, 0, 1) with { Id = "REC1" }, Rec(1, 0, 1) with { Id = "REC2" }],
+            [M(1, "REC1", 5, ageDays: 1)],
+            hotSet: 0));
+
+        Assert.Empty(plan.Moves);
+        Assert.Empty(plan.Deletes);
+        Assert.False(plan.RecordingBelowFloor);
+    }
+
+    [Fact]
+    public void Duplicate_volume_ids_plan_nothing_rather_than_crashing()
+    {
+        var plan = Policy.Plan(State(
+            [Rec(1, 0, 1), Arc("REC", capGb: 1, reserveGb: 0, freeGb: 1)], // both share id "REC"
+            [M(1, "REC", 5, ageDays: 1)],
+            hotSet: 0));
+
+        Assert.Empty(plan.Moves);
+        Assert.Empty(plan.Deletes);
+    }
 }

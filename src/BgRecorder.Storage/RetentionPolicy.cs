@@ -14,11 +14,21 @@ public sealed class RetentionPolicy : IRetentionPolicy
     {
         ArgumentNullException.ThrowIfNull(state);
 
-        var recording = state.Volumes.SingleOrDefault(v => v.Role == VolumeRole.Recording);
-        if (recording is null)
+        // A malformed volume set — duplicate ids, or not exactly one recording volume — is ambiguous.
+        // A data-loss-critical planner must never guess or crash on it, so it plans nothing and leaves
+        // the composition layer to surface the misconfiguration.
+        if (state.Volumes.Select(v => v.Id).Distinct().Count() != state.Volumes.Count)
         {
             return new RetentionPlan();
         }
+
+        var recordingVolumes = state.Volumes.Where(v => v.Role == VolumeRole.Recording).ToList();
+        if (recordingVolumes.Count != 1)
+        {
+            return new RetentionPlan();
+        }
+
+        var recording = recordingVolumes[0];
 
         // Mutable working copies so a sequence of moves/deletes sees each other's reclaimed space.
         var free = state.Volumes.ToDictionary(v => v.Id, v => v.FreeBytes);
@@ -86,13 +96,23 @@ public sealed class RetentionPolicy : IRetentionPolicy
             // it in place and keep scanning older-to-newer for something that can be.
         }
 
-        // The optional whole-library cap: delete oldest-unstarred anywhere until the library is under
-        // it. The hot set and matches already moved/deleted above are skipped so the plan stays
-        // self-consistent and the newest K keep their "always retained" guarantee.
+        // The optional whole-library cap: delete oldest-unstarred until the library is under it. Only
+        // matches on an online, managed volume are eligible — an offline archive keeps everything
+        // (rule 7), and a match on an unmanaged/dropped volume cannot be touched. The hot set and
+        // matches already moved/deleted above are skipped (moved matches are preserved on their new
+        // volume rather than deleted here) so the plan stays self-consistent.
         if (state.TotalCapBytes is { } totalCap)
         {
+            var deletableVolumeIds = state.Volumes
+                .Where(v => v.IsOnline)
+                .Select(v => v.Id)
+                .ToHashSet();
+
             var globalCandidates = state.Matches
-                .Where(m => !m.Starred && !evicted.Contains(m.MatchId) && !hotSet.Contains(m.MatchId))
+                .Where(m => !m.Starred
+                    && !evicted.Contains(m.MatchId)
+                    && !hotSet.Contains(m.MatchId)
+                    && deletableVolumeIds.Contains(m.VolumeId))
                 .OrderBy(m => m.FinishedAt)
                 .ThenBy(m => m.MatchId)
                 .ToList();
