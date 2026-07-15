@@ -126,12 +126,103 @@ public sealed class ArchiveMoverTests
         Assert.Empty(journal.Entries);
     }
 
+    [Fact]
+    public async Task A_fault_after_the_flip_never_deletes_the_verified_destination()
+    {
+        // The DB flip commits, then the source-delete throws (a still-locked file). The old catch would
+        // have deleted the destination — the only referenced copy. It must survive.
+        var fs = new FakeFileSystem { FailDeleteOf = "src.mp4" };
+        fs.Seed("src.mp4", [1, 2, 3, 4]);
+        var journal = new FakeMoverJournal();
+        var locations = new FakeLocationStore();
+        var mover = new ArchiveMover(fs, journal, locations);
+
+        var outcome = await mover.MoveAsync(7, "src.mp4", "dst.mp4");
+
+        Assert.True(outcome.Success);              // the flip committed, so the move succeeded
+        Assert.True(fs.Has("dst.mp4"));            // destination is never deleted after the flip
+        Assert.Equal("dst.mp4", locations.Locations[7]);
+    }
+
+    [Fact]
+    public async Task A_move_onto_the_same_path_is_refused_and_keeps_the_file()
+    {
+        var fs = new FakeFileSystem();
+        fs.Seed("same.mp4", [1, 2, 3]);
+
+        var outcome = await new ArchiveMover(fs, new FakeMoverJournal(), new FakeLocationStore())
+            .MoveAsync(7, "same.mp4", "same.mp4");
+
+        Assert.False(outcome.Success);
+        Assert.True(fs.Has("same.mp4"));           // the one and only copy is untouched
+    }
+
+    [Fact]
+    public async Task Reconcile_keeps_the_source_when_the_destination_is_unreachable()
+    {
+        // Flipping entry, but the destination is not present (archive drive offline between crash and
+        // reconcile). The source must not be deleted, and the entry stays for a later reconciliation.
+        var fs = new FakeFileSystem();
+        fs.Seed("src.mp4", [1, 2, 3, 4]); // destination deliberately not seeded
+        var journal = new FakeMoverJournal();
+        journal.Seed(new MoverJournalEntry
+        {
+            MatchId = 7,
+            SourcePath = "src.mp4",
+            DestinationPath = "dst.mp4",
+            State = MoverJournalState.Flipping,
+            CreatedAt = DateTimeOffset.UnixEpoch,
+        });
+
+        await new ArchiveMover(fs, journal, new FakeLocationStore()).ReconcileAsync();
+
+        Assert.True(fs.Has("src.mp4"));            // source preserved while the destination is missing
+        Assert.Single(journal.Entries);           // retained for a later reconciliation pass
+    }
+
+    [Fact]
+    public async Task Reconcile_isolates_a_failing_entry_from_the_rest()
+    {
+        var fs = new FakeFileSystem { FailDeleteOf = "bad-src.mp4" };
+        fs.Seed("bad-src.mp4", [9]);
+        fs.Seed("bad-dst.mp4", [9]);
+        fs.Seed("good-src.mp4", [1]);
+        fs.Seed("good-dst.mp4", [1]);
+        var journal = new FakeMoverJournal();
+        journal.Seed(new MoverJournalEntry
+        {
+            MatchId = 1,
+            SourcePath = "bad-src.mp4",
+            DestinationPath = "bad-dst.mp4",
+            State = MoverJournalState.Deleting,
+            CreatedAt = DateTimeOffset.UnixEpoch,
+        });
+        journal.Seed(new MoverJournalEntry
+        {
+            MatchId = 2,
+            SourcePath = "good-src.mp4",
+            DestinationPath = "good-dst.mp4",
+            State = MoverJournalState.Flipping,
+            CreatedAt = DateTimeOffset.UnixEpoch,
+        });
+        var locations = new FakeLocationStore();
+
+        await new ArchiveMover(fs, journal, locations).ReconcileAsync();
+
+        // The second entry completes even though the first one threw mid-recovery.
+        Assert.Equal("good-dst.mp4", locations.Locations[2]);
+        Assert.False(fs.Has("good-src.mp4"));
+    }
+
     private sealed class FakeFileSystem : IFileSystem
     {
         private readonly Dictionary<string, byte[]> _files = new();
 
         public bool CorruptOnCopy { get; init; }
         public bool FailCopy { get; init; }
+
+        /// <summary>When set, <see cref="Delete"/> throws for this exact path (a handle-locked file).</summary>
+        public string? FailDeleteOf { get; init; }
 
         public void Seed(string path, byte[] data) => _files[path] = data;
         public bool Has(string path) => _files.ContainsKey(path);
@@ -154,7 +245,14 @@ public sealed class ArchiveMoverTests
         public Task<string> ComputeContentHashAsync(string path, CancellationToken ct = default)
             => Task.FromResult(Convert.ToHexString(SHA256.HashData(_files[path])));
 
-        public void Delete(string path) => _files.Remove(path);
+        public void Delete(string path)
+        {
+            if (FailDeleteOf is not null && path == FailDeleteOf)
+            {
+                throw new IOException($"injected delete failure for {path}");
+            }
+            _files.Remove(path);
+        }
     }
 
     private sealed class FakeMoverJournal : IMoverJournal
