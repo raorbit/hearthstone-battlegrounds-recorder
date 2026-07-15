@@ -76,6 +76,12 @@ public sealed class SqliteMatchRepository : IMatchRepository
                 "ALTER TABLE matches ADD COLUMN started_at_utc TEXT NULL;", cancellationToken: ct));
         }
 
+        if (!columns.Contains("thumbnail_path"))
+        {
+            await conn.ExecuteAsync(new CommandDefinition(
+                "ALTER TABLE matches ADD COLUMN thumbnail_path TEXT NULL;", cancellationToken: ct));
+        }
+
         // Backfill independently from adding the column so an interrupted prior migration resumes.
         // The WHERE guard also makes this a cheap, idempotent no-op once every row is populated.
         var rows = await conn.QueryAsync(new CommandDefinition(
@@ -276,6 +282,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
             : null,
         starred = match.Starred ? 1 : 0,
         manual_rating = match.ManualRating,
+        thumbnail_path = match.ThumbnailPath,
         created_at = DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture),
     };
 
@@ -297,6 +304,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
         VideoDuration = row.video_duration_ms is null ? null : TimeSpan.FromMilliseconds(row.video_duration_ms.Value),
         Starred = row.starred != 0,
         ManualRating = row.manual_rating,
+        ThumbnailPath = row.thumbnail_path,
     };
 
     private static MarkerRecord MapMarker(MarkerRow row) => new(
@@ -327,6 +335,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
         public long? video_duration_ms { get; init; }
         public long starred { get; init; }
         public int? manual_rating { get; init; }
+        public string? thumbnail_path { get; init; }
     }
 
     /// <summary>Column-shaped marker DTO; the id is selected only to define stable tie ordering.</summary>
@@ -362,6 +371,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
             video_duration_ms INTEGER NULL,
             starred           INTEGER NOT NULL DEFAULT 0,
             manual_rating     INTEGER NULL,
+            thumbnail_path    TEXT    NULL,
             created_at        TEXT    NOT NULL
         );
 
@@ -384,11 +394,11 @@ public sealed class SqliteMatchRepository : IMatchRepository
         INSERT INTO matches (
             session_id, started_at, started_at_utc, ended_at, game_type, hero_card_id, place,
             tavern_turns, play_state, truncated, video_status, video_path, video_size_bytes,
-            video_duration_ms, starred, manual_rating, created_at)
+            video_duration_ms, starred, manual_rating, thumbnail_path, created_at)
         VALUES (
             @session_id, @started_at, @started_at_utc, @ended_at, @game_type, @hero_card_id, @place,
             @tavern_turns, @play_state, @truncated, @video_status, @video_path, @video_size_bytes,
-            @video_duration_ms, @starred, @manual_rating, @created_at)
+            @video_duration_ms, @starred, @manual_rating, @thumbnail_path, @created_at)
         RETURNING id;
         """;
 
@@ -400,7 +410,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
     private const string ListMatchesSql = """
         SELECT id, session_id, started_at, ended_at, game_type, hero_card_id, place, tavern_turns,
                play_state, truncated, video_status, video_path, video_size_bytes, video_duration_ms,
-               starred, manual_rating
+               starred, manual_rating, thumbnail_path
         FROM matches
         ORDER BY started_at_utc DESC, id DESC;
         """;
@@ -408,7 +418,7 @@ public sealed class SqliteMatchRepository : IMatchRepository
     private const string GetMatchSql = """
         SELECT id, session_id, started_at, ended_at, game_type, hero_card_id, place, tavern_turns,
                play_state, truncated, video_status, video_path, video_size_bytes, video_duration_ms,
-               starred, manual_rating
+               starred, manual_rating, thumbnail_path
         FROM matches
         WHERE id = @id;
         """;

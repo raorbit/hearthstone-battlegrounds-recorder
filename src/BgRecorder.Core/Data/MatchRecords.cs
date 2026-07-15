@@ -27,6 +27,8 @@ public sealed record MatchRecord
     public bool Starred { get; init; }
     /// <summary>v1 rating is manual entry only (no automatic MMR — M1 licensing decision).</summary>
     public int? ManualRating { get; init; }
+    /// <summary>Path to a generated still thumbnail (best-effort at finalize); null when none was produced.</summary>
+    public string? ThumbnailPath { get; init; }
 }
 
 public enum VideoStatus
