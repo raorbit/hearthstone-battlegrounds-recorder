@@ -250,6 +250,14 @@ internal sealed class FakeRepository : IMatchRepository
             .ToList();
         return Task.CompletedTask;
     }
+
+    public Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default)
+    {
+        Matches = Matches
+            .Select(match => match.Id == matchId ? match with { VideoPath = videoPath } : match)
+            .ToList();
+        return Task.CompletedTask;
+    }
 }
 
 internal sealed class FakeDiskSafety : IDiskSafety

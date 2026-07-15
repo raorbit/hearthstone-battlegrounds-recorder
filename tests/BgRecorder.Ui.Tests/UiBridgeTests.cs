@@ -182,6 +182,16 @@ public sealed class UiBridgeTests
 
             return Task.CompletedTask;
         }
+
+        public Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default)
+        {
+            if (matchId == _match.Id)
+            {
+                _match = _match with { VideoPath = videoPath };
+            }
+
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class FakeCoordinator : ISessionCoordinator

@@ -56,7 +56,17 @@ public enum MarkerKind
     MatchEnd = 2,
 }
 
-public interface IMatchRepository
+/// <summary>The narrow write the archive mover needs: repoint a match's video after relocating it.</summary>
+public interface IMatchLocationStore
+{
+    /// <summary>
+    /// Repoints a match's video to a new absolute path after the archive mover relocates the file.
+    /// Idempotent: re-applying the same path (a crash-recovery re-run) is a harmless no-op.
+    /// </summary>
+    Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default);
+}
+
+public interface IMatchRepository : IMatchLocationStore
 {
     /// <summary>Creates/migrates the schema. Idempotent.</summary>
     Task InitializeAsync(CancellationToken ct = default);

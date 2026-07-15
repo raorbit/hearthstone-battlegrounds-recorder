@@ -199,6 +199,16 @@ public sealed class SqliteMatchRepository : IMatchRepository
         await tx.CommitAsync(ct);
     }
 
+    public async Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(videoPath);
+        await using var conn = await OpenConnectionAsync(ct);
+        await conn.ExecuteAsync(new CommandDefinition(
+            "UPDATE matches SET video_path = @video_path WHERE id = @id;",
+            new { id = matchId, video_path = videoPath },
+            cancellationToken: ct));
+    }
+
     private async Task<SqliteConnection> OpenConnectionAsync(CancellationToken ct)
     {
         var conn = new SqliteConnection(_connectionString);
