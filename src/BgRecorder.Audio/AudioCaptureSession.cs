@@ -63,7 +63,18 @@ public sealed class AudioCaptureSession : IAudioSession
             TimeSpan gameDuration = _game.Stop();
 
             if (_mic is null)
+            {
+                // No mic to mix. Release the game recorder's file handle before returning: the
+                // muxer opens this WAV for reading, and NAudio's WaveFileWriter holds it open with
+                // write access until disposal — an open write handle makes Media Foundation reject
+                // the byte stream, and the mux then silently drops audio from the VOD. Dispose is
+                // idempotent, so DisposeAsync re-disposing later is a harmless no-op.
+                _game.Dispose();
+                // If mic mixing was requested but the mic failed to start, the game stream wrote to a
+                // pre-mix staging path (not _finalPath); move it into place so audio isn't lost.
+                SalvageGameAudio();
                 return new AudioResult(_finalPath, gameDuration);
+            }
 
             _mic.Stop();
 
