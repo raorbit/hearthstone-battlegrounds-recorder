@@ -69,3 +69,17 @@ public interface IMuxer
     /// <param name="audioOffset">Positive = audio started after video's first frame; shifts audio right.</param>
     Task MuxAsync(string videoMp4, string audioWav, TimeSpan audioOffset, string outputMp4, CancellationToken ct);
 }
+
+/// <summary>
+/// Extracts a still thumbnail image from a finalized library MP4. Strictly best-effort: a failed or
+/// impossible extraction returns false (never throws), and the caller records the match without a
+/// thumbnail — generating one must never block or fail finalize.
+/// </summary>
+public interface IThumbnailExtractor
+{
+    /// <summary>
+    /// Writes a thumbnail for <paramref name="videoMp4"/> to <paramref name="outputImagePath"/> and
+    /// returns true on success; false means no thumbnail was produced.
+    /// </summary>
+    Task<bool> TryExtractAsync(string videoMp4, string outputImagePath, CancellationToken ct = default);
+}

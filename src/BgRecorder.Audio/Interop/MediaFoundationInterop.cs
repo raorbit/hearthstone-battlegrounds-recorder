@@ -50,6 +50,17 @@ internal static class MF
     public static readonly Guid MFAudioFormat_PCM = new("00000001-0000-0010-8000-00aa00389b71");
     public static readonly Guid MFAudioFormat_AAC = new("00001610-0000-0010-8000-00aa00389b71");
 
+    // Uncompressed 32-bit RGB (X8R8G8B8 in memory as B,G,R,X little-endian) — the thumbnail decode target.
+    public static readonly Guid MFVideoFormat_RGB32 = new("00000016-0000-0010-8000-00aa00389b71");
+
+    // Video media-type attributes for a decoded frame.
+    public static readonly Guid MF_MT_FRAME_SIZE = new("1652c33d-d6b2-4012-b834-72030849a37d");     // UINT64: (width << 32) | height
+    public static readonly Guid MF_MT_DEFAULT_STRIDE = new("644b4e48-1e02-4516-b0eb-c01ca9d49ac6"); // UINT32 (signed): row stride, negative when bottom-up
+
+    // Lets the source reader insert the video processor MFT so it can decode + color-convert (and scale)
+    // H.264 straight to RGB32 — required for a SetCurrentMediaType(RGB32) on a compressed source.
+    public static readonly Guid MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING = new("fb394f3d-ccf1-42ee-bbb3-f9b845d5681d");
+
     public static readonly Guid IID_IMFSourceReader = new("70ae66f2-c809-4e4f-8915-bdcb406b7993");
     public static readonly Guid IID_IMFSinkWriter = new("3137f1cd-fe5e-4805-a5d8-fb477448cb3d");
 
@@ -200,7 +211,8 @@ internal interface IMFSourceReader
     [PreserveSig] int GetCurrentMediaType(uint streamIndex, out IMFMediaType mediaType);
     [PreserveSig] int SetCurrentMediaType(uint streamIndex, IntPtr reserved, IMFMediaType mediaType);
     [PreserveSig] int SetCurrentPosition([In] ref Guid guidTimeFormat, IntPtr varPosition);
-    [PreserveSig] int ReadSample(
+    [PreserveSig]
+    int ReadSample(
         uint streamIndex,
         uint controlFlags,
         out uint actualStreamIndex,
