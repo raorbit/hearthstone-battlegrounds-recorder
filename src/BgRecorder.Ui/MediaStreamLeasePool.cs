@@ -454,16 +454,14 @@ internal sealed class ReopenableBoundedStream : Stream
             var capped = (int)Math.Min(requestedCount, _length - _position);
             if (capped == 0)
             {
-                if (_position >= _length)
+                if (_position >= _length && _inner is not null)
                 {
-                    _disposeRequested = true;
-                    _disposed = true;
+                    // Logical EOF: free the handle promptly, but leave the lease undisposed so it still
+                    // honors the Stream contract. A further read returns 0, Position/Length/Seek stay
+                    // usable, and a seek back re-reads by reopening the resource.
                     var completedStream = _inner;
                     _inner = null;
-                    if (completedStream is not null)
-                    {
-                        CloseInner(completedStream);
-                    }
+                    CloseInner(completedStream);
                 }
                 return null;
             }
