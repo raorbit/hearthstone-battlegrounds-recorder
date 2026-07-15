@@ -250,6 +250,14 @@ internal sealed class FakeRepository : IMatchRepository
             .ToList();
         return Task.CompletedTask;
     }
+
+    public Task UpdateManualRatingAsync(long matchId, int? rating, CancellationToken ct = default)
+    {
+        Matches = Matches
+            .Select(match => match.Id == matchId ? match with { ManualRating = rating } : match)
+            .ToList();
+        return Task.CompletedTask;
+    }
 }
 
 internal sealed class FakeDiskSafety : IDiskSafety

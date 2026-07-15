@@ -204,6 +204,55 @@ public sealed class SqliteMatchRepositoryTests
         finally { Cleanup(db); }
     }
 
+    [Theory]
+    [InlineData(4200)]
+    [InlineData(0)]
+    public async Task UpdateManualRating_sets_only_the_target_row(int rating)
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            var targetId = await repo.InsertMatchAsync(
+                SampleMatch() with { HeroCardId = "TARGET", ManualRating = null },
+                SampleMarkers());
+            var otherId = await repo.InsertMatchAsync(
+                SampleMatch() with
+                {
+                    HeroCardId = "OTHER",
+                    StartedAt = SampleMatch().StartedAt.AddMinutes(1),
+                    ManualRating = 999,
+                },
+                SampleMarkers());
+            var otherBefore = Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(otherId));
+
+            await repo.UpdateManualRatingAsync(targetId, rating);
+
+            var targetAfter = Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(targetId));
+            var otherAfter = Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(otherId));
+            Assert.Equal(rating, targetAfter.Match.ManualRating);
+            Assert.Equal(otherBefore.Match, otherAfter.Match);
+        }
+        finally { Cleanup(db); }
+    }
+
+    [Fact]
+    public async Task UpdateManualRating_to_null_clears_an_existing_value()
+    {
+        var db = NewDbPath();
+        try
+        {
+            var repo = await NewRepoAsync(db);
+            var id = await repo.InsertMatchAsync(SampleMatch() with { ManualRating = 6000 }, SampleMarkers());
+            Assert.Equal(6000, Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(id)).Match.ManualRating);
+
+            await repo.UpdateManualRatingAsync(id, null);
+
+            Assert.Null(Assert.IsType<MatchDetailRecord>(await repo.GetMatchAsync(id)).Match.ManualRating);
+        }
+        finally { Cleanup(db); }
+    }
+
     [Fact]
     public async Task Nullable_fields_round_trip_as_null()
     {
