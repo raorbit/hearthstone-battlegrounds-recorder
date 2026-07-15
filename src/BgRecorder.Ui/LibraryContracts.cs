@@ -38,3 +38,17 @@ public sealed record ManualRatingResult(long MatchId, int? Rating);
 
 /// <summary>Optional rating-provider projection. v1 always reports "disabled" with a null rating.</summary>
 public sealed record RatingInfoResult(string Health, int? Rating, DateTimeOffset? SampledAt);
+
+/// <summary>
+/// Settings projection for the Settings surface (M6). The path fields are shown read-only; the numeric
+/// and boolean recording fields are what <c>settings.set</c> writes. The retention/archive configuration
+/// is projected separately by the storage RPCs, not here.
+/// </summary>
+public sealed record SettingsResult(
+    string? HearthstoneInstallDir,
+    string LibraryDir,
+    string StagingDir,
+    int Fps,
+    int BitrateMbps,
+    bool GameOnlyAudio,
+    bool MixMicrophone);

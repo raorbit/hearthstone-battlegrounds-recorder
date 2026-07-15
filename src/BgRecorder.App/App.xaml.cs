@@ -245,7 +245,8 @@ public partial class App : Application
         {
             if (_libraryWindow is null)
             {
-                _uiBridge ??= new UiBridge(services.Repository, services.Coordinator, services.RatingProvider);
+                _uiBridge ??= new UiBridge(
+                    services.Repository, services.Coordinator, services.RatingProvider, services.Settings);
                 _uiBridge.Diagnostic -= OnUiDiagnostic;
                 _uiBridge.Diagnostic += OnUiDiagnostic;
 

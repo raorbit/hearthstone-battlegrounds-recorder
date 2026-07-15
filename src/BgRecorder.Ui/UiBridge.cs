@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
+using BgRecorder.Core;
 using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
 using BgRecorder.Core.Rating;
@@ -21,13 +22,19 @@ public sealed class UiBridge
     private readonly IMatchRepository _repository;
     private readonly ISessionCoordinator _coordinator;
     private readonly IRatingProvider _ratingProvider;
+    private readonly ISettingsService _settings;
     private readonly ConcurrentDictionary<long, string> _videoPaths = new();
 
-    public UiBridge(IMatchRepository repository, ISessionCoordinator coordinator, IRatingProvider ratingProvider)
+    public UiBridge(
+        IMatchRepository repository,
+        ISessionCoordinator coordinator,
+        IRatingProvider ratingProvider,
+        ISettingsService settings)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _coordinator = coordinator ?? throw new ArgumentNullException(nameof(coordinator));
         _ratingProvider = ratingProvider ?? throw new ArgumentNullException(nameof(ratingProvider));
+        _settings = settings ?? throw new ArgumentNullException(nameof(settings));
     }
 
     public event Action<string>? Diagnostic;
@@ -142,6 +149,8 @@ public sealed class UiBridge
                     ct)
                 .ConfigureAwait(false),
             "rating.get" => await GetRatingAsync(RequiredMode(parameters, "mode"), ct).ConfigureAwait(false),
+            "settings.get" => GetSettings(),
+            "settings.set" => await SetSettingsAsync(parameters, ct).ConfigureAwait(false),
             "recorder.stop" => await StopRecordingAsync().ConfigureAwait(false),
             "recorder.pause" => PauseRecording(),
             "recorder.resume" => ResumeRecording(),
@@ -205,6 +214,36 @@ public sealed class UiBridge
         RatingHealth.PatchBroken => "patchBroken",
         _ => "disabled",
     };
+
+    private SettingsResult GetSettings() => MapSettings(_settings.Current);
+
+    /// <summary>
+    /// Persists the editable recording settings. Paths are read-only here (changing the library location
+    /// needs migration, out of M6 scope). Because the coordinator captured the settings instance at
+    /// startup, these apply to the NEXT launch — the UI states that rather than implying a live effect.
+    /// </summary>
+    private async Task<SettingsResult> SetSettingsAsync(JsonElement parameters, CancellationToken ct)
+    {
+        var next = _settings.Current with
+        {
+            Fps = RequiredInt32InRange(parameters, "fps", 15, 240),
+            BitrateMbps = RequiredInt32InRange(parameters, "bitrateMbps", 1, 100),
+            GameOnlyAudio = RequiredBoolean(parameters, "gameOnlyAudio"),
+            MixMicrophone = RequiredBoolean(parameters, "mixMicrophone"),
+        };
+
+        var saved = await _settings.UpdateAsync(next, ct).ConfigureAwait(false);
+        return MapSettings(saved);
+    }
+
+    private static SettingsResult MapSettings(AppSettings settings) => new(
+        settings.HearthstoneInstallDir,
+        settings.LibraryDir,
+        settings.StagingDir,
+        settings.Fps,
+        settings.BitrateMbps,
+        settings.GameOnlyAudio,
+        settings.MixMicrophone);
 
     private async Task<RecorderStateResult> StopRecordingAsync()
     {
@@ -354,6 +393,20 @@ public sealed class UiBridge
         }
 
         return value.GetBoolean();
+    }
+
+    private static int RequiredInt32InRange(JsonElement parameters, string propertyName, int min, int max)
+    {
+        var value = RequiredProperty(parameters, propertyName);
+        if (value.ValueKind != JsonValueKind.Number ||
+            !value.TryGetInt32(out var parsed) ||
+            parsed < min ||
+            parsed > max)
+        {
+            throw RpcFault.InvalidParams($"{propertyName} must be an integer between {min} and {max}.");
+        }
+
+        return parsed;
     }
 
     private static JsonElement RequiredProperty(JsonElement parameters, string propertyName)
