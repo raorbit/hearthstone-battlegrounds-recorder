@@ -209,6 +209,16 @@ public sealed class SqliteMatchRepository : IMatchRepository
             cancellationToken: ct));
     }
 
+    public async Task DeleteMatchAsync(long matchId, CancellationToken ct = default)
+    {
+        // Markers are removed by the ON DELETE CASCADE foreign key (foreign_keys is on per connection).
+        await using var conn = await OpenConnectionAsync(ct);
+        await conn.ExecuteAsync(new CommandDefinition(
+            "DELETE FROM matches WHERE id = @id;",
+            new { id = matchId },
+            cancellationToken: ct));
+    }
+
     private async Task<SqliteConnection> OpenConnectionAsync(CancellationToken ct)
     {
         var conn = new SqliteConnection(_connectionString);

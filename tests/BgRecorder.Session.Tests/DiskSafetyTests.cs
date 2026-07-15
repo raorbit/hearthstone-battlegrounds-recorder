@@ -190,5 +190,8 @@ public sealed class DiskSafetyTests
 
         public Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default)
             => throw new InvalidOperationException("db down");
+
+        public Task DeleteMatchAsync(long matchId, CancellationToken ct = default)
+            => throw new InvalidOperationException("db down");
     }
 }

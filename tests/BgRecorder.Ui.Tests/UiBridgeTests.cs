@@ -192,6 +192,8 @@ public sealed class UiBridgeTests
 
             return Task.CompletedTask;
         }
+
+        public Task DeleteMatchAsync(long matchId, CancellationToken ct = default) => Task.CompletedTask;
     }
 
     private sealed class FakeCoordinator : ISessionCoordinator

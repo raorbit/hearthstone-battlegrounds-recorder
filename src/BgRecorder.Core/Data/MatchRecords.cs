@@ -66,7 +66,17 @@ public interface IMatchLocationStore
     Task UpdateVideoLocationAsync(long matchId, string videoPath, CancellationToken ct = default);
 }
 
-public interface IMatchRepository : IMatchLocationStore
+/// <summary>The reads and deletes the storage engine needs, on top of the mover's location write.</summary>
+public interface IMatchStore : IMatchLocationStore
+{
+    /// <summary>Every match row, newest first.</summary>
+    Task<IReadOnlyList<MatchRecord>> ListMatchesAsync(CancellationToken ct = default);
+
+    /// <summary>Removes a match and its markers — a retention eviction or a manual delete.</summary>
+    Task DeleteMatchAsync(long matchId, CancellationToken ct = default);
+}
+
+public interface IMatchRepository : IMatchStore
 {
     /// <summary>Creates/migrates the schema. Idempotent.</summary>
     Task InitializeAsync(CancellationToken ct = default);
@@ -82,8 +92,6 @@ public interface IMatchRepository : IMatchLocationStore
     Task<bool> MatchExistsBySessionAsync(string sessionId, CancellationToken ct = default);
 
     Task UpdateVideoStatusAsync(long matchId, VideoStatus status, CancellationToken ct = default);
-
-    Task<IReadOnlyList<MatchRecord>> ListMatchesAsync(CancellationToken ct = default);
 
     /// <summary>Returns one match and its ordered timeline markers, or null when it does not exist.</summary>
     Task<MatchDetailRecord?> GetMatchAsync(long matchId, CancellationToken ct = default);

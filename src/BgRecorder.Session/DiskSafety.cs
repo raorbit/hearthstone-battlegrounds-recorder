@@ -1,25 +1,8 @@
 using BgRecorder.Core.Data;
 using BgRecorder.Core.Session;
+using BgRecorder.Core.Storage;
 
 namespace BgRecorder.Session;
-
-/// <summary>Free-space source, injectable so tests don't need a real volume.</summary>
-public interface IFreeSpaceProbe
-{
-    /// <summary>Available free bytes on the volume containing <paramref name="path"/>.</summary>
-    long GetAvailableFreeBytes(string path);
-}
-
-/// <summary>Production probe backed by <see cref="DriveInfo"/>.</summary>
-public sealed class DriveFreeSpaceProbe : IFreeSpaceProbe
-{
-    public long GetAvailableFreeBytes(string path)
-    {
-        var root = Path.GetPathRoot(Path.GetFullPath(path))
-                   ?? throw new ArgumentException($"Cannot resolve a volume root for '{path}'.", nameof(path));
-        return new DriveInfo(root).AvailableFreeSpace;
-    }
-}
 
 /// <summary>
 /// Disk-safety gate for the staging volume: floor check before a recording arms and a
