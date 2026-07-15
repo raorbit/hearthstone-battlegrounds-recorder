@@ -101,19 +101,27 @@ public sealed class GameEventSource : IGameEventSource
 
                         if (parser is null || disc.Chosen!.Name != currentFolder)
                         {
-                            // New or changed session: close out any interrupted match (truncated), then start
-                            // fresh. Reached both on first discovery and when a reopen finds a newer folder.
+                            // New or changed session. Open the new log and establish the tail position BEFORE
+                            // mutating any session state, so a transient open failure leaves the prior state
+                            // (or the initial null state) intact: the retry re-enters this branch and re-seeks
+                            // to end, instead of falling through to the plain reopen below and either replaying
+                            // the whole pre-existing log (first discovery) or resuming the new file at a stale
+                            // offset — in both cases with no LogSessionChanged emitted.
+                            var newParser = new PowerLogParser(SeedStamp(disc));
+                            var newFs = OpenAtEnd(disc.PowerLogPath, out var newPos);
+
+                            // Open succeeded: close out any interrupted match (truncated), then commit the
+                            // new session. Reached both on first discovery and when a reopen finds a newer folder.
                             if (parser is not null)
                                 foreach (var e in parser.Flush()) Emit(e);
 
                             currentFolder = disc.Chosen!.Name;
                             currentPath = disc.PowerLogPath;
-                            parser = new PowerLogParser(SeedStamp(disc));
+                            parser = newParser;
                             decoder = Encoding.UTF8.GetDecoder();
                             partial.Clear();
-                            // Establish the tail position BEFORE announcing readiness, so nothing appended
-                            // after LogSessionChanged is missed and nothing before it is double-counted.
-                            fs = OpenAtEnd(currentPath, out pos);
+                            fs = newFs;
+                            pos = newPos;
                             Emit(new LogSessionChanged(SeedStamp(disc), disc.Chosen.Path));
                         }
                         else
@@ -134,6 +142,13 @@ public sealed class GameEventSource : IGameEventSource
                         var again = LogSessionDiscovery.Discover(_installDir);
                         if (again.PowerLogPath is not null && again.Chosen!.Name != currentFolder)
                         {
+                            // Open the new session's log before tearing down the old one, so a transient open
+                            // failure leaves the current session intact (the outer catch drops the old fs; the
+                            // next iteration re-discovers and re-enters the new-session branch above) rather
+                            // than resuming the new file at the old offset with no LogSessionChanged.
+                            var newParser = new PowerLogParser(SeedStamp(again));
+                            var newFs = OpenAtEnd(again.PowerLogPath, out var newPos);
+
                             // Drain the outgoing file, then close its match as truncated if still open.
                             DrainAndParse(fs, decoder, partial, ref pos, parser!);
                             foreach (var e in parser!.Flush()) Emit(e);
@@ -141,10 +156,11 @@ public sealed class GameEventSource : IGameEventSource
 
                             currentFolder = again.Chosen.Name;
                             currentPath = again.PowerLogPath;
-                            parser = new PowerLogParser(SeedStamp(again));
+                            parser = newParser;
                             decoder = Encoding.UTF8.GetDecoder();
                             partial.Clear();
-                            fs = OpenAtEnd(currentPath, out pos);
+                            fs = newFs;
+                            pos = newPos;
                             Emit(new LogSessionChanged(SeedStamp(again), again.Chosen.Path));
                             if (ct.WaitHandle.WaitOne(_poll)) break;
                             continue;
