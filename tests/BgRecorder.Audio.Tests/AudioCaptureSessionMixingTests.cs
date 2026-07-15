@@ -50,7 +50,7 @@ public sealed class AudioCaptureSessionMixingTests : IDisposable
         await using (var session = new AudioCaptureSession(
             game, mic, finalPath, gamePath, micPath, AudioCaptureMode.SystemLoopback))
         {
-            session.Failed += msg => failure = msg;
+            session.Failed += f => failure = f.Message;
 
             AudioResult result = await session.StopAsync();
 
@@ -146,7 +146,7 @@ public sealed class AudioCaptureSessionMixingTests : IDisposable
         await using (var session = new AudioCaptureSession(
             game, mic, finalPath, gamePath, micPath, AudioCaptureMode.SystemLoopback))
         {
-            session.Failed += msg => failure = msg;
+            session.Failed += f => failure = f.Message;
 
             AudioResult result = await session.StopAsync();
 

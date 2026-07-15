@@ -196,11 +196,20 @@ public sealed class SessionCoordinator : ISessionCoordinator
                             await FinalizeAsync().ConfigureAwait(false);
                         }
                         break;
-                    case AudioFailedCmd(var reason):
-                        if (_recording is not null && !_recording.AudioDead)
+                    case AudioFailedCmd(var source, var reason):
+                        if (_recording is not null)
                         {
-                            _recording.AudioDead = true;
-                            Report($"Audio capture failed mid-recording; the video continues and will be muxed without audio: {reason}");
+                            if (source == AudioStreamKind.Microphone)
+                            {
+                                // Only the mic failed; the game audio is intact. Keep the session alive
+                                // so finalize still stops it and mixes/salvages the captured game audio.
+                                Report($"Microphone capture failed mid-recording; keeping the game audio: {reason}");
+                            }
+                            else if (!_recording.AudioDead)
+                            {
+                                _recording.AudioDead = true;
+                                Report($"Audio capture failed mid-recording; the video continues and will be muxed without audio: {reason}");
+                            }
                         }
                         break;
                     case ClocksMaybeKnownCmd:
@@ -425,7 +434,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
                 MixMicrophone = _settings.MixMicrophone,
             };
             ctx.Audio = await _audioCapture.StartAsync(audioTarget, audioPath, CancellationToken.None).ConfigureAwait(false);
-            ctx.AudioFailedHandler = reason => Post(new AudioFailedCmd(reason));
+            ctx.AudioFailedHandler = failure => Post(new AudioFailedCmd(failure.Source, failure.Message));
             ctx.Audio.Failed += ctx.AudioFailedHandler;
 
             // Privacy: if game-only audio was requested but the engine had to fall back to full
@@ -793,7 +802,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
         public bool FlushScheduled { get; set; }
         public Action<RecorderStatus>? VideoStatusHandler { get; set; }
         public Action<string>? VideoFailedHandler { get; set; }
-        public Action<string>? AudioFailedHandler { get; set; }
+        public Action<AudioFailure>? AudioFailedHandler { get; set; }
     }
 
     private abstract record Command;
@@ -812,7 +821,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
 
     private sealed record VideoFailedCmd(string Reason) : Command;
 
-    private sealed record AudioFailedCmd(string Reason) : Command;
+    private sealed record AudioFailedCmd(AudioStreamKind Source, string Reason) : Command;
 
     private sealed record ClocksMaybeKnownCmd : Command;
 

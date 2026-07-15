@@ -35,23 +35,24 @@ public sealed class AudioCaptureSession : IAudioSession
         _micPath = micPath;
         ActualMode = actualMode;
 
-        _game.Failed += OnStreamFailed;
+        // Tag each stream's failures with its source so the coordinator can tell a fatal game-audio
+        // loss from a mic-only loss (which must not discard the captured game audio).
+        _game.Failed += message => RaiseFailed(AudioStreamKind.Game, message);
         if (_mic is not null)
-            _mic.Failed += OnStreamFailed;
+            _mic.Failed += message => RaiseFailed(AudioStreamKind.Microphone, message);
     }
 
     /// <summary>
     /// The capture mode that actually ran. May differ from the requested mode when
     /// process loopback was unavailable and the engine fell back to system loopback;
-    /// the caller uses this to label the recording honestly. Not surfaced on
-    /// <see cref="IAudioSession"/> because <see cref="AudioResult"/> carries only a path
-    /// and duration.
+    /// the caller (see <see cref="IAudioSession.ActualMode"/>) compares it against the
+    /// requested mode to label the recording honestly and warn about non-game audio.
     /// </summary>
     public AudioCaptureMode ActualMode { get; }
 
     public DateTimeOffset? FirstSampleWallClock => _game.FirstSampleWallClock;
 
-    public event Action<string>? Failed;
+    public event Action<AudioFailure>? Failed;
 
     public Task<AudioResult> StopAsync()
     {
@@ -98,7 +99,7 @@ public sealed class AudioCaptureSession : IAudioSession
             }
             catch (Exception ex)
             {
-                RaiseFailed($"Mic mixing failed, keeping game audio only: {ex.Message}");
+                RaiseFailed(AudioStreamKind.Microphone, $"Mic mixing failed, keeping game audio only: {ex.Message}");
                 SalvageGameAudio();
                 return new AudioResult(_finalPath, gameDuration);
             }
@@ -136,9 +137,7 @@ public sealed class AudioCaptureSession : IAudioSession
         catch { /* best effort salvage */ }
     }
 
-    private void OnStreamFailed(string message) => RaiseFailed(message);
-
-    private void RaiseFailed(string message) => Failed?.Invoke(message);
+    private void RaiseFailed(AudioStreamKind source, string message) => Failed?.Invoke(new AudioFailure(source, message));
 
     private static void TryDelete(string path)
     {
