@@ -640,6 +640,7 @@ public sealed class SessionCoordinator : ISessionCoordinator
         {
             Report($"Could not assemble the match record; staged files kept for startup recovery: {ex.Message}");
             TryDeleteFile(outputPath);
+            TryDeleteThumbnail(thumbnailPath);
             return false;
         }
 
@@ -650,9 +651,11 @@ public sealed class SessionCoordinator : ISessionCoordinator
         }
         catch (Exception ex)
         {
-            // Keep staging (recovery re-runs the whole finalize); drop the now-unreferenced library file.
+            // Keep staging (recovery re-runs the whole finalize); drop the now-unreferenced library file
+            // and its sibling thumbnail so neither is orphaned.
             Report($"Could not save the match row; staged files kept for startup recovery: {ex.Message}");
             TryDeleteFile(outputPath);
+            TryDeleteThumbnail(thumbnailPath);
             return false;
         }
     }
@@ -675,6 +678,14 @@ public sealed class SessionCoordinator : ISessionCoordinator
         {
             Report($"Thumbnail generation failed (non-fatal): {ex.Message}");
             return null;
+        }
+    }
+
+    private void TryDeleteThumbnail(string? thumbnailPath)
+    {
+        if (thumbnailPath is not null)
+        {
+            TryDeleteFile(thumbnailPath);
         }
     }
 

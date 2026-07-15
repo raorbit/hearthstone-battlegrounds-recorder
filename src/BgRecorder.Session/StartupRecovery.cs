@@ -225,8 +225,12 @@ public sealed class StartupRecovery
                     "Match already recorded for this session (insert conflict); staged duplicate reclaimed.");
             }
             // Genuine failure with no committed row: keep staging so a later run can retry; drop the
-            // now-unreferenced library file.
+            // now-unreferenced library file and its sibling thumbnail so neither is orphaned.
             TryDeleteFile(outputPath);
+            if (match.ThumbnailPath is not null)
+            {
+                TryDeleteFile(match.ThumbnailPath);
+            }
             return new RecoverySessionResult(sessionDir, RecoveryOutcome.LeftInPlace,
                 $"Match row insert failed; staged video preserved: {ex.Message}");
         }
