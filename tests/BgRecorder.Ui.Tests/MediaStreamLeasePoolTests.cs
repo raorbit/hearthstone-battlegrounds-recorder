@@ -315,6 +315,41 @@ public sealed class MediaStreamLeasePoolTests
     }
 
     [Fact]
+    public void Reading_at_end_returns_zero_and_keeps_the_stream_usable()
+    {
+        // Reaching logical EOF frees the handle but must not dispose the lease: a further read returns
+        // 0 (not ObjectDisposedException), Position/Length/Seek stay usable, and a seek back re-reads.
+        var clock = new ManualTimeProvider();
+        using var pool = CreatePool(clock, maxOpenStreams: 4, idleTimeout: TimeSpan.FromSeconds(10));
+        var initial = new TrackingStream([10, 11, 12, 13]);
+        TrackingStream? reopened = null;
+        using var lease = pool.Lease(
+            initial,
+            () => reopened = new TrackingStream([10, 11, 12, 13]),
+            offset: 1,
+            length: 2);
+        var buffer = new byte[2];
+
+        Assert.Equal(2, lease.Read(buffer));
+        Assert.Equal(new byte[] { 11, 12 }, buffer);
+
+        Assert.Equal(0, lease.Read(buffer)); // logical EOF frees the handle
+        Assert.True(initial.WasDisposed);
+        Assert.Equal(0, pool.OpenStreamCount);
+
+        Assert.Equal(0, lease.Read(buffer)); // repeated read at EOF stays graceful
+        Assert.True(lease.CanRead);
+        Assert.True(lease.CanSeek);
+        Assert.Equal(2, lease.Length);
+        Assert.Equal(2, lease.Position);
+
+        lease.Position = 0;
+        Assert.Equal(2, lease.Read(buffer));
+        Assert.Equal(new byte[] { 11, 12 }, buffer);
+        Assert.NotNull(reopened);
+    }
+
+    [Fact]
     public void Reading_a_parked_lease_after_pool_disposal_throws()
     {
         var clock = new ManualTimeProvider();
