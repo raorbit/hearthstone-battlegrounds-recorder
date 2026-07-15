@@ -628,20 +628,28 @@ export function App(): JSX.Element {
     }
   }, []);
 
+  // A coordinator transition observed locally (a command reply or a native notification) is newer
+  // than the coordinatorState bundled into any library.list already in flight. Bumping the
+  // notification version invalidates that in-flight snapshot so it cannot overwrite the state
+  // applied here. Every path that applies a coordinator transition must go through this.
+  const commitCoordinatorState = useCallback((state: CoordinatorState): void => {
+    coordinatorNotificationVersionRef.current += 1;
+    coordinatorStateRef.current = state;
+    setCoordinatorState(state);
+  }, []);
+
   useEffect(() => {
     void loadLibrary();
     return bridge.on("recorder.stateChanged", ({ state }) => {
-      coordinatorNotificationVersionRef.current += 1;
-      const nextState = normalizeCoordinatorState(state);
       const previousState = coordinatorStateRef.current;
-      coordinatorStateRef.current = nextState;
-      setCoordinatorState(nextState);
+      const nextState = normalizeCoordinatorState(state);
+      commitCoordinatorState(nextState);
 
       if (shouldReloadLibraryAfterStateChange(previousState, nextState)) {
         void loadLibrary();
       }
     });
-  }, [loadLibrary]);
+  }, [loadLibrary, commitCoordinatorState]);
 
   useEffect(() => {
     if (!notice) {
@@ -745,23 +753,20 @@ export function App(): JSX.Element {
       switch (command) {
         case "recorder.stop": {
           const state = normalizeCoordinatorState((await bridge.request("recorder.stop")).state);
-          coordinatorStateRef.current = state;
-          setCoordinatorState(state);
+          commitCoordinatorState(state);
           await loadLibrary();
           setNotice({ tone: "success", text: "Recording finalized." });
           break;
         }
         case "recorder.pause": {
           const state = normalizeCoordinatorState((await bridge.request("recorder.pause")).state);
-          coordinatorStateRef.current = state;
-          setCoordinatorState(state);
+          commitCoordinatorState(state);
           setNotice({ tone: "success", text: "Auto-recording paused." });
           break;
         }
         case "recorder.resume": {
           const state = normalizeCoordinatorState((await bridge.request("recorder.resume")).state);
-          coordinatorStateRef.current = state;
-          setCoordinatorState(state);
+          commitCoordinatorState(state);
           setNotice({ tone: "success", text: "Auto-recording resumed." });
           break;
         }
