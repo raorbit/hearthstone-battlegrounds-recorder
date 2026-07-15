@@ -477,6 +477,70 @@ function Player({ match, detail, loading, error, ratingPending, videoRef, onRetr
     setClipEnd(null);
   }, [activeMatch?.id, activeMatch?.mediaUrl]);
 
+  // Playback keyboard shortcuts, owned here so every seek cancels an armed clip (same as a manual
+  // seek). Deferred to focused controls/rows and the video's own native controls. The Player only
+  // mounts in the library view, so no view guard is needed.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      const active = document.activeElement;
+      const tag = active?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (active as HTMLElement | null)?.isContentEditable) {
+        return;
+      }
+      if (tag === "BUTTON" || tag === "TR" || tag === "A" || active === videoRef.current) {
+        return;
+      }
+      const video = videoRef.current;
+      if (!video) {
+        return;
+      }
+
+      // A keyboard seek cancels any armed clip and updates both the element and the timeline state.
+      const seek = (milliseconds: number): void => {
+        setClipEnd(null);
+        const max = Number.isFinite(video.duration) ? video.duration : Number.POSITIVE_INFINITY;
+        const seconds = Math.min(max, Math.max(0, milliseconds / 1_000));
+        setCurrentTime(seconds);
+        try {
+          video.currentTime = seconds;
+        } catch {
+          // no media source in preview
+        }
+      };
+
+      if (event.key === " ") {
+        event.preventDefault();
+        if (video.paused) {
+          void video.play().catch(() => undefined);
+        } else {
+          video.pause();
+        }
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        seek((video.currentTime - 5) * 1_000);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        seek((video.currentTime + 5) * 1_000);
+      } else if (event.key === "[" || event.key === "]") {
+        const marks = (detail?.markers ?? []).map((marker) => marker.atMs).sort((a, b) => a - b);
+        if (marks.length === 0) {
+          return;
+        }
+        event.preventDefault();
+        const nowMs = video.currentTime * 1_000;
+        const next = event.key === "]"
+          ? marks.find((atMs) => atMs > nowMs + 250)
+          : [...marks].reverse().find((atMs) => atMs < nowMs - 250);
+        if (next !== undefined) {
+          seek(next);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [detail, videoRef]);
+
   const durationMs = mediaDuration > 0
     ? mediaDuration * 1_000
     : activeMatch?.videoDurationMs ?? 0;
@@ -1617,9 +1681,9 @@ export function App(): JSX.Element {
     };
   }, [ratingMode]);
 
-  // Global keyboard shortcuts. Arrow/Home/End navigate the visible match list; Space and ←/→ drive the
-  // selected recording's playback, and [ ] jump between markers. Typing targets are always left alone,
-  // and playback keys defer to a focused control, row, or the video's own native controls.
+  // Global match-list navigation. Arrow/Home/End move the selection in the library view; playback keys
+  // (Space, ←/→, [ ]) are owned by the Player so seeks route through its clip-clearing seek. Typing
+  // targets are always left alone.
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       const target = document.activeElement;
@@ -1632,71 +1696,28 @@ export function App(): JSX.Element {
       }
 
       const ids = visibleMatches.map((match) => match.id);
+      if (ids.length === 0) {
+        return;
+      }
       const index = selectedId === null ? -1 : ids.indexOf(selectedId);
-      if (ids.length > 0) {
-        if (event.key === "ArrowDown") {
-          event.preventDefault();
-          setSelectedId(ids[Math.min(ids.length - 1, index + 1)] ?? ids[0]);
-          return;
-        }
-        if (event.key === "ArrowUp") {
-          event.preventDefault();
-          setSelectedId(index <= 0 ? ids[0] : ids[index - 1]);
-          return;
-        }
-        if (event.key === "Home") {
-          event.preventDefault();
-          setSelectedId(ids[0]);
-          return;
-        }
-        if (event.key === "End") {
-          event.preventDefault();
-          setSelectedId(ids[ids.length - 1]);
-          return;
-        }
-      }
-
-      // Playback keys defer to a focused control/row and to the video's native controls.
-      if (tag === "BUTTON" || tag === "TR" || tag === "A" || target === videoRef.current) {
-        return;
-      }
-      const video = videoRef.current;
-      if (!video) {
-        return;
-      }
-      if (event.key === " ") {
+      if (event.key === "ArrowDown") {
         event.preventDefault();
-        if (video.paused) {
-          void video.play().catch(() => undefined);
-        } else {
-          video.pause();
-        }
-      } else if (event.key === "ArrowLeft") {
+        setSelectedId(ids[Math.min(ids.length - 1, index + 1)] ?? ids[0]);
+      } else if (event.key === "ArrowUp") {
         event.preventDefault();
-        video.currentTime = Math.max(0, video.currentTime - 5);
-      } else if (event.key === "ArrowRight") {
+        setSelectedId(index <= 0 ? ids[0] : ids[index - 1]);
+      } else if (event.key === "Home") {
         event.preventDefault();
-        const max = Number.isFinite(video.duration) ? video.duration : video.currentTime + 5;
-        video.currentTime = Math.min(max, video.currentTime + 5);
-      } else if (event.key === "[" || event.key === "]") {
-        const marks = (detail?.markers ?? []).map((marker) => marker.atMs).sort((a, b) => a - b);
-        if (marks.length === 0) {
-          return;
-        }
+        setSelectedId(ids[0]);
+      } else if (event.key === "End") {
         event.preventDefault();
-        const nowMs = video.currentTime * 1_000;
-        const next = event.key === "]"
-          ? marks.find((atMs) => atMs > nowMs + 250)
-          : [...marks].reverse().find((atMs) => atMs < nowMs - 250);
-        if (next !== undefined) {
-          video.currentTime = next / 1_000;
-        }
+        setSelectedId(ids[ids.length - 1]);
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [view, visibleMatches, selectedId, detail]);
+  }, [view, visibleMatches, selectedId]);
 
   const selectedMatch = matches.find((match) => match.id === selectedId) ?? null;
   const soloCount = matches.filter((match) => normalizeGameType(match.gameType) === "solo").length;
