@@ -299,6 +299,27 @@ public sealed class StartupRecoveryTests : IDisposable
         Assert.True(!Directory.Exists(_settings.LibraryDir) || Directory.GetFiles(_settings.LibraryDir).Length == 0);
     }
 
+    /// <summary>
+    /// Conflict-safe recovery: if the insert fails because another writer already committed this
+    /// session's row (a uniqueness conflict), that row references the SAME deterministic output path,
+    /// so recovery must NOT delete the muxed library file — it reclaims the staged duplicate instead.
+    /// </summary>
+    [Fact]
+    public async Task InsertConflict_WhenRowAlreadyCommitted_KeepsLibraryFileAndReclaimsStaging()
+    {
+        var dir = CreateSessionDir(out var video, out var audio);
+        ManifestStore.Write(dir, Manifest(video, audio, videoClock: Ev.T0.AddSeconds(2)));
+        _repository.ThrowOnInsert = true;
+        _repository.MarkSessionRecordedOnInsertThrow = true;
+
+        var report = await CreateSut().RunAsync();
+
+        Assert.Equal(RecoveryOutcome.AlreadyRecorded, Assert.Single(report.Sessions).Outcome);
+        var output = Assert.Single(_muxer.Calls).Output;
+        Assert.True(File.Exists(output), "the committed row's library file must not be deleted");
+        Assert.False(Directory.Exists(dir), "staged duplicate reclaimed");
+    }
+
     // ---------------------------------------------------------------- degenerate folders
 
     [Fact]

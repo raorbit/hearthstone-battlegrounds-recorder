@@ -198,6 +198,8 @@ internal sealed class FakeAssembler : IMatchAssembler
 internal sealed class FakeRepository : IMatchRepository
 {
     public bool ThrowOnInsert;
+    /// <summary>With <see cref="ThrowOnInsert"/>, the insert throws AND the session is marked already-recorded — models a concurrent writer that won the race and committed this session's row first.</summary>
+    public bool MarkSessionRecordedOnInsertThrow;
     public readonly List<(MatchRecord Match, IReadOnlyList<MarkerRecord> Markers)> Inserted = [];
     public IReadOnlyList<MatchRecord> Matches = [];
     /// <summary>Session ids that MatchExistsBySessionAsync should report as already present (simulates a committed row from a prior run).</summary>
@@ -209,6 +211,10 @@ internal sealed class FakeRepository : IMatchRepository
     {
         if (ThrowOnInsert)
         {
+            if (MarkSessionRecordedOnInsertThrow && match.SessionId is { } thrownSessionId)
+            {
+                ExistingSessions.Add(thrownSessionId);
+            }
             throw new InvalidOperationException("insert failed");
         }
         // Model the repository's idempotency: a re-insert of the same session returns the prior id.

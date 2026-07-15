@@ -204,7 +204,19 @@ public sealed class StartupRecovery
         }
         catch (Exception ex)
         {
-            // Keep staging so a later run can retry; drop the unreferenced library file.
+            // The insert can fail because another writer already committed this session's row (e.g. a
+            // uniqueness conflict). That row references the SAME deterministic output path, so deleting
+            // the file would strand it. Only drop the library file when no row claims it; otherwise keep
+            // the file and reclaim the staged duplicate.
+            if (!string.IsNullOrEmpty(sessionId)
+                && await _repository.MatchExistsBySessionAsync(sessionId, ct).ConfigureAwait(false))
+            {
+                TryDelete(sessionDir);
+                return new RecoverySessionResult(sessionDir, RecoveryOutcome.AlreadyRecorded,
+                    "Match already recorded for this session (insert conflict); staged duplicate reclaimed.");
+            }
+            // Genuine failure with no committed row: keep staging so a later run can retry; drop the
+            // now-unreferenced library file.
             TryDeleteFile(outputPath);
             return new RecoverySessionResult(sessionDir, RecoveryOutcome.LeftInPlace,
                 $"Match row insert failed; staged video preserved: {ex.Message}");
