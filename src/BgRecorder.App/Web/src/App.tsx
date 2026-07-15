@@ -19,6 +19,8 @@ import {
   type MatchDetailResult,
   type MatchSummary,
   type RatingHealth,
+  type SettingsResult,
+  type SettingsUpdate,
   normalizeCoordinatorState,
   normalizeGameType,
   normalizeMarkerKind,
@@ -36,6 +38,12 @@ type Segment = "all" | "top" | "bottom";
 type DateFilter = "all" | "today" | "7d" | "30d" | "90d";
 type RecorderCommand = "recorder.stop" | "recorder.pause" | "recorder.resume";
 type Notice = { tone: "success" | "error"; text: string };
+type View = "library" | "settings";
+
+const FPS_MIN = 15;
+const FPS_MAX = 240;
+const BITRATE_MIN = 1;
+const BITRATE_MAX = 100;
 
 const dateOptions: ReadonlyArray<{ value: DateFilter; label: string }> = [
   { value: "all", label: "All dates" },
@@ -712,7 +720,226 @@ function MatchTable({ matches, selectedId, loading, starPending, onSelect, onTog
   );
 }
 
+interface SettingsViewProps {
+  notify(notice: Notice): void;
+}
+
+function formToUpdate(settings: SettingsResult): SettingsUpdate {
+  return {
+    fps: settings.fps,
+    bitrateMbps: settings.bitrateMbps,
+    gameOnlyAudio: settings.gameOnlyAudio,
+    mixMicrophone: settings.mixMicrophone,
+  };
+}
+
+/**
+ * The Settings surface (M6). Recording fields are editable and validated client-side to match the
+ * native RPC's bounds; paths are read-only for now (changing the library location needs migration).
+ * Saved recording changes take effect on the next launch because the running coordinator captured the
+ * settings at startup — the note and toast state this rather than implying a live effect.
+ */
+function SettingsView({ notify }: SettingsViewProps): JSX.Element {
+  const [settings, setSettings] = useState<SettingsResult | null>(null);
+  const [form, setForm] = useState<SettingsUpdate | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const load = useCallback(async (): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await bridge.request("settings.get");
+      setSettings(result);
+      setForm(formToUpdate(result));
+    } catch (err) {
+      setError(asErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const fpsValid = form !== null && Number.isInteger(form.fps) && form.fps >= FPS_MIN && form.fps <= FPS_MAX;
+  const bitrateValid = form !== null
+    && Number.isInteger(form.bitrateMbps)
+    && form.bitrateMbps >= BITRATE_MIN
+    && form.bitrateMbps <= BITRATE_MAX;
+  const dirty = settings !== null && form !== null && (
+    form.fps !== settings.fps ||
+    form.bitrateMbps !== settings.bitrateMbps ||
+    form.gameOnlyAudio !== settings.gameOnlyAudio ||
+    form.mixMicrophone !== settings.mixMicrophone
+  );
+  const canSave = dirty && fpsValid && bitrateValid && !saving;
+
+  const save = async (): Promise<void> => {
+    if (form === null || !canSave) {
+      return;
+    }
+    setSaving(true);
+    try {
+      const result = await bridge.request("settings.set", form);
+      setSettings(result);
+      setForm(formToUpdate(result));
+      notify({ tone: "success", text: "Settings saved — recording changes apply after restart." });
+    } catch (err) {
+      notify({ tone: "error", text: `Could not save settings: ${asErrorMessage(err)}` });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const patch = (change: Partial<SettingsUpdate>): void =>
+    setForm((current) => (current === null ? current : { ...current, ...change }));
+
+  if (loading) {
+    return (
+      <main class="settings-view">
+        <div class="settings-scroll">
+          <div class="player-message" style={{ position: "static", margin: "40px auto" }}>
+            <span class="spinner" aria-hidden="true" />
+            <strong>Loading settings</strong>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error || form === null || settings === null) {
+    return (
+      <main class="settings-view">
+        <div class="settings-scroll">
+          <div class="empty-state">
+            <div class="empty-state__glyph" aria-hidden="true">◇</div>
+            <strong>Could not load settings</strong>
+            {error && <span>{error}</span>}
+            <button class="button button--quiet" type="button" onClick={() => void load()}>Try again</button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main class="settings-view">
+      <div class="settings-scroll">
+        <header class="settings-head">
+          <h1>Settings</h1>
+          <p>Recording preferences and library locations for this PC.</p>
+        </header>
+
+        <section class="settings-section" aria-label="Recording">
+          <h2 class="settings-section__title">Recording</h2>
+          <p class="settings-note">Changes apply to matches recorded after the next restart of BG Recorder.</p>
+
+          <label class="settings-field">
+            <span class="settings-field__label">Frames per second</span>
+            <input
+              class="settings-input mono"
+              type="number"
+              inputMode="numeric"
+              min={FPS_MIN}
+              max={FPS_MAX}
+              step={1}
+              value={form.fps}
+              aria-invalid={!fpsValid}
+              onInput={(event) => patch({ fps: Math.trunc(Number(event.currentTarget.value)) })}
+            />
+            <span class={`settings-field__hint${fpsValid ? "" : " settings-field__hint--error"}`}>
+              {fpsValid ? `${FPS_MIN}–${FPS_MAX} fps` : `Enter a whole number between ${FPS_MIN} and ${FPS_MAX}.`}
+            </span>
+          </label>
+
+          <label class="settings-field">
+            <span class="settings-field__label">Video bitrate</span>
+            <input
+              class="settings-input mono"
+              type="number"
+              inputMode="numeric"
+              min={BITRATE_MIN}
+              max={BITRATE_MAX}
+              step={1}
+              value={form.bitrateMbps}
+              aria-invalid={!bitrateValid}
+              onInput={(event) => patch({ bitrateMbps: Math.trunc(Number(event.currentTarget.value)) })}
+            />
+            <span class={`settings-field__hint${bitrateValid ? "" : " settings-field__hint--error"}`}>
+              {bitrateValid ? "Mbps (higher is larger files)" : `Enter a whole number between ${BITRATE_MIN} and ${BITRATE_MAX}.`}
+            </span>
+          </label>
+        </section>
+
+        <section class="settings-section" aria-label="Audio">
+          <h2 class="settings-section__title">Audio</h2>
+
+          <label class="settings-toggle">
+            <input
+              type="checkbox"
+              checked={form.gameOnlyAudio}
+              onChange={(event) => patch({ gameOnlyAudio: event.currentTarget.checked })}
+            />
+            <span class="settings-toggle__body">
+              <span class="settings-toggle__label">Game-only audio</span>
+              <span class="settings-toggle__hint">Capture only Hearthstone's audio where the OS supports it; falls back to system loopback on older builds.</span>
+            </span>
+          </label>
+
+          <label class="settings-toggle">
+            <input
+              type="checkbox"
+              checked={form.mixMicrophone}
+              onChange={(event) => patch({ mixMicrophone: event.currentTarget.checked })}
+            />
+            <span class="settings-toggle__body">
+              <span class="settings-toggle__label">Mix in microphone</span>
+              <span class="settings-toggle__hint">Off by default. When on, your microphone is mixed into the recording.</span>
+            </span>
+          </label>
+        </section>
+
+        <section class="settings-section" aria-label="Locations">
+          <h2 class="settings-section__title">Locations</h2>
+          <p class="settings-note">Managed by BG Recorder. Editing these will arrive in a later update.</p>
+
+          <div class="settings-field settings-field--readonly">
+            <span class="settings-field__label">Library folder</span>
+            <code class="settings-path">{settings.libraryDir}</code>
+          </div>
+          <div class="settings-field settings-field--readonly">
+            <span class="settings-field__label">Staging folder</span>
+            <code class="settings-path">{settings.stagingDir}</code>
+          </div>
+          <div class="settings-field settings-field--readonly">
+            <span class="settings-field__label">Hearthstone install</span>
+            <code class="settings-path">{settings.hearthstoneInstallDir ?? "Auto-detected"}</code>
+          </div>
+        </section>
+
+        <div class="settings-actions">
+          <button
+            class="button button--quiet"
+            type="button"
+            disabled={!dirty || saving}
+            onClick={() => setForm(formToUpdate(settings))}
+          >
+            Reset
+          </button>
+          <button class="button button--primary" type="button" disabled={!canSave} onClick={() => void save()}>
+            {saving ? "Saving…" : "Save changes"}
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 export function App(): JSX.Element {
+  const [view, setView] = useState<View>("library");
   const [matches, setMatches] = useState<MatchSummary[]>([]);
   const [coordinatorState, setCoordinatorState] = useState<CoordinatorState>("gameNotFound");
   const [bucket, setBucket] = useState<Bucket>("all");
@@ -1104,16 +1331,21 @@ export function App(): JSX.Element {
     setDateFilter("all");
   };
 
-  if (listLoaded && listError && matches.length === 0) {
+  // The library failing to open is fatal only for the library view; Settings stays reachable so the
+  // user can still inspect and change preferences.
+  if (view === "library" && listLoaded && listError && matches.length === 0) {
     return (
       <main class="fatal-state">
         <div class="brand-mark" aria-hidden="true"><span /></div>
         <p class="eyebrow">BATTLEGROUNDS RECORDER</p>
         <h1>Could not open the library</h1>
         <p>{listError}</p>
-        <button class="button button--primary" type="button" disabled={listLoading} onClick={() => void loadLibrary()}>
-          {listLoading ? "Retrying…" : "Try again"}
-        </button>
+        <div class="fatal-state__actions">
+          <button class="button button--primary" type="button" disabled={listLoading} onClick={() => void loadLibrary()}>
+            {listLoading ? "Retrying…" : "Try again"}
+          </button>
+          <button class="button button--quiet" type="button" onClick={() => setView("settings")}>Open settings</button>
+        </div>
       </main>
     );
   }
@@ -1128,22 +1360,46 @@ export function App(): JSX.Element {
             <span>Local match library</span>
           </div>
         </div>
+        <nav class="view-tabs" aria-label="Views">
+          <button
+            class={`view-tab${view === "library" ? " view-tab--active" : ""}`}
+            type="button"
+            aria-pressed={view === "library"}
+            onClick={() => setView("library")}
+          >
+            Library
+          </button>
+          <button
+            class={`view-tab${view === "settings" ? " view-tab--active" : ""}`}
+            type="button"
+            aria-pressed={view === "settings"}
+            onClick={() => setView("settings")}
+          >
+            Settings
+          </button>
+        </nav>
+
         <div class="app-header__actions">
           {bridge.mode === "mock" && <span class="environment-badge">Browser preview</span>}
-          {listError && matches.length > 0 && <span class="refresh-warning">Refresh failed</span>}
-          <button
-            class="icon-button"
-            type="button"
-            title="Refresh library"
-            aria-label="Refresh library"
-            disabled={listLoading}
-            onClick={() => void loadLibrary()}
-          >
-            <span class={listLoading ? "refresh-icon refresh-icon--active" : "refresh-icon"} aria-hidden="true">↻</span>
-          </button>
+          {view === "library" && listError && matches.length > 0 && <span class="refresh-warning">Refresh failed</span>}
+          {view === "library" && (
+            <button
+              class="icon-button"
+              type="button"
+              title="Refresh library"
+              aria-label="Refresh library"
+              disabled={listLoading}
+              onClick={() => void loadLibrary()}
+            >
+              <span class={listLoading ? "refresh-icon refresh-icon--active" : "refresh-icon"} aria-hidden="true">↻</span>
+            </button>
+          )}
         </div>
       </header>
 
+      {view === "settings" ? (
+        <SettingsView notify={setNotice} />
+      ) : (
       <div class="app-layout">
         <aside class="sidebar">
           <StatusCard
@@ -1238,6 +1494,7 @@ export function App(): JSX.Element {
           </section>
         </main>
       </div>
+      )}
 
       {notice && <div class={`toast toast--${notice.tone}`} role="status">{notice.text}</div>}
     </div>
