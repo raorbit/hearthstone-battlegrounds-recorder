@@ -21,6 +21,10 @@ import {
   type RatingHealth,
   type SettingsResult,
   type SettingsUpdate,
+  type StoragePreview,
+  type StorageSettings,
+  type StorageUpdate,
+  type StorageVolume,
   normalizeCoordinatorState,
   normalizeGameType,
   normalizeMarkerKind,
@@ -38,7 +42,7 @@ type Segment = "all" | "top" | "bottom";
 type DateFilter = "all" | "today" | "7d" | "30d" | "90d";
 type RecorderCommand = "recorder.stop" | "recorder.pause" | "recorder.resume";
 type Notice = { tone: "success" | "error"; text: string };
-type View = "library" | "settings";
+type View = "library" | "settings" | "storage";
 
 const FPS_MIN = 15;
 const FPS_MAX = 240;
@@ -621,11 +625,19 @@ interface MatchTableProps {
   selectedId: number | null;
   loading: boolean;
   starPending: ReadonlySet<number>;
+  deletePending: ReadonlySet<number>;
   onSelect(matchId: number): void;
   onToggleStar(match: MatchSummary): void;
+  onDelete(match: MatchSummary): void;
 }
 
-function MatchTable({ matches, selectedId, loading, starPending, onSelect, onToggleStar }: MatchTableProps): JSX.Element {
+function MatchTable(
+  { matches, selectedId, loading, starPending, deletePending, onSelect, onToggleStar, onDelete }: MatchTableProps,
+): JSX.Element {
+  // Which row is asking to confirm a delete. Deletion is irreversible, so it takes an explicit
+  // second click on an inline ✓ rather than firing on the first click or relying on a native dialog.
+  const [confirmingId, setConfirmingId] = useState<number | null>(null);
+
   if (loading) {
     return (
       <div class="table-skeleton" aria-label="Loading recordings">
@@ -648,7 +660,7 @@ function MatchTable({ matches, selectedId, loading, starPending, onSelect, onTog
             <th>Date</th>
             <th>Size</th>
             <th>Status</th>
-            <th><span class="visually-hidden">Starred</span></th>
+            <th><span class="visually-hidden">Actions</span></th>
           </tr>
         </thead>
         <tbody>
@@ -685,31 +697,85 @@ function MatchTable({ matches, selectedId, loading, starPending, onSelect, onTog
                 <td class="mono">{formatDuration(match.videoDurationMs)}</td>
                 <td>{formatDate(match.startedAt)}</td>
                 <td class="mono muted">{formatBytes(match.videoSizeBytes)}</td>
-                <td><span class={`video-status video-status--${status}`}>{status}</span></td>
                 <td>
-                  <button
-                    class={`star-button${match.starred ? " star-button--active" : ""}`}
-                    type="button"
-                    title={match.starred ? "Remove from starred" : "Keep this recording"}
-                    aria-label={match.starred ? "Remove from starred" : "Keep this recording"}
-                    aria-pressed={match.starred}
-                    disabled={starPending.has(match.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        if (!event.repeat) {
-                          onToggleStar(match);
-                        }
-                      }
-                    }}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onToggleStar(match);
-                    }}
-                  >
-                    {starPending.has(match.id) ? <span class="spinner spinner--small" /> : "★"}
-                  </button>
+                  {match.isOffline ? (
+                    <span class="video-status video-status--offline" title="This recording's drive is unplugged; reconnect it to play.">offline</span>
+                  ) : (
+                    <span class={`video-status video-status--${status}`}>{status}</span>
+                  )}
+                </td>
+                <td>
+                  <div class="row-actions">
+                    {confirmingId === match.id ? (
+                      <>
+                        <button
+                          class="confirm-button confirm-button--yes"
+                          type="button"
+                          title="Confirm delete"
+                          aria-label="Confirm delete"
+                          disabled={deletePending.has(match.id)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setConfirmingId(null);
+                            onDelete(match);
+                          }}
+                        >
+                          {deletePending.has(match.id) ? <span class="spinner spinner--small" /> : "✓"}
+                        </button>
+                        <button
+                          class="confirm-button confirm-button--no"
+                          type="button"
+                          title="Cancel"
+                          aria-label="Cancel delete"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setConfirmingId(null);
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          class={`star-button${match.starred ? " star-button--active" : ""}`}
+                          type="button"
+                          title={match.starred ? "Remove from starred" : "Keep this recording"}
+                          aria-label={match.starred ? "Remove from starred" : "Keep this recording"}
+                          aria-pressed={match.starred}
+                          disabled={starPending.has(match.id)}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              if (!event.repeat) {
+                                onToggleStar(match);
+                              }
+                            }
+                          }}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onToggleStar(match);
+                          }}
+                        >
+                          {starPending.has(match.id) ? <span class="spinner spinner--small" /> : "★"}
+                        </button>
+                        <button
+                          class="delete-button"
+                          type="button"
+                          title="Delete recording"
+                          aria-label="Delete recording"
+                          disabled={deletePending.has(match.id)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setConfirmingId(match.id);
+                          }}
+                        >
+                          {deletePending.has(match.id) ? <span class="spinner spinner--small" /> : "🗑"}
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             );
@@ -938,6 +1004,305 @@ function SettingsView({ notify }: SettingsViewProps): JSX.Element {
   );
 }
 
+interface StorageViewProps {
+  notify(notice: Notice): void;
+}
+
+function round1(value: number): number {
+  return Math.round(value * 10) / 10;
+}
+
+function bytesToGiB(bytes: number): number {
+  return round1(bytes / (1024 ** 3));
+}
+
+function giBToBytes(gib: number): number {
+  return Math.round(gib * (1024 ** 3));
+}
+
+function volumeLabel(volume: StorageVolume, volumes: StorageVolume[]): string {
+  if (volume.role === "recording") {
+    return "Recording drive";
+  }
+  const archives = volumes.filter((candidate) => candidate.role === "archive");
+  return archives.length > 1 ? `Archive ${archives.indexOf(volume) + 1}` : "Archive drive";
+}
+
+function sumBytes(evictions: { sizeBytes: number }[]): number {
+  return evictions.reduce((total, eviction) => total + eviction.sizeBytes, 0);
+}
+
+/**
+ * The Storage surface (M5). Shows live per-volume usage and the eviction preview from the running
+ * retention engine, and edits the retention caps. Like recording settings, cap changes are persisted
+ * and take effect on the next launch (the running engine captured its options at startup); the preview
+ * reflects the CURRENT session so the two can differ until a restart — the note says so.
+ */
+function StorageView({ notify }: StorageViewProps): JSX.Element {
+  const [settings, setSettings] = useState<StorageSettings | null>(null);
+  const [preview, setPreview] = useState<StoragePreview | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [capGiB, setCapGiB] = useState(0);
+  const [reserveGiB, setReserveGiB] = useState(0);
+  const [hotSet, setHotSet] = useState(0);
+  const [totalCapGiB, setTotalCapGiB] = useState(""); // empty string = no whole-library cap
+
+  const applySettings = (value: StorageSettings): void => {
+    setSettings(value);
+    setCapGiB(bytesToGiB(value.recordingCapBytes));
+    setReserveGiB(bytesToGiB(value.recordingReserveBytes));
+    setHotSet(value.hotSetSize);
+    setTotalCapGiB(value.totalCapBytes === null ? "" : String(bytesToGiB(value.totalCapBytes)));
+  };
+
+  const load = useCallback(async (): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [loadedSettings, loadedPreview] = await Promise.all([
+        bridge.request("storage.get"),
+        bridge.request("storage.preview"),
+      ]);
+      applySettings(loadedSettings);
+      setPreview(loadedPreview);
+    } catch (err) {
+      setError(asErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const totalTrim = totalCapGiB.trim();
+  const capValid = Number.isFinite(capGiB) && capGiB >= 1;
+  const reserveValid = Number.isFinite(reserveGiB) && reserveGiB >= 0;
+  const hotValid = Number.isInteger(hotSet) && hotSet >= 0 && hotSet <= 1000;
+  const totalValid = totalTrim === "" || (Number.isFinite(Number(totalTrim)) && Number(totalTrim) >= 1);
+  const formValid = capValid && reserveValid && hotValid && totalValid;
+  const dirty = settings !== null && (
+    capGiB !== bytesToGiB(settings.recordingCapBytes) ||
+    reserveGiB !== bytesToGiB(settings.recordingReserveBytes) ||
+    hotSet !== settings.hotSetSize ||
+    totalTrim !== (settings.totalCapBytes === null ? "" : String(bytesToGiB(settings.totalCapBytes)))
+  );
+  const canSave = dirty && formValid && !saving;
+
+  const save = async (): Promise<void> => {
+    if (!canSave) {
+      return;
+    }
+    setSaving(true);
+    try {
+      const update: StorageUpdate = {
+        recordingCapBytes: giBToBytes(capGiB),
+        recordingReserveBytes: giBToBytes(reserveGiB),
+        hotSetSize: hotSet,
+        totalCapBytes: totalTrim === "" ? null : giBToBytes(Number(totalTrim)),
+      };
+      const saved = await bridge.request("storage.set", update);
+      applySettings(saved);
+      setPreview(await bridge.request("storage.preview"));
+      notify({ tone: "success", text: "Storage settings saved — retention changes apply after restart." });
+    } catch (err) {
+      notify({ tone: "error", text: `Could not save storage settings: ${asErrorMessage(err)}` });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <main class="settings-view">
+        <div class="settings-scroll">
+          <div class="player-message" style={{ position: "static", margin: "40px auto" }}>
+            <span class="spinner" aria-hidden="true" />
+            <strong>Loading storage</strong>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error || settings === null || preview === null) {
+    return (
+      <main class="settings-view">
+        <div class="settings-scroll">
+          <div class="empty-state">
+            <div class="empty-state__glyph" aria-hidden="true">◇</div>
+            <strong>Could not load storage</strong>
+            {error && <span>{error}</span>}
+            <button class="button button--quiet" type="button" onClick={() => void load()}>Try again</button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const moveBytes = sumBytes(preview.plannedMoves);
+  const deleteBytes = sumBytes(preview.plannedDeletes);
+  const nothingPlanned = preview.plannedMoves.length === 0 && preview.plannedDeletes.length === 0;
+
+  return (
+    <main class="settings-view">
+      <div class="settings-scroll">
+        <header class="settings-head">
+          <h1>Storage</h1>
+          <p>How much space recordings use, and what retention would do to stay within your limits.</p>
+        </header>
+
+        <section class="settings-section" aria-label="Usage">
+          <h2 class="settings-section__title">Usage</h2>
+          {preview.volumes.map((volume, index) => {
+            const pct = volume.capBytes > 0 ? Math.min(100, (volume.usedBytes / volume.capBytes) * 100) : 0;
+            const over = volume.usedBytes > volume.capBytes;
+            return (
+              <div class="usage-row" key={`${volume.role}-${index}`}>
+                <div class="usage-row__head">
+                  <span class="usage-row__label">{volumeLabel(volume, preview.volumes)}</span>
+                  {!volume.isOnline && <span class="offline-tag">offline</span>}
+                  <span class="mono muted">{formatBytes(volume.usedBytes)} / {formatBytes(volume.capBytes)}</span>
+                </div>
+                <div class="usage-bar">
+                  <div class={`usage-bar__fill${over ? " usage-bar__fill--over" : ""}`} style={{ width: `${pct.toFixed(1)}%` }} />
+                </div>
+                <div class="usage-row__foot">
+                  {volume.matchCount} {volume.matchCount === 1 ? "recording" : "recordings"} · {formatBytes(volume.freeBytes)} free on drive
+                </div>
+              </div>
+            );
+          })}
+        </section>
+
+        <section class="settings-section" aria-label="Retention preview">
+          <h2 class="settings-section__title">Retention preview</h2>
+          {nothingPlanned ? (
+            <p class="settings-note">Nothing to clean up — the library is within its limits.</p>
+          ) : (
+            <ul class="preview-list">
+              {preview.plannedMoves.length > 0 && (
+                <li>
+                  <strong>{preview.plannedMoves.length}</strong> {preview.plannedMoves.length === 1 ? "recording" : "recordings"} ({formatBytes(moveBytes)}) would be archived to a drive with space.
+                </li>
+              )}
+              {preview.plannedDeletes.length > 0 && (
+                <li class="preview-list__danger">
+                  <strong>{preview.plannedDeletes.length}</strong> {preview.plannedDeletes.length === 1 ? "recording" : "recordings"} ({formatBytes(deleteBytes)}) would be deleted to stay within the cap. Star a recording to keep it.
+                </li>
+              )}
+            </ul>
+          )}
+          {preview.recordingBelowFloor && (
+            <p class="preview-floor">Free space is below the safety floor — the next match won't be armed until space is freed.</p>
+          )}
+        </section>
+
+        <section class="settings-section" aria-label="Retention limits">
+          <h2 class="settings-section__title">Limits</h2>
+          <p class="settings-note">Changes apply after restarting BG Recorder. The current recording always finishes.</p>
+
+          <label class="settings-field">
+            <span class="settings-field__label">Recording cap</span>
+            <input
+              class="settings-input mono"
+              type="number"
+              inputMode="decimal"
+              min={1}
+              step={1}
+              value={capGiB}
+              aria-invalid={!capValid}
+              onInput={(event) => setCapGiB(Number(event.currentTarget.value))}
+            />
+            <span class={`settings-field__hint${capValid ? "" : " settings-field__hint--error"}`}>
+              {capValid ? "GiB kept on the recording drive" : "Enter at least 1 GiB."}
+            </span>
+          </label>
+
+          <label class="settings-field">
+            <span class="settings-field__label">Free-space floor</span>
+            <input
+              class="settings-input mono"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              step={1}
+              value={reserveGiB}
+              aria-invalid={!reserveValid}
+              onInput={(event) => setReserveGiB(Number(event.currentTarget.value))}
+            />
+            <span class={`settings-field__hint${reserveValid ? "" : " settings-field__hint--error"}`}>
+              {reserveValid ? "GiB never filled on the drive" : "Enter 0 or more."}
+            </span>
+          </label>
+
+          <label class="settings-field">
+            <span class="settings-field__label">Always keep newest</span>
+            <input
+              class="settings-input mono"
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={1000}
+              step={1}
+              value={hotSet}
+              aria-invalid={!hotValid}
+              onInput={(event) => setHotSet(Math.trunc(Number(event.currentTarget.value)))}
+            />
+            <span class={`settings-field__hint${hotValid ? "" : " settings-field__hint--error"}`}>
+              {hotValid ? "recordings pinned to the recording drive" : "Enter 0–1000."}
+            </span>
+          </label>
+
+          <label class="settings-field">
+            <span class="settings-field__label">Whole-library cap</span>
+            <input
+              class="settings-input mono"
+              type="number"
+              inputMode="decimal"
+              min={1}
+              step={1}
+              value={totalCapGiB}
+              placeholder="None"
+              aria-invalid={!totalValid}
+              onInput={(event) => setTotalCapGiB(event.currentTarget.value)}
+            />
+            <span class={`settings-field__hint${totalValid ? "" : " settings-field__hint--error"}`}>
+              {totalValid ? "GiB across all drives — leave blank for no cap" : "Enter at least 1 GiB, or leave blank."}
+            </span>
+          </label>
+        </section>
+
+        <section class="settings-section" aria-label="Archive drives">
+          <h2 class="settings-section__title">Archive drives</h2>
+          {settings.archiveVolumes.length === 0 ? (
+            <p class="settings-note">No archive drives configured. Overflow recordings are deleted oldest-first once the cap is reached.</p>
+          ) : (
+            settings.archiveVolumes.map((archive, index) => (
+              <div class="settings-field settings-field--readonly" key={`${archive.directory}-${index}`}>
+                <span class="settings-field__label">Archive {index + 1}</span>
+                <code class="settings-path">{archive.directory} · cap {formatBytes(archive.capBytes)}</code>
+              </div>
+            ))
+          )}
+        </section>
+
+        <div class="settings-actions">
+          <button class="button button--quiet" type="button" disabled={!dirty || saving} onClick={() => applySettings(settings)}>
+            Reset
+          </button>
+          <button class="button button--primary" type="button" disabled={!canSave} onClick={() => void save()}>
+            {saving ? "Saving…" : "Save changes"}
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 export function App(): JSX.Element {
   const [view, setView] = useState<View>("library");
   const [matches, setMatches] = useState<MatchSummary[]>([]);
@@ -956,6 +1321,7 @@ export function App(): JSX.Element {
   const [listError, setListError] = useState<string | null>(null);
   const [starPending, setStarPending] = useState<ReadonlySet<number>>(new Set());
   const [ratingPending, setRatingPending] = useState<ReadonlySet<number>>(new Set());
+  const [deletePending, setDeletePending] = useState<ReadonlySet<number>>(new Set());
   const [ratingHealth, setRatingHealth] = useState<RatingHealth | null>(null);
   const [pendingCommand, setPendingCommand] = useState<RecorderCommand | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -966,6 +1332,9 @@ export function App(): JSX.Element {
   const starMutationsRef = useRef(new Map<number, StarMutation>());
   const ratingMutationsRef = useRef(new Map<number, RatingMutation>());
   const outstandingFencesRef = useRef<ReadFences[]>([]);
+  // Ids removed via delete. A library.list already in flight (or a later refresh) must not resurrect a
+  // deleted row; deletion is permanent, so these are filtered out of every list result for the session.
+  const deletedIdsRef = useRef(new Set<number>());
 
   // A fenced async read (library.list / library.get) registers one fence per optimistic field so
   // committed history is retained until every read that could still be racing it has settled, then
@@ -1009,7 +1378,9 @@ export function App(): JSX.Element {
         return;
       }
 
-      setMatches(result.matches.map((match) => protectMatch(match, fences)));
+      setMatches(result.matches
+        .filter((match) => !deletedIdsRef.current.has(match.id))
+        .map((match) => protectMatch(match, fences)));
       setListLoaded(true);
 
       // A recorder notification is newer than the state bundled into any list request that was
@@ -1325,6 +1696,28 @@ export function App(): JSX.Element {
     }
   };
 
+  const handleDelete = async (match: MatchSummary): Promise<void> => {
+    if (deletePending.has(match.id)) {
+      return;
+    }
+    setDeletePending((current) => new Set(current).add(match.id));
+    try {
+      await bridge.request("library.delete", { matchId: match.id });
+      deletedIdsRef.current.add(match.id);
+      setMatches((current) => current.filter((candidate) => candidate.id !== match.id));
+      setDetail((current) => (current?.match.id === match.id ? null : current));
+      setNotice({ tone: "success", text: "Recording deleted." });
+    } catch (error) {
+      setNotice({ tone: "error", text: `Could not delete recording: ${asErrorMessage(error)}` });
+    } finally {
+      setDeletePending((current) => {
+        const next = new Set(current);
+        next.delete(match.id);
+        return next;
+      });
+    }
+  };
+
   const clearFilters = (): void => {
     setSearch("");
     setSegment("all");
@@ -1370,6 +1763,14 @@ export function App(): JSX.Element {
             Library
           </button>
           <button
+            class={`view-tab${view === "storage" ? " view-tab--active" : ""}`}
+            type="button"
+            aria-pressed={view === "storage"}
+            onClick={() => setView("storage")}
+          >
+            Storage
+          </button>
+          <button
             class={`view-tab${view === "settings" ? " view-tab--active" : ""}`}
             type="button"
             aria-pressed={view === "settings"}
@@ -1399,6 +1800,8 @@ export function App(): JSX.Element {
 
       {view === "settings" ? (
         <SettingsView notify={setNotice} />
+      ) : view === "storage" ? (
+        <StorageView notify={setNotice} />
       ) : (
       <div class="app-layout">
         <aside class="sidebar">
@@ -1487,8 +1890,10 @@ export function App(): JSX.Element {
                 selectedId={selectedId}
                 loading={!listLoaded && listLoading}
                 starPending={starPending}
+                deletePending={deletePending}
                 onSelect={setSelectedId}
                 onToggleStar={(match) => void handleToggleStar(match)}
+                onDelete={(match) => void handleDelete(match)}
               />
             )}
           </section>

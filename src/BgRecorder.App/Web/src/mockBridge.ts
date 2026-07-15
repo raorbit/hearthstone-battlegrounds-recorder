@@ -2,6 +2,7 @@ import type {
   CoordinatorState,
   Marker,
   MatchSummary,
+  PlannedEviction,
   RpcArgs,
   RpcClient,
   RpcMethod,
@@ -9,6 +10,9 @@ import type {
   RpcNotification,
   RpcNotificationMap,
   SettingsResult,
+  StoragePreview,
+  StorageSettings,
+  StorageVolume,
 } from "./types";
 
 const now = Date.now();
@@ -29,6 +33,7 @@ const mockMatches: MatchSummary[] = [
     starred: true,
     manualRating: 6_412,
     mediaUrl: null,
+    isOffline: false,
   },
   {
     id: 102,
@@ -43,6 +48,7 @@ const mockMatches: MatchSummary[] = [
     starred: false,
     manualRating: null,
     mediaUrl: null,
+    isOffline: false,
   },
   {
     id: 103,
@@ -57,6 +63,7 @@ const mockMatches: MatchSummary[] = [
     starred: false,
     manualRating: 5_944,
     mediaUrl: null,
+    isOffline: false,
   },
   {
     id: 104,
@@ -71,6 +78,7 @@ const mockMatches: MatchSummary[] = [
     starred: false,
     manualRating: 6_220,
     mediaUrl: null,
+    isOffline: true, // preview demo: a completed recording whose archive drive is unplugged
   },
   {
     id: 105,
@@ -85,6 +93,7 @@ const mockMatches: MatchSummary[] = [
     starred: true,
     manualRating: null,
     mediaUrl: null,
+    isOffline: false,
   },
   {
     id: 106,
@@ -99,6 +108,7 @@ const mockMatches: MatchSummary[] = [
     starred: false,
     manualRating: null,
     mediaUrl: null,
+    isOffline: false,
   },
 ];
 
@@ -141,6 +151,52 @@ let mockSettings: SettingsResult = {
   gameOnlyAudio: true,
   mixMicrophone: false,
 };
+
+const GiB = 1024 ** 3;
+
+// A small default cap so the browser-preview eviction plan is non-empty and reacts to storage.set.
+let mockStorageSettings: StorageSettings = {
+  recordingCapBytes: 4 * GiB,
+  recordingReserveBytes: 1 * GiB,
+  hotSetSize: 2,
+  totalCapBytes: null,
+  archiveVolumes: [],
+};
+
+/** A rough retention projection over the mock matches, so the storage tab preview is interactive. */
+function computeMockPreview(): StoragePreview {
+  const sized = mockMatches.filter((match) => match.videoSizeBytes !== null);
+  const used = sized.reduce((sum, match) => sum + (match.videoSizeBytes ?? 0), 0);
+  const cap = mockStorageSettings.recordingCapBytes;
+
+  const newestFirst = [...sized].sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime());
+  const pinned = new Set(newestFirst.slice(0, mockStorageSettings.hotSetSize).map((match) => match.id));
+  const oldestFirst = [...newestFirst].reverse();
+
+  const plannedDeletes: PlannedEviction[] = [];
+  let remaining = used;
+  for (const match of oldestFirst) {
+    if (remaining <= cap) {
+      break;
+    }
+    if (match.starred || pinned.has(match.id)) {
+      continue;
+    }
+    plannedDeletes.push({ matchId: match.id, sizeBytes: match.videoSizeBytes ?? 0 });
+    remaining -= match.videoSizeBytes ?? 0;
+  }
+
+  const volumes: StorageVolume[] = [{
+    role: "recording",
+    usedBytes: used,
+    freeBytes: 120 * GiB,
+    capBytes: cap,
+    isOnline: true,
+    matchCount: sized.length,
+  }];
+
+  return { volumes, plannedMoves: [], plannedDeletes, recordingBelowFloor: false };
+}
 
 function wait(ms = 140): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -209,6 +265,28 @@ class MockRpcClient implements RpcClient {
         mockSettings = { ...mockSettings, ...update };
         return { ...mockSettings } as RpcMethodMap[M]["result"];
       }
+
+      case "library.delete": {
+        const { matchId } = params as RpcMethodMap["library.delete"]["params"];
+        const index = mockMatches.findIndex((candidate) => candidate.id === matchId);
+        if (index < 0) {
+          throw new Error(`Mock match ${matchId} was not found.`);
+        }
+        mockMatches.splice(index, 1);
+        return { matchId } as RpcMethodMap[M]["result"];
+      }
+
+      case "storage.get":
+        return { ...mockStorageSettings } as RpcMethodMap[M]["result"];
+
+      case "storage.set": {
+        const update = params as RpcMethodMap["storage.set"]["params"];
+        mockStorageSettings = { ...mockStorageSettings, ...update };
+        return { ...mockStorageSettings } as RpcMethodMap[M]["result"];
+      }
+
+      case "storage.preview":
+        return computeMockPreview() as RpcMethodMap[M]["result"];
 
       case "recorder.stop":
         this.setState("finalizing");
