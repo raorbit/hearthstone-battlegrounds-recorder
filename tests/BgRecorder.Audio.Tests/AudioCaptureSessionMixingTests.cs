@@ -81,6 +81,54 @@ public sealed class AudioCaptureSessionMixingTests : IDisposable
     }
 
     [Fact]
+    public async Task StopAsync_WithoutMic_ReleasesGameHandleBeforeReturning()
+    {
+        // System-loopback-only (no mic): the game stream writes straight to the final path, and
+        // StopAsync must dispose the recorder so its file handle is released before the muxer opens
+        // the WAV. Before the fix the handle stayed open, Media Foundation rejected the byte stream,
+        // and the committed VOD was silent.
+        string finalPath = Path.Combine(_dir, "session.wav");
+        var game = new HandleHoldingWavRecorder(finalPath, new WaveFormat(48000, 16, 2), amplitude: 5000, seconds: 1.0);
+        game.Start();
+
+        await using (var session = new AudioCaptureSession(
+            game, mic: null, finalPath, finalPath, micPath: null, AudioCaptureMode.SystemLoopback))
+        {
+            AudioResult result = await session.StopAsync();
+
+            Assert.Equal(finalPath, result.Path);
+            // Exclusive open succeeds only if no writer handle remains — the proxy for "Media
+            // Foundation can now open this file".
+            using var probe = new FileStream(finalPath, FileMode.Open, FileAccess.Read, FileShare.None);
+            Assert.True(probe.Length > 0);
+        }
+    }
+
+    [Fact]
+    public async Task StopAsync_WhenMicRequestedButAbsent_SalvagesGameAudioToFinalPath()
+    {
+        // Mic mixing was requested but the mic failed to start, so the session has no mic yet the
+        // game stream wrote to a pre-mix staging path. StopAsync must move that game WAV to the
+        // final path (and release its handle), or the muxer finds no audio and yields a silent VOD.
+        string finalPath = Path.Combine(_dir, "session.wav");
+        string gamePath = finalPath + ".game.wav";
+        var game = new HandleHoldingWavRecorder(gamePath, new WaveFormat(48000, 16, 2), amplitude: 5000, seconds: 1.0);
+        game.Start();
+
+        await using (var session = new AudioCaptureSession(
+            game, mic: null, finalPath, gamePath, micPath: null, AudioCaptureMode.SystemLoopback))
+        {
+            AudioResult result = await session.StopAsync();
+
+            Assert.Equal(finalPath, result.Path);
+            Assert.True(File.Exists(finalPath), "game audio must be salvaged to the final path");
+            Assert.False(File.Exists(gamePath), "the pre-mix game WAV should have been moved");
+            using var probe = new FileStream(finalPath, FileMode.Open, FileAccess.Read, FileShare.None);
+            Assert.True(probe.Length > 0);
+        }
+    }
+
+    [Fact]
     public async Task StopAsync_WhenMixGenuinelyFails_SalvagesGameAudioAndReportsFailure()
     {
         string finalPath = Path.Combine(_dir, "session.wav");
