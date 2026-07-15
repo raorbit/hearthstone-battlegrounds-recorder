@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref to save runner minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dotnet:
+    name: .NET build + test (x64)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # ffmpeg/ffprobe let the MediaFoundation muxer + thumbnail tests actually run against the
+      # committed H.264 fixture rather than self-skipping.
+      - name: Install ffmpeg
+        run: choco install ffmpeg -y --no-progress
+
+      - name: Restore
+        run: dotnet restore BgRecorder.slnx
+
+      - name: Build (Release, x64)
+        run: dotnet build BgRecorder.slnx -c Release --no-restore
+
+      # E2E / live-game tests self-skip without a running Hearthstone client.
+      - name: Test
+        run: dotnet test BgRecorder.slnx -c Release --no-build --verbosity minimal
+
+  web:
+    name: Web SPA typecheck + test + build
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: src/BgRecorder.App/Web
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: src/BgRecorder.App/Web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
