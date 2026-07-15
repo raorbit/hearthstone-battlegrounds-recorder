@@ -13,7 +13,7 @@ public sealed record EnforcementReport(int MovesExecuted, int DeletesExecuted, b
 /// oldest unstarred recordings. <see cref="ReconcileAsync"/> runs on startup to finish any move a crash
 /// interrupted. All the data-loss-critical decisions live in the policy and mover; this is the wiring.
 /// </summary>
-public sealed class StorageEngine
+public sealed class StorageEngine : IStoragePlanner
 {
     private readonly IMatchStore _matches;
     private readonly IRetentionPolicy _policy;
@@ -49,11 +49,8 @@ public sealed class StorageEngine
     /// <summary>Brings the library within its caps and reserve floors for the current state.</summary>
     public async Task<EnforcementReport> EnforceAsync(CancellationToken ct = default)
     {
-        var records = await _matches.ListMatchesAsync(ct).ConfigureAwait(false);
-        var byId = records.ToDictionary(r => r.Id);
-
-        var (volumes, recordingOnline) = BuildVolumes();
-        if (!recordingOnline)
+        var context = await BuildPlanAsync(ct).ConfigureAwait(false);
+        if (!context.RecordingOnline)
         {
             // The recording drive's free space could not be read. A phantom "0 bytes free" would look
             // like a low-space emergency and delete recordings, so refuse to act until we can measure.
@@ -61,31 +58,8 @@ public sealed class StorageEngine
             return new EnforcementReport(0, 0, false);
         }
 
-        var stored = new List<StoredMatch>();
-        foreach (var record in records)
-        {
-            var volumeId = ResolveVolumeId(record, volumes);
-            if (volumeId is null)
-            {
-                continue; // no playable file, or it lives outside every managed volume
-            }
-            stored.Add(new StoredMatch
-            {
-                MatchId = record.Id,
-                VolumeId = volumeId,
-                SizeBytes = record.VideoSizeBytes ?? 0,
-                Starred = record.Starred,
-                FinishedAt = record.EndedAt ?? record.StartedAt,
-            });
-        }
-
-        var plan = _policy.Plan(new StorageState
-        {
-            Volumes = volumes,
-            Matches = stored,
-            HotSetSize = _options.HotSetSize,
-            TotalCapBytes = _options.TotalCapBytes,
-        });
+        var plan = context.Plan;
+        var byId = context.ById;
 
         var moves = 0;
         foreach (var move in plan.Moves)
@@ -119,6 +93,83 @@ public sealed class StorageEngine
 
         return new EnforcementReport(moves, deletes, plan.RecordingBelowFloor);
     }
+
+    /// <summary>
+    /// Computes what retention would do right now — per-volume usage plus the moves/deletes the current
+    /// state implies — without executing anything. Shares the exact projection <see cref="EnforceAsync"/>
+    /// runs, so the preview matches what the next enforcement pass would actually do.
+    /// </summary>
+    public async Task<StoragePreview> PreviewAsync(CancellationToken ct = default)
+    {
+        var context = await BuildPlanAsync(ct).ConfigureAwait(false);
+
+        var byVolume = context.Stored
+            .GroupBy(s => s.VolumeId)
+            .ToDictionary(g => g.Key, g => (Bytes: g.Sum(s => s.SizeBytes), Count: g.Count()));
+
+        var volumes = context.Volumes.Select(v =>
+        {
+            byVolume.TryGetValue(v.Id, out var usage);
+            return new VolumeUsage(v.Role, usage.Bytes, v.FreeBytes, v.CapBytes, v.IsOnline, usage.Count);
+        }).ToList();
+
+        return new StoragePreview(
+            volumes,
+            context.Plan.Moves.Select(m => new PlannedEviction(m.MatchId, m.SizeBytes)).ToList(),
+            context.Plan.Deletes.Select(d => new PlannedEviction(d.MatchId, d.SizeBytes)).ToList(),
+            context.Plan.RecordingBelowFloor);
+    }
+
+    /// <summary>
+    /// Reads the library, projects it onto the configured volumes with live free space, and asks the
+    /// policy for a plan — the shared front half of both <see cref="EnforceAsync"/> and
+    /// <see cref="PreviewAsync"/>. When the recording drive's free space cannot be read the plan is left
+    /// empty (never guess a low-space emergency), but the volume projection is still returned for preview.
+    /// </summary>
+    private async Task<PlanContext> BuildPlanAsync(CancellationToken ct)
+    {
+        var records = await _matches.ListMatchesAsync(ct).ConfigureAwait(false);
+        var byId = records.ToDictionary(r => r.Id);
+
+        var (volumes, recordingOnline) = BuildVolumes();
+
+        var stored = new List<StoredMatch>();
+        foreach (var record in records)
+        {
+            var volumeId = ResolveVolumeId(record, volumes);
+            if (volumeId is null)
+            {
+                continue; // no playable file, or it lives outside every managed volume
+            }
+            stored.Add(new StoredMatch
+            {
+                MatchId = record.Id,
+                VolumeId = volumeId,
+                SizeBytes = record.VideoSizeBytes ?? 0,
+                Starred = record.Starred,
+                FinishedAt = record.EndedAt ?? record.StartedAt,
+            });
+        }
+
+        var plan = recordingOnline
+            ? _policy.Plan(new StorageState
+            {
+                Volumes = volumes,
+                Matches = stored,
+                HotSetSize = _options.HotSetSize,
+                TotalCapBytes = _options.TotalCapBytes,
+            })
+            : new RetentionPlan();
+
+        return new PlanContext(plan, volumes, stored, byId, recordingOnline);
+    }
+
+    private sealed record PlanContext(
+        RetentionPlan Plan,
+        IReadOnlyList<ManagedVolume> Volumes,
+        List<StoredMatch> Stored,
+        Dictionary<long, MatchRecord> ById,
+        bool RecordingOnline);
 
     private (IReadOnlyList<ManagedVolume> Volumes, bool RecordingOnline) BuildVolumes()
     {
