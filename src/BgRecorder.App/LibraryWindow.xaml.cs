@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -26,10 +25,10 @@ public partial class LibraryWindow : Window
     private readonly string _assetsDirectory;
     private readonly CancellationTokenSource _closed = new();
 
-    // Media streams whose ownership was handed to WebView2. Each self-releases on EOF/read failure
-    // (removing itself here); a stream WebView2 abandons on a seek never hits EOF, so the survivors
-    // are disposed when the window closes to bound the open file handles to the window's lifetime.
-    private readonly ConcurrentDictionary<BoundedReadStream, byte> _activeMediaStreams = new();
+    // WebView2 does not dispose a response stream that it abandons during a seek. The pool parks
+    // idle file handles and reopens them at the logical response position if WebView2 later resumes,
+    // bounding handles without invalidating a buffered response.
+    private readonly MediaStreamLeasePool _mediaStreams = new();
     private bool _initialized;
 
     public LibraryWindow(UiBridge bridge, ISessionCoordinator coordinator, string assetsDirectory)
@@ -152,13 +151,7 @@ public partial class LibraryWindow : Window
                 return;
             }
 
-            var file = new FileStream(
-                path,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read | FileShare.Delete,
-                bufferSize: 128 * 1024,
-                FileOptions.Asynchronous | FileOptions.SequentialScan);
+            var file = OpenMediaFile(path);
             responseStreamOwner = file;
             var range = HttpByteRange.Resolve(TryGetHeader(e.Request.Headers, "Range"), file.Length);
             if (!range.IsSatisfiable)
@@ -174,20 +167,18 @@ public partial class LibraryWindow : Window
             Stream content;
             if (string.Equals(method, "HEAD", StringComparison.OrdinalIgnoreCase) || range.Length == 0)
             {
-                // With Content-Length: 0 WebView2 is not required to call Read, so passing a
-                // BoundedReadStream would leave its file open. Keep ownership here and let the
-                // finally block close it after the response object has been created.
+                // With Content-Length: 0 WebView2 is not required to call Read, so creating a media
+                // lease is unnecessary. Keep ownership here and let the finally block close the
+                // file after the response object has been created.
                 content = Stream.Null;
             }
             else
             {
-                var bounded = new BoundedReadStream(
+                content = _mediaStreams.Lease(
                     file,
+                    () => OpenMediaFile(path),
                     range.Offset,
-                    range.Length,
-                    onReleased: s => _activeMediaStreams.TryRemove(s, out _));
-                _activeMediaStreams[bounded] = 0;
-                content = bounded;
+                    range.Length);
                 responseStreamOwner = content;
             }
 
@@ -212,8 +203,8 @@ public partial class LibraryWindow : Window
 
             if (!ReferenceEquals(content, Stream.Null))
             {
-                // WebView2 owns the response while it reads. BoundedReadStream releases the file
-                // when WebView2 observes EOF or a read failure.
+                // WebView2 owns the response wrapper while it reads. Its underlying file handle is
+                // independently parked by MediaStreamLeasePool when the response becomes idle.
                 responseStreamOwner = null;
             }
         }
@@ -280,31 +271,9 @@ public partial class LibraryWindow : Window
             core.WebResourceRequested -= OnWebResourceRequested;
         }
 
-        DisposeOutstandingMediaStreams();
+        _mediaStreams.Dispose();
         WebView.Dispose();
         _closed.Dispose();
-    }
-
-    /// <summary>
-    /// Release any media response streams WebView2 still holds. A range request abandoned on a seek
-    /// never reaches the EOF read that would self-release its file handle, so dispose the survivors
-    /// here; each Dispose removes the stream from the registry via its onReleased callback.
-    /// </summary>
-    private void DisposeOutstandingMediaStreams()
-    {
-        foreach (var entry in _activeMediaStreams)
-        {
-            try
-            {
-                entry.Key.Dispose();
-            }
-            catch
-            {
-                // Best effort on shutdown; a stream mid-read may throw as WebView2 tears down.
-            }
-        }
-
-        _activeMediaStreams.Clear();
     }
 
     private void ShowError(string message)
@@ -352,6 +321,15 @@ public partial class LibraryWindow : Window
             return null;
         }
     }
+
+    private static FileStream OpenMediaFile(string path)
+        => new(
+            path,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read | FileShare.Delete,
+            bufferSize: 128 * 1024,
+            FileOptions.Asynchronous | FileOptions.SequentialScan);
 
     private static CoreWebView2WebResourceResponse EmptyResponse(
         CoreWebView2 core,

@@ -2,6 +2,13 @@ import { type JSX } from "preact";
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { bridge } from "./bridge";
 import {
+  createStarReadFence,
+  isCoordinatorSnapshotCurrent,
+  protectStarredFromStaleRead,
+  shouldReloadLibraryAfterStateChange,
+  type StarMutation,
+} from "./starState";
+import {
   type CoordinatorState,
   type Marker,
   type MatchDetailResult,
@@ -487,6 +494,9 @@ function MatchTable({ matches, selectedId, loading, starPending, onSelect, onTog
                 aria-selected={selected}
                 onClick={() => onSelect(match.id)}
                 onKeyDown={(event) => {
+                  if (event.target !== event.currentTarget) {
+                    return;
+                  }
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
                     onSelect(match.id);
@@ -515,6 +525,15 @@ function MatchTable({ matches, selectedId, loading, starPending, onSelect, onTog
                     aria-label={match.starred ? "Remove from starred" : "Keep this recording"}
                     aria-pressed={match.starred}
                     disabled={starPending.has(match.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        if (!event.repeat) {
+                          onToggleStar(match);
+                        }
+                      }
+                    }}
                     onClick={(event) => {
                       event.stopPropagation();
                       onToggleStar(match);
@@ -550,32 +569,77 @@ export function App(): JSX.Element {
   const [starPending, setStarPending] = useState<ReadonlySet<number>>(new Set());
   const [pendingCommand, setPendingCommand] = useState<RecorderCommand | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
-
-  // Mirror the pending-star set into a ref so the detail-fetch effect can consult it without
-  // taking a dependency on it (which would re-run the fetch on every star toggle).
-  const starPendingRef = useRef(starPending);
-  starPendingRef.current = starPending;
+  const coordinatorStateRef = useRef<CoordinatorState>(coordinatorState);
+  const coordinatorNotificationVersionRef = useRef(0);
+  const listRequestVersionRef = useRef(0);
+  const starMutationVersionRef = useRef(0);
+  const starMutationsRef = useRef(new Map<number, StarMutation>());
 
   const loadLibrary = useCallback(async (): Promise<void> => {
+    const requestVersion = ++listRequestVersionRef.current;
+    const coordinatorNotificationVersion = coordinatorNotificationVersionRef.current;
+    const starFence = createStarReadFence(
+      starMutationVersionRef.current,
+      starMutationsRef.current,
+    );
     setListLoading(true);
     setListError(null);
     try {
       const result = await bridge.request("library.list");
-      setMatches(result.matches);
-      setCoordinatorState(normalizeCoordinatorState(result.coordinatorState));
+      if (requestVersion !== listRequestVersionRef.current) {
+        return;
+      }
+
+      setMatches(result.matches.map((match) => protectStarredFromStaleRead(
+        match,
+        starFence,
+        starMutationsRef.current,
+      )));
       setListLoaded(true);
+
+      // A recorder notification is newer than the state bundled into any list request that was
+      // already in flight. Applying that snapshot could erase Finalizing and prevent the later
+      // ready-state notification from triggering the post-commit library refresh.
+      if (isCoordinatorSnapshotCurrent(
+        coordinatorNotificationVersion,
+        coordinatorNotificationVersionRef.current,
+      )) {
+        const state = normalizeCoordinatorState(result.coordinatorState);
+        const previousState = coordinatorStateRef.current;
+        coordinatorStateRef.current = state;
+        setCoordinatorState(state);
+
+        // ListLibrary reads rows before it snapshots coordinator state. If finalization commits in
+        // between those operations, this response can say "armed" while still carrying old rows;
+        // a follow-up read begun after the observed transition is guaranteed to see the commit.
+        if (shouldReloadLibraryAfterStateChange(previousState, state)) {
+          void loadLibrary();
+        }
+      }
     } catch (error) {
-      setListError(asErrorMessage(error));
-      setListLoaded(true);
+      if (requestVersion === listRequestVersionRef.current) {
+        setListError(asErrorMessage(error));
+        setListLoaded(true);
+      }
     } finally {
-      setListLoading(false);
+      if (requestVersion === listRequestVersionRef.current) {
+        setListLoading(false);
+      }
     }
   }, []);
 
   useEffect(() => {
     void loadLibrary();
     return bridge.on("recorder.stateChanged", ({ state }) => {
-      setCoordinatorState(normalizeCoordinatorState(state));
+      coordinatorNotificationVersionRef.current += 1;
+      const nextState = normalizeCoordinatorState(state);
+      const previousState = coordinatorStateRef.current;
+      coordinatorStateRef.current = nextState;
+      setCoordinatorState(nextState);
+
+      if (shouldReloadLibraryAfterStateChange(previousState, nextState)) {
+        void loadLibrary();
+      }
     });
   }, [loadLibrary]);
 
@@ -634,24 +698,22 @@ export function App(): JSX.Element {
     setDetail(null);
     setDetailError(null);
     setDetailLoading(true);
+    const starFence = createStarReadFence(
+      starMutationVersionRef.current,
+      starMutationsRef.current,
+    );
 
     void bridge.request("library.get", { matchId: selectedId })
       .then((result) => {
         if (!cancelled) {
-          // A star toggle does not change selectedId/detailVersion, so this fetch is not cancelled
-          // when the user stars the row mid-load. If a star mutation for this id is still pending,
-          // keep the optimistic `starred` instead of the pre-toggle snapshot this response carries.
-          const starLocked = starPendingRef.current.has(result.match.id);
-          setDetail((currentDetail) =>
-            starLocked && currentDetail?.match.id === result.match.id
-              ? { ...result, match: { ...result.match, starred: currentDetail.match.starred } }
-              : result);
-          setMatches((current) => current.map((match) => {
-            if (match.id !== result.match.id) {
-              return match;
-            }
-            return starLocked ? { ...result.match, starred: match.starred } : result.match;
-          }));
+          const protectedMatch = protectStarredFromStaleRead(
+            result.match,
+            starFence,
+            starMutationsRef.current,
+          );
+          setDetail({ ...result, match: protectedMatch });
+          setMatches((current) => current.map((match) =>
+            match.id === result.match.id ? protectedMatch : match));
         }
       })
       .catch((error: unknown) => {
@@ -681,18 +743,28 @@ export function App(): JSX.Element {
     setPendingCommand(command);
     try {
       switch (command) {
-        case "recorder.stop":
-          setCoordinatorState(normalizeCoordinatorState((await bridge.request("recorder.stop")).state));
+        case "recorder.stop": {
+          const state = normalizeCoordinatorState((await bridge.request("recorder.stop")).state);
+          coordinatorStateRef.current = state;
+          setCoordinatorState(state);
+          await loadLibrary();
           setNotice({ tone: "success", text: "Recording finalized." });
           break;
-        case "recorder.pause":
-          setCoordinatorState(normalizeCoordinatorState((await bridge.request("recorder.pause")).state));
+        }
+        case "recorder.pause": {
+          const state = normalizeCoordinatorState((await bridge.request("recorder.pause")).state);
+          coordinatorStateRef.current = state;
+          setCoordinatorState(state);
           setNotice({ tone: "success", text: "Auto-recording paused." });
           break;
-        case "recorder.resume":
-          setCoordinatorState(normalizeCoordinatorState((await bridge.request("recorder.resume")).state));
+        }
+        case "recorder.resume": {
+          const state = normalizeCoordinatorState((await bridge.request("recorder.resume")).state);
+          coordinatorStateRef.current = state;
+          setCoordinatorState(state);
           setNotice({ tone: "success", text: "Auto-recording resumed." });
           break;
+        }
       }
     } catch (error) {
       setNotice({ tone: "error", text: asErrorMessage(error) });
@@ -702,7 +774,17 @@ export function App(): JSX.Element {
   };
 
   const handleToggleStar = async (match: MatchSummary): Promise<void> => {
+    if (starMutationsRef.current.get(match.id)?.pending) {
+      return;
+    }
+
     const starred = !match.starred;
+    const mutationVersion = ++starMutationVersionRef.current;
+    starMutationsRef.current.set(match.id, {
+      version: mutationVersion,
+      starred,
+      pending: true,
+    });
     setStarPending((current) => new Set(current).add(match.id));
     setMatches((current) => current.map((candidate) => candidate.id === match.id ? { ...candidate, starred } : candidate));
     setDetail((current) => current?.match.id === match.id
@@ -710,19 +792,48 @@ export function App(): JSX.Element {
       : current);
 
     try {
-      await bridge.request("library.setStarred", { matchId: match.id, starred });
+      const result = await bridge.request("library.setStarred", { matchId: match.id, starred });
+      const confirmedStarred = result?.starred ?? starred;
+      const mutation = starMutationsRef.current.get(match.id);
+      if (mutation?.version === mutationVersion) {
+        starMutationsRef.current.set(match.id, {
+          version: mutationVersion,
+          starred: confirmedStarred,
+          pending: false,
+        });
+        setMatches((current) => current.map((candidate) => candidate.id === match.id
+          ? { ...candidate, starred: confirmedStarred }
+          : candidate));
+        setDetail((current) => current?.match.id === match.id
+          ? { ...current, match: { ...current.match, starred: confirmedStarred } }
+          : current);
+      }
     } catch (error) {
-      setMatches((current) => current.map((candidate) => candidate.id === match.id ? { ...candidate, starred: match.starred } : candidate));
-      setDetail((current) => current?.match.id === match.id
-        ? { ...current, match: { ...current.match, starred: match.starred } }
-        : current);
+      const mutation = starMutationsRef.current.get(match.id);
+      if (mutation?.version === mutationVersion) {
+        // Keep the rollback as the latest completed mutation. A much older list/detail read may
+        // still return after this failed attempt and must not erase an earlier successful toggle.
+        starMutationsRef.current.set(match.id, {
+          version: mutationVersion,
+          starred: match.starred,
+          pending: false,
+        });
+        setMatches((current) => current.map((candidate) => candidate.id === match.id
+          ? { ...candidate, starred: match.starred }
+          : candidate));
+        setDetail((current) => current?.match.id === match.id
+          ? { ...current, match: { ...current.match, starred: match.starred } }
+          : current);
+      }
       setNotice({ tone: "error", text: `Could not update starred state: ${asErrorMessage(error)}` });
     } finally {
-      setStarPending((current) => {
-        const next = new Set(current);
-        next.delete(match.id);
-        return next;
-      });
+      if (!starMutationsRef.current.get(match.id)?.pending) {
+        setStarPending((current) => {
+          const next = new Set(current);
+          next.delete(match.id);
+          return next;
+        });
+      }
     }
   };
 
