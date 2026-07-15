@@ -551,6 +551,11 @@ export function App(): JSX.Element {
   const [pendingCommand, setPendingCommand] = useState<RecorderCommand | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
 
+  // Mirror the pending-star set into a ref so the detail-fetch effect can consult it without
+  // taking a dependency on it (which would re-run the fetch on every star toggle).
+  const starPendingRef = useRef(starPending);
+  starPendingRef.current = starPending;
+
   const loadLibrary = useCallback(async (): Promise<void> => {
     setListLoading(true);
     setListError(null);
@@ -633,8 +638,20 @@ export function App(): JSX.Element {
     void bridge.request("library.get", { matchId: selectedId })
       .then((result) => {
         if (!cancelled) {
-          setDetail(result);
-          setMatches((current) => current.map((match) => match.id === result.match.id ? result.match : match));
+          // A star toggle does not change selectedId/detailVersion, so this fetch is not cancelled
+          // when the user stars the row mid-load. If a star mutation for this id is still pending,
+          // keep the optimistic `starred` instead of the pre-toggle snapshot this response carries.
+          const starLocked = starPendingRef.current.has(result.match.id);
+          setDetail((currentDetail) =>
+            starLocked && currentDetail?.match.id === result.match.id
+              ? { ...result, match: { ...result.match, starred: currentDetail.match.starred } }
+              : result);
+          setMatches((current) => current.map((match) => {
+            if (match.id !== result.match.id) {
+              return match;
+            }
+            return starLocked ? { ...result.match, starred: match.starred } : result.match;
+          }));
         }
       })
       .catch((error: unknown) => {
