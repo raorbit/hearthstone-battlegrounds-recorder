@@ -743,7 +743,7 @@ function MatchTable(
                           title={match.starred ? "Remove from starred" : "Keep this recording"}
                           aria-label={match.starred ? "Remove from starred" : "Keep this recording"}
                           aria-pressed={match.starred}
-                          disabled={starPending.has(match.id)}
+                          disabled={starPending.has(match.id) || deletePending.has(match.id)}
                           onKeyDown={(event) => {
                             if (event.key === "Enter" || event.key === " ") {
                               event.preventDefault();
@@ -1106,8 +1106,15 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
       };
       const saved = await bridge.request("storage.set", update);
       applySettings(saved);
-      setPreview(await bridge.request("storage.preview"));
       notify({ tone: "success", text: "Storage settings saved — retention changes apply after restart." });
+      // Refresh the preview to reflect the new caps as a SEPARATE read: the save already persisted, so
+      // a transient preview failure must not be reported as a save failure. Keep the prior preview if it
+      // fails.
+      try {
+        setPreview(await bridge.request("storage.preview"));
+      } catch {
+        // best-effort; the persisted settings are correct regardless of the preview read
+      }
     } catch (err) {
       notify({ tone: "error", text: `Could not save storage settings: ${asErrorMessage(err)}` });
     } finally {
