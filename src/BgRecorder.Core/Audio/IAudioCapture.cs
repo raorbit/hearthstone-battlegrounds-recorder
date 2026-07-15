@@ -22,10 +22,29 @@ public interface IAudioSession : IAsyncDisposable
     /// </summary>
     AudioCaptureMode ActualMode { get; }
 
-    event Action<string>? Failed;
+    /// <summary>
+    /// Raised when a captured stream fails mid-recording, tagged with which stream failed. A
+    /// <see cref="AudioStreamKind.Microphone"/> failure leaves the game audio intact, so the caller
+    /// should keep the session alive and still finalize it; a <see cref="AudioStreamKind.Game"/>
+    /// failure compromises the recording's audio.
+    /// </summary>
+    event Action<AudioFailure>? Failed;
 
     Task<AudioResult> StopAsync();
 }
+
+/// <summary>Which captured stream a failure came from.</summary>
+public enum AudioStreamKind
+{
+    /// <summary>The game audio stream (process or system loopback).</summary>
+    Game = 0,
+
+    /// <summary>The optional microphone stream mixed into the game audio.</summary>
+    Microphone = 1,
+}
+
+/// <summary>A mid-recording capture failure raised by <see cref="IAudioSession"/>, tagged with its source stream.</summary>
+public sealed record AudioFailure(AudioStreamKind Source, string Message);
 
 public sealed record AudioTarget(int ProcessId, bool IncludeProcessTree, AudioCaptureMode Mode)
 {

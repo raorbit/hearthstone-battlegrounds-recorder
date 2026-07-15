@@ -1,3 +1,4 @@
+using BgRecorder.Core.Audio;
 using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
 using BgRecorder.Core.Session;
@@ -310,6 +311,26 @@ public sealed class SessionCoordinatorTests
         Assert.False(h.Audio.LastSession!.Stopped); // dead session is not asked to stop
         Assert.Single(h.Repository.Inserted);
         Assert.Contains(h.Diagnostics, d => d.Contains("device lost"));
+    }
+
+    [Fact]
+    public async Task MicFailedEventMidRecording_KeepsAndMuxesGameAudio()
+    {
+        // A mic-only failure (unplug / input-device error) must NOT discard the game audio: the
+        // session stays alive, finalize still stops it, and the captured game audio is muxed.
+        await using var h = new CoordinatorHarness();
+        await h.StartAsync();
+        await h.StartMatchAsync();
+
+        h.Audio.LastSession!.RaiseFailed("mic unplugged", AudioStreamKind.Microphone);
+        h.Source.Raise(new MatchEnded(Ev.T0.AddMinutes(12), 3, PlayState.Lost, Truncated: false));
+        await h.WaitForStateCountAsync(4);
+
+        var call = Assert.Single(h.Muxer.Calls);
+        Assert.EndsWith("audio.wav", call.Audio); // game audio was stopped and muxed, not discarded
+        Assert.True(h.Audio.LastSession!.Stopped);
+        Assert.Single(h.Repository.Inserted);
+        Assert.Contains(h.Diagnostics, d => d.Contains("Microphone"));
     }
 
     /// <summary>

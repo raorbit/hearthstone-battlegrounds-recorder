@@ -116,9 +116,10 @@ internal sealed class FakeAudioSession(string path) : IAudioSession
     public bool Stopped { get; private set; }
     public bool Disposed { get; private set; }
 
-    public event Action<string>? Failed;
+    public event Action<AudioFailure>? Failed;
 
-    public void RaiseFailed(string reason) => Failed?.Invoke(reason);
+    public void RaiseFailed(string reason, AudioStreamKind source = AudioStreamKind.Game)
+        => Failed?.Invoke(new AudioFailure(source, reason));
 
     public Task<AudioResult> StopAsync()
     {
