@@ -1107,9 +1107,10 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
       const saved = await bridge.request("storage.set", update);
       applySettings(saved);
       notify({ tone: "success", text: "Storage settings saved — retention changes apply after restart." });
-      // Refresh the preview to reflect the new caps as a SEPARATE read: the save already persisted, so
-      // a transient preview failure must not be reported as a save failure. Keep the prior preview if it
-      // fails.
+      // Re-read the preview as a SEPARATE best-effort request. Note the native engine captured its caps
+      // at startup, so this preview still reflects the IN-FORCE caps (the new ones apply after restart),
+      // not the just-saved values — it only picks up live library/free-space changes. Kept separate so a
+      // transient preview failure is never misreported as a save failure.
       try {
         setPreview(await bridge.request("storage.preview"));
       } catch {
