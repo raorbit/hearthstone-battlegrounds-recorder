@@ -1,5 +1,45 @@
 # MMR memory reader — live offset verification
 
+## STATUS 2026-07-16: ABI verified live; the FIELD PATH is stale and blocks the feature
+
+A read-only probe was run against the live client (Hearthstone build of 2026-07-16). Results:
+
+**Verified against the live `mono-2.0-bdwgc.dll`** — these are now recorded in `MonoOffsets`:
+
+| Offset | Value | How it was confirmed |
+|---|---|---|
+| `AssemblyImage` | **0x60** | 106 assemblies resolved through it |
+| `ImageAssemblyName` | **0x30** | live slots: 0x20=name(path), 0x28=filename(path), **0x30=`"Assembly-CSharp"`**, 0x38=module_name. *The old 0x28 seed read a path — readable ASCII, so calibration passed on the wrong field.* |
+| `ImageClassCache` | **0x4D0** | fn-ptr signature; `Assembly-CSharp` → size=6247, num_entries=13911. *The old 0x4A0 seed was wrong — this is why class lookup failed.* |
+| `ClassName` | **0x48** | readable identifiers across all bucket heads |
+| `ClassFields` | **0x98** | dumped 41 correctly-named fields of `NetCache` |
+| `SizeofMonoClass` | **0xF0** | `next_class_cache` at +0x108 walked to **exactly** num_entries (13,911) |
+| `ClassDefFieldCount` | **0x100** | plausible counts for every class dumped |
+| `domain_assemblies` | **0xA0** | (seed was 0xA8; the runtime calibration scan finds it either way) |
+
+Also confirmed live: root domain via PE-export walk + RIP decode, and the assembly-list walk.
+
+**BLOCKER — the documented field path does not exist in this build.** There is **no `BaconRatingMgr`** class
+anywhere in the loaded images (all 13,911 `Assembly-CSharp` classes plus every other image were enumerated).
+The rating actually lives here:
+
+```
+NetCacheBaconRatingInfo          (Assembly-CSharp)
+    <Rating>k__BackingField      off 0x10   (int32, solo)
+    <DuosRating>k__BackingField  off 0x14   (int32, duos)
+```
+
+reached through `NetCache.m_netCache` (off 0x10 — a type→NetCacheObj map). The unsolved step is the **root**:
+neither `NetCache` nor `ServiceLocator` exposes a static instance (`ServiceLocator.m_services` is at off 0x20,
+but its only statics are profilers), so there is currently no known static entry point to the singleton.
+
+**Consequence:** the reader as written targets a class that does not exist, so it degrades to `PatchBroken` —
+safely, and it stays default-OFF, so nothing ships broken. Making the feature actually work needs a field-path
+redesign onto the NetCache route plus a way to reach that singleton (walking a service-locator map, or another
+static root). That is a design change, not an offset tweak.
+
+---
+
 The automatic-MMR feature is a **clean-room, read-only, external** Mono memory reader (`src/BgRecorder.Rating/`).
 It attaches to the live Hearthstone process with a passive handle (`PROCESS_QUERY_LIMITED_INFORMATION |
 PROCESS_VM_READ` — the footprint Spike C proved), walks the Mono heap with `ReadProcessMemory`, and reads
