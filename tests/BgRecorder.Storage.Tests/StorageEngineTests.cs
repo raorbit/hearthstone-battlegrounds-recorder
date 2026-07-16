@@ -86,6 +86,31 @@ public sealed class StorageEngineTests
     }
 
     [Fact]
+    public async Task Deleting_an_evicted_match_also_removes_its_thumbnail()
+    {
+        var fs = new FakeFileSystem();
+        fs.Seed(@"C:\lib\m1.mp4", [1]);
+        fs.Seed(@"C:\lib\m1.bmp", [9]); // its thumbnail sibling
+        fs.Seed(@"C:\lib\m2.mp4", [2]);
+        var store = new FakeMatchStore(
+            Match(1, @"C:\lib\m1.mp4", 5, ageDays: 3) with { ThumbnailPath = @"C:\lib\m1.bmp" }, // oldest → evicted
+            Match(2, @"C:\lib\m2.mp4", 5, ageDays: 1));
+        var engine = BuildEngine(fs, store, new StorageOptions
+        {
+            RecordingCapBytes = 6 * GB, // 10 GB used over a 6 GB cap → evict the oldest unstarred match
+            RecordingReserveBytes = 1 * GB,
+            HotSetSize = 1,
+        });
+
+        var report = await engine.EnforceAsync();
+
+        Assert.Equal(1, report.DeletesExecuted);
+        Assert.False(fs.Has(@"C:\lib\m1.mp4")); // video removed
+        Assert.False(fs.Has(@"C:\lib\m1.bmp")); // thumbnail removed too, not orphaned
+        Assert.Null(store.TryGet(1));
+    }
+
+    [Fact]
     public async Task A_library_within_its_cap_changes_nothing()
     {
         var fs = new FakeFileSystem();
@@ -146,6 +171,68 @@ public sealed class StorageEngineTests
         Assert.Equal(0, report.MovesExecuted);
         Assert.True(fs.Has(@"C:\lib\arc\m1.mp4"));
         Assert.NotNull(store.TryGet(1));
+    }
+
+    [Fact]
+    public async Task Preview_reports_pending_deletes_and_usage_without_executing()
+    {
+        var fs = new FakeFileSystem();
+        fs.Seed(@"C:\lib\m1.mp4", [1]);
+        fs.Seed(@"C:\lib\m2.mp4", [2]);
+        fs.Seed(@"C:\lib\m3.mp4", [3]);
+        var store = new FakeMatchStore(
+            Match(1, @"C:\lib\m1.mp4", 5, ageDays: 3),   // oldest, unstarred → would be deleted
+            Match(2, @"C:\lib\m2.mp4", 5, ageDays: 2),
+            Match(3, @"C:\lib\m3.mp4", 5, ageDays: 1));
+        var engine = BuildEngine(fs, store, new StorageOptions
+        {
+            RecordingCapBytes = 10 * GB,
+            RecordingReserveBytes = 1 * GB,
+            HotSetSize = 1,
+        });
+
+        var preview = await engine.PreviewAsync();
+
+        var delete = Assert.Single(preview.PlannedDeletes);
+        Assert.Equal(1, delete.MatchId);
+        Assert.Equal(5 * GB, delete.SizeBytes);
+        Assert.Empty(preview.PlannedMoves);
+
+        // Nothing was executed — preview is pure.
+        Assert.True(fs.Has(@"C:\lib\m1.mp4"));
+        Assert.NotNull(store.TryGet(1));
+
+        var recording = preview.Volumes.Single(v => v.Role == VolumeRole.Recording);
+        Assert.Equal(3, recording.MatchCount);
+        Assert.Equal(15 * GB, recording.UsedBytes);
+    }
+
+    [Fact]
+    public async Task Preview_reports_pending_moves_when_an_archive_can_take_them()
+    {
+        var fs = new FakeFileSystem();
+        fs.Seed(@"C:\lib\m1.mp4", [1]);
+        fs.Seed(@"C:\lib\m2.mp4", [2]);
+        var store = new FakeMatchStore(
+            Match(1, @"C:\lib\m1.mp4", 5, ageDays: 2),
+            Match(2, @"C:\lib\m2.mp4", 5, ageDays: 1));
+        var engine = BuildEngine(fs, store, new StorageOptions
+        {
+            RecordingCapBytes = 5 * GB,
+            RecordingReserveBytes = 1 * GB,
+            HotSetSize = 1,
+            ArchiveVolumes = [new ArchiveVolumeOptions { Directory = ArchiveDir, CapBytes = 100 * GB, ReserveBytes = 1 * GB }],
+        });
+
+        var preview = await engine.PreviewAsync();
+
+        var move = Assert.Single(preview.PlannedMoves);
+        Assert.Equal(1, move.MatchId);
+        Assert.Empty(preview.PlannedDeletes);
+        Assert.True(fs.Has(@"C:\lib\m1.mp4"));     // still on the source — not executed
+        Assert.False(fs.Has(@"D:\arc\m1.mp4"));
+
+        Assert.Contains(preview.Volumes, v => v.Role == VolumeRole.Archive);
     }
 
     private static StorageEngine BuildEngine(

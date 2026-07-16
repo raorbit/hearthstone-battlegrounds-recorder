@@ -11,12 +11,23 @@ public static class LibraryPaths
     /// different matches that share a start second from colliding.
     /// </summary>
     public static string CreateSessionMp4Path(string libraryDir, DateTimeOffset matchStartedAt, string sessionId)
+        => CreateSessionPath(libraryDir, matchStartedAt, sessionId, ".mp4");
+
+    /// <summary>
+    /// The thumbnail path paired with <see cref="CreateSessionMp4Path"/> — same deterministic base name,
+    /// a <c>.bmp</c> sibling of the VOD. Deterministic in the session id so a crash-recovery re-run
+    /// overwrites its own thumbnail instead of orphaning one.
+    /// </summary>
+    public static string CreateSessionThumbnailPath(string libraryDir, DateTimeOffset matchStartedAt, string sessionId)
+        => CreateSessionPath(libraryDir, matchStartedAt, sessionId, ".bmp");
+
+    private static string CreateSessionPath(string libraryDir, DateTimeOffset matchStartedAt, string sessionId, string extension)
     {
         Directory.CreateDirectory(libraryDir);
         var stamp = matchStartedAt.LocalDateTime.ToString("yyyy-MM-dd_HH-mm-ss");
         var suffix = string.IsNullOrEmpty(sessionId)
             ? "session"
             : sessionId.Length > 8 ? sessionId[..8] : sessionId;
-        return Path.Combine(libraryDir, $"BG_{stamp}_{suffix}.mp4");
+        return Path.Combine(libraryDir, $"BG_{stamp}_{suffix}{extension}");
     }
 }

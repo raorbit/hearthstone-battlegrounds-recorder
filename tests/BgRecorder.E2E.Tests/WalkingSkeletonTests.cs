@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using BgRecorder.Audio;
 using BgRecorder.Audio.Muxing;
+using BgRecorder.Audio.Thumbnails;
 using BgRecorder.Capture;
 using BgRecorder.Core;
 using BgRecorder.Core.Capture;
@@ -151,6 +152,7 @@ public sealed class WalkingSkeletonTests : IDisposable
             new ScreenRecorderLibRecorder(),
             new AudioCaptureEngine(),
             new MediaFoundationMuxer(),
+            new MediaFoundationThumbnailExtractor(),
             new MatchAssembler(),
             repository,
             new DiskSafety(_staging, repository),

@@ -4,6 +4,7 @@ using BgRecorder.Core.Data;
 using BgRecorder.Core.Events;
 using BgRecorder.Core.Rating;
 using BgRecorder.Core.Session;
+using BgRecorder.Core.Storage;
 using BgRecorder.Ui;
 using Xunit;
 
@@ -269,16 +270,190 @@ public sealed class UiBridgeTests
         Assert.Null(settings.LastSaved);
     }
 
+    [Fact]
+    public async Task Delete_removes_the_row_and_the_video_file()
+    {
+        var videoPath = Path.GetTempFileName();
+        try
+        {
+            var repository = new FakeRepository(SampleMatch(videoPath));
+            var bridge = NewBridge(repository);
+
+            var json = await bridge.HandleRequestAsync(Request("del", "library.delete", new { matchId = 42 }));
+            using var document = JsonDocument.Parse(json);
+
+            Assert.Equal(42, document.RootElement.GetProperty("result").GetProperty("matchId").GetInt64());
+            Assert.Equal(42L, repository.DeletedId);
+            Assert.False(File.Exists(videoPath)); // the on-disk video was removed, not just the row
+        }
+        finally
+        {
+            if (File.Exists(videoPath)) File.Delete(videoPath);
+        }
+    }
+
+    [Fact]
+    public async Task Delete_of_a_missing_match_returns_not_found_and_touches_nothing()
+    {
+        var repository = new FakeRepository(SampleMatch(null));
+        var bridge = NewBridge(repository);
+
+        var json = await bridge.HandleRequestAsync(Request("del", "library.delete", new { matchId = 999 }));
+
+        Assert.Contains("\"code\":-32004", json);
+        Assert.Null(repository.DeletedId);
+    }
+
+    [Fact]
+    public async Task Delete_is_refused_when_the_video_file_cannot_be_removed()
+    {
+        // A non-Missing match whose file lives under an unreachable directory (a stand-in for an
+        // unplugged archive drive: File.Delete throws DirectoryNotFoundException). The row must NOT be
+        // deleted, or the multi-GB file would be orphaned where retention can never reclaim it.
+        var unreachable = Path.Combine(Path.GetTempPath(), $"bgrec-gone-{Guid.NewGuid():N}", "video.mp4");
+        var repository = new FakeRepository(SampleMatch(unreachable));
+        var bridge = NewBridge(repository);
+
+        var json = await bridge.HandleRequestAsync(Request("del", "library.delete", new { matchId = 42 }));
+
+        Assert.Contains("\"code\":-32010", json);
+        Assert.Null(repository.DeletedId); // row preserved so the file is not orphaned
+    }
+
+    [Fact]
+    public async Task Library_list_flags_a_recording_whose_drive_is_offline()
+    {
+        // VideoStatus is Complete but the file does not exist → its drive is unplugged (offline), which
+        // is distinct from a permanently Missing recording.
+        var repository = new FakeRepository(SampleMatch(@"Z:\unplugged\gone.mp4"));
+        var bridge = NewBridge(repository);
+
+        var json = await bridge.HandleRequestAsync(Request("1", "library.list"));
+        using var document = JsonDocument.Parse(json);
+        var row = document.RootElement.GetProperty("result").GetProperty("matches")[0];
+
+        Assert.True(row.GetProperty("isOffline").GetBoolean());
+        Assert.Equal(JsonValueKind.Null, row.GetProperty("mediaUrl").ValueKind);
+    }
+
+    [Fact]
+    public async Task Library_list_emits_a_thumbnail_route_and_never_exposes_the_thumbnail_path()
+    {
+        var thumbnailPath = Path.GetTempFileName();
+        try
+        {
+            var match = SampleMatch(videoPath: null) with { ThumbnailPath = thumbnailPath };
+            var bridge = NewBridge(new FakeRepository(match));
+
+            var json = await bridge.HandleRequestAsync(Request("1", "library.list"));
+            using var document = JsonDocument.Parse(json);
+            var row = document.RootElement.GetProperty("result").GetProperty("matches")[0];
+
+            Assert.Equal("https://media.bgrecorder.local/thumbnails/42", row.GetProperty("thumbnailUrl").GetString());
+            Assert.DoesNotContain(thumbnailPath, json, StringComparison.OrdinalIgnoreCase); // path never leaves native
+            Assert.True(bridge.TryResolveThumbnailPath(42, out var resolved));
+            Assert.Equal(Path.GetFullPath(thumbnailPath), resolved);
+        }
+        finally
+        {
+            File.Delete(thumbnailPath);
+        }
+    }
+
+    [Fact]
+    public async Task Storage_get_projects_the_current_retention_caps()
+    {
+        var settings = new FakeSettingsService(new AppSettings
+        {
+            Storage = new StorageOptions { RecordingCapBytes = 50L << 30, HotSetSize = 8, TotalCapBytes = 200L << 30 },
+        });
+        var bridge = NewBridge(new FakeRepository(SampleMatch(null)), settings: settings);
+
+        var json = await bridge.HandleRequestAsync(Request("s", "storage.get"));
+        using var document = JsonDocument.Parse(json);
+        var result = document.RootElement.GetProperty("result");
+
+        Assert.Equal(50L << 30, result.GetProperty("recordingCapBytes").GetInt64());
+        Assert.Equal(8, result.GetProperty("hotSetSize").GetInt32());
+        Assert.Equal(200L << 30, result.GetProperty("totalCapBytes").GetInt64());
+    }
+
+    [Fact]
+    public async Task Storage_set_persists_caps_through_the_service()
+    {
+        var settings = new FakeSettingsService();
+        var bridge = NewBridge(new FakeRepository(SampleMatch(null)), settings: settings);
+
+        var json = await bridge.HandleRequestAsync(Request("s", "storage.set", new
+        {
+            recordingCapBytes = 100L << 30,
+            recordingReserveBytes = 5L << 30,
+            hotSetSize = 6,
+            totalCapBytes = (long?)null,
+        }));
+        using var document = JsonDocument.Parse(json);
+
+        Assert.NotNull(settings.LastSaved);
+        Assert.Equal(100L << 30, settings.LastSaved!.Storage.RecordingCapBytes);
+        Assert.Equal(6, settings.LastSaved.Storage.HotSetSize);
+        Assert.Null(settings.LastSaved.Storage.TotalCapBytes);
+        Assert.Equal(100L << 30, document.RootElement.GetProperty("result").GetProperty("recordingCapBytes").GetInt64());
+    }
+
+    [Fact]
+    public async Task Storage_set_rejects_a_non_positive_recording_cap()
+    {
+        var settings = new FakeSettingsService();
+        var bridge = NewBridge(new FakeRepository(SampleMatch(null)), settings: settings);
+
+        var json = await bridge.HandleRequestAsync(Request("s", "storage.set", new
+        {
+            recordingCapBytes = 0,
+            recordingReserveBytes = 5L << 30,
+            hotSetSize = 6,
+            totalCapBytes = (long?)null,
+        }));
+
+        Assert.Contains("\"code\":-32602", json);
+        Assert.Null(settings.LastSaved);
+    }
+
+    [Fact]
+    public async Task Storage_preview_projects_the_planner_result()
+    {
+        var preview = new StoragePreview(
+            [new VolumeUsage(VolumeRole.Recording, 15L << 30, 100L << 30, 200L << 30, true, 3)],
+            [],
+            [new PlannedEviction(7, 5L << 30)],
+            RecordingBelowFloor: false);
+        var bridge = NewBridge(new FakeRepository(SampleMatch(null)), storagePlanner: new FakeStoragePlanner(preview));
+
+        var json = await bridge.HandleRequestAsync(Request("s", "storage.preview"));
+        using var document = JsonDocument.Parse(json);
+        var result = document.RootElement.GetProperty("result");
+
+        var volume = result.GetProperty("volumes")[0];
+        Assert.Equal("recording", volume.GetProperty("role").GetString());
+        Assert.Equal(15L << 30, volume.GetProperty("usedBytes").GetInt64());
+        Assert.Equal(3, volume.GetProperty("matchCount").GetInt32());
+
+        var delete = result.GetProperty("plannedDeletes")[0];
+        Assert.Equal(7, delete.GetProperty("matchId").GetInt64());
+        Assert.Equal(0, result.GetProperty("plannedMoves").GetArrayLength());
+    }
+
     private static UiBridge NewBridge(
         IMatchRepository repository,
         ISessionCoordinator? coordinator = null,
         IRatingProvider? ratingProvider = null,
-        ISettingsService? settings = null)
+        ISettingsService? settings = null,
+        IStoragePlanner? storagePlanner = null)
         => new(
             repository,
             coordinator ?? new FakeCoordinator(),
             ratingProvider ?? new NullRatingProvider(),
-            settings ?? new FakeSettingsService());
+            settings ?? new FakeSettingsService(),
+            storagePlanner ?? new FakeStoragePlanner());
 
     private static string Request(string id, string method, object? parameters = null)
         => JsonSerializer.Serialize(new Dictionary<string, object?>
@@ -357,7 +532,13 @@ public sealed class UiBridgeTests
             return Task.CompletedTask;
         }
 
-        public Task DeleteMatchAsync(long matchId, CancellationToken ct = default) => Task.CompletedTask;
+        public long? DeletedId { get; private set; }
+
+        public Task DeleteMatchAsync(long matchId, CancellationToken ct = default)
+        {
+            DeletedId = matchId;
+            return Task.CompletedTask;
+        }
 
         public (long MatchId, int? Rating)? LastManualRatingUpdate { get; private set; }
 
@@ -423,5 +604,15 @@ public sealed class UiBridgeTests
             Current = settings;
             return Task.FromResult(settings);
         }
+    }
+
+    private sealed class FakeStoragePlanner : IStoragePlanner
+    {
+        private readonly StoragePreview _preview;
+
+        public FakeStoragePlanner(StoragePreview? preview = null)
+            => _preview = preview ?? new StoragePreview([], [], [], false);
+
+        public Task<StoragePreview> PreviewAsync(CancellationToken ct = default) => Task.FromResult(_preview);
     }
 }

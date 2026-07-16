@@ -34,6 +34,10 @@ export interface MatchSummary {
   starred: boolean;
   manualRating: number | null;
   mediaUrl: string | null;
+  /** The row expects a playable video but its drive is currently unreachable (distinct from "missing"). */
+  isOffline: boolean;
+  /** Opaque route to a generated still thumbnail, or null when none was produced. */
+  thumbnailUrl: string | null;
 }
 
 export interface Marker {
@@ -75,6 +79,52 @@ export interface SettingsUpdate {
   mixMicrophone: boolean;
 }
 
+export interface ArchiveVolume {
+  directory: string;
+  capBytes: number;
+  reserveBytes: number;
+  priority: number;
+}
+
+/** Retention caps (storage.get). Archive drives are surfaced read-only. */
+export interface StorageSettings {
+  recordingCapBytes: number;
+  recordingReserveBytes: number;
+  hotSetSize: number;
+  totalCapBytes: number | null;
+  archiveVolumes: ArchiveVolume[];
+}
+
+/** The editable retention caps storage.set writes. */
+export interface StorageUpdate {
+  recordingCapBytes: number;
+  recordingReserveBytes: number;
+  hotSetSize: number;
+  totalCapBytes: number | null;
+}
+
+export interface StorageVolume {
+  role: "recording" | "archive";
+  usedBytes: number;
+  freeBytes: number;
+  capBytes: number;
+  isOnline: boolean;
+  matchCount: number;
+}
+
+export interface PlannedEviction {
+  matchId: number;
+  sizeBytes: number;
+}
+
+/** Per-volume usage plus the moves/deletes retention would run now (storage.preview; nothing executes). */
+export interface StoragePreview {
+  volumes: StorageVolume[];
+  plannedMoves: PlannedEviction[];
+  plannedDeletes: PlannedEviction[];
+  recordingBelowFloor: boolean;
+}
+
 export interface RpcMethodMap {
   "library.list": {
     params: undefined;
@@ -92,6 +142,10 @@ export interface RpcMethodMap {
     params: { matchId: number; rating: number | null };
     result: null | { rating: number | null };
   };
+  "library.delete": {
+    params: { matchId: number };
+    result: { matchId: number };
+  };
   "rating.get": {
     params: { mode: "solo" | "duos" };
     result: { health: RatingHealth; rating: number | null; sampledAt: string | null };
@@ -103,6 +157,18 @@ export interface RpcMethodMap {
   "settings.set": {
     params: SettingsUpdate;
     result: SettingsResult;
+  };
+  "storage.get": {
+    params: undefined;
+    result: StorageSettings;
+  };
+  "storage.set": {
+    params: StorageUpdate;
+    result: StorageSettings;
+  };
+  "storage.preview": {
+    params: undefined;
+    result: StoragePreview;
   };
   "recorder.stop": {
     params: undefined;

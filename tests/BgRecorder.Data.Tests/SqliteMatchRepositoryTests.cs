@@ -56,6 +56,7 @@ public sealed class SqliteMatchRepositoryTests
         VideoDuration = TimeSpan.FromMilliseconds(1_805_000),
         Starred = true,
         ManualRating = 8123,
+        ThumbnailPath = @"C:\vods\match.bmp",
     };
 
     private static IReadOnlyList<MarkerRecord> SampleMarkers() =>
@@ -104,6 +105,7 @@ public sealed class SqliteMatchRepositoryTests
             Assert.Equal(match.VideoDuration, row.VideoDuration);
             Assert.Equal(match.Starred, row.Starred);
             Assert.Equal(match.ManualRating, row.ManualRating);
+            Assert.Equal(match.ThumbnailPath, row.ThumbnailPath);
 
             await using var raw = OpenRaw(db);
             var markers = (await raw.QueryAsync<MarkerReadback>(MarkerSelect, new { id })).ToList();
@@ -288,6 +290,7 @@ public sealed class SqliteMatchRepositoryTests
             Assert.Null(row.VideoSizeBytes);
             Assert.Null(row.VideoDuration);
             Assert.Null(row.ManualRating);
+            Assert.Null(row.ThumbnailPath);
             Assert.False(row.Starred);
             Assert.True(row.Truncated);
             Assert.Equal(VideoStatus.Incomplete, row.VideoStatus);

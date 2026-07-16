@@ -167,6 +167,30 @@ internal sealed class FakeMuxer : IMuxer
     }
 }
 
+internal sealed class FakeThumbnailExtractor : IThumbnailExtractor
+{
+    /// <summary>When false (default), extraction reports failure so the row carries a null thumbnail path.</summary>
+    public bool Succeed;
+    /// <summary>Makes TryExtractAsync throw, to prove a thumbnail fault never aborts finalize.</summary>
+    public bool Throw;
+    public readonly List<(string Video, string Output)> Calls = [];
+
+    public Task<bool> TryExtractAsync(string videoMp4, string outputImagePath, CancellationToken ct = default)
+    {
+        Calls.Add((videoMp4, outputImagePath));
+        if (Throw)
+        {
+            throw new InvalidOperationException("thumbnail extraction failed");
+        }
+        if (Succeed)
+        {
+            File.WriteAllBytes(outputImagePath, [0x42, 0x4D]); // "BM" stub
+            return Task.FromResult(true);
+        }
+        return Task.FromResult(false);
+    }
+}
+
 internal sealed class FakeAssembler : IMatchAssembler
 {
     public bool Throw;

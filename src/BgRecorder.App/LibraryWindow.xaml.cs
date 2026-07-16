@@ -136,8 +136,7 @@ public partial class LibraryWindow : Window
         Stream? responseStreamOwner = null;
         try
         {
-            if (!TryParseMatchId(e.Request.Uri, out var matchId) ||
-                !_bridge.TryResolveVideoPath(matchId, out var path))
+            if (!TryParseMediaRoute(e.Request.Uri, out var kind, out var matchId))
             {
                 e.Response = EmptyResponse(core, 404, "Not Found");
                 return;
@@ -148,6 +147,18 @@ public partial class LibraryWindow : Window
                 !string.Equals(method, "HEAD", StringComparison.OrdinalIgnoreCase))
             {
                 e.Response = EmptyResponse(core, 405, "Method Not Allowed", "Allow: GET, HEAD\r\n");
+                return;
+            }
+
+            if (kind == MediaKind.Thumbnail)
+            {
+                ServeThumbnail(core, e, matchId, method);
+                return;
+            }
+
+            if (!_bridge.TryResolveVideoPath(matchId, out var path))
+            {
+                e.Response = EmptyResponse(core, 404, "Not Found");
                 return;
             }
 
@@ -225,6 +236,43 @@ public partial class LibraryWindow : Window
         }
     }
 
+    /// <summary>
+    /// Serves a thumbnail as a whole small image (no HTTP range needed). The file is read fully into
+    /// memory so no file handle outlives the response — the media-stream lease pool exists only for the
+    /// large, seekable video route.
+    /// </summary>
+    private void ServeThumbnail(CoreWebView2 core, CoreWebView2WebResourceRequestedEventArgs e, long matchId, string method)
+    {
+        if (!_bridge.TryResolveThumbnailPath(matchId, out var path))
+        {
+            e.Response = EmptyResponse(core, 404, "Not Found");
+            return;
+        }
+
+        try
+        {
+            var bytes = File.ReadAllBytes(path);
+            var isHead = string.Equals(method, "HEAD", StringComparison.OrdinalIgnoreCase);
+            Stream content = isHead ? Stream.Null : new MemoryStream(bytes, writable: false);
+
+            var headers = new StringBuilder()
+                .Append("Content-Type: image/bmp\r\n")
+                .Append("Cache-Control: no-store\r\n")
+                .Append("Access-Control-Allow-Origin: https://app.bgrecorder.local\r\n")
+                .Append("Content-Length: ")
+                .Append(bytes.Length.ToString(CultureInfo.InvariantCulture))
+                .Append("\r\n")
+                .ToString();
+
+            e.Response = core.Environment.CreateWebResourceResponse(content, 200, "OK", headers);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            Log.Warning(ex, "Could not serve a library thumbnail");
+            e.Response = EmptyResponse(core, 404, "Not Found");
+        }
+    }
+
     private void OnCoordinatorStateChanged(CoordinatorState state)
     {
         if (_closed.IsCancellationRequested)
@@ -282,8 +330,15 @@ public partial class LibraryWindow : Window
         ErrorPanel.Visibility = Visibility.Visible;
     }
 
-    private static bool TryParseMatchId(string requestUri, out long matchId)
+    private enum MediaKind
     {
+        Video,
+        Thumbnail,
+    }
+
+    private static bool TryParseMediaRoute(string requestUri, out MediaKind kind, out long matchId)
+    {
+        kind = MediaKind.Video;
         matchId = 0;
         if (!Uri.TryCreate(requestUri, UriKind.Absolute, out var uri) ||
             !string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase) ||
@@ -293,10 +348,26 @@ public partial class LibraryWindow : Window
         }
 
         var segments = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
-        return segments.Length == 2 &&
-               string.Equals(segments[0], "matches", StringComparison.Ordinal) &&
-               long.TryParse(segments[1], NumberStyles.None, CultureInfo.InvariantCulture, out matchId) &&
-               matchId > 0;
+        if (segments.Length != 2 ||
+            !long.TryParse(segments[1], NumberStyles.None, CultureInfo.InvariantCulture, out matchId) ||
+            matchId <= 0)
+        {
+            return false;
+        }
+
+        if (string.Equals(segments[0], "matches", StringComparison.Ordinal))
+        {
+            kind = MediaKind.Video;
+            return true;
+        }
+
+        if (string.Equals(segments[0], "thumbnails", StringComparison.Ordinal))
+        {
+            kind = MediaKind.Thumbnail;
+            return true;
+        }
+
+        return false;
     }
 
     private static bool IsTrustedAppUri(string candidate)

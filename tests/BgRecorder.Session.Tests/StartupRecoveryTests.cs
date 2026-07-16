@@ -12,6 +12,7 @@ public sealed class StartupRecoveryTests : IDisposable
     private readonly string _root;
     private readonly AppSettings _settings;
     private readonly FakeMuxer _muxer = new();
+    private readonly FakeThumbnailExtractor _thumbnailer = new();
     private readonly FakeAssembler _assembler = new();
     private readonly FakeRepository _repository = new();
 
@@ -40,7 +41,7 @@ public sealed class StartupRecoveryTests : IDisposable
         }
     }
 
-    private StartupRecovery CreateSut() => new(_muxer, _assembler, _repository, _settings);
+    private StartupRecovery CreateSut() => new(_muxer, _thumbnailer, _assembler, _repository, _settings);
 
     private string CreateSessionDir(out string videoPath, out string audioPath, bool withVideo = true, bool withAudio = true)
     {
@@ -296,6 +297,36 @@ public sealed class StartupRecoveryTests : IDisposable
 
         Assert.Equal(RecoveryOutcome.LeftInPlace, Assert.Single(report.Sessions).Outcome);
         Assert.True(File.Exists(video));
+        Assert.True(!Directory.Exists(_settings.LibraryDir) || Directory.GetFiles(_settings.LibraryDir).Length == 0);
+    }
+
+    [Fact]
+    public async Task RecoveredMatch_WithSuccessfulThumbnail_StampsThumbnailPath()
+    {
+        _thumbnailer.Succeed = true; // decode a thumbnail from the recovered library MP4
+        var dir = CreateSessionDir(out var video, out var audio);
+        ManifestStore.Write(dir, Manifest(video, audio, videoClock: Ev.T0.AddSeconds(2)));
+
+        await CreateSut().RunAsync();
+
+        var (match, _) = Assert.Single(_repository.Inserted);
+        Assert.False(string.IsNullOrEmpty(match.ThumbnailPath));
+        Assert.Single(_thumbnailer.Calls);
+    }
+
+    [Fact]
+    public async Task InsertFailure_WithThumbnail_DeletesTheOrphanThumbnailToo()
+    {
+        _thumbnailer.Succeed = true; // a thumbnail .bmp is written before the (failing) insert
+        var dir = CreateSessionDir(out var video, out var audio);
+        ManifestStore.Write(dir, Manifest(video, audio, videoClock: Ev.T0.AddSeconds(2)));
+        _repository.ThrowOnInsert = true;
+
+        var report = await CreateSut().RunAsync();
+
+        Assert.Equal(RecoveryOutcome.LeftInPlace, Assert.Single(report.Sessions).Outcome);
+        Assert.True(File.Exists(video)); // staged video preserved for a retry
+        // Neither the muxed library MP4 nor its thumbnail sibling is left orphaned in the library.
         Assert.True(!Directory.Exists(_settings.LibraryDir) || Directory.GetFiles(_settings.LibraryDir).Length == 0);
     }
 

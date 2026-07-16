@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using BgRecorder.Audio.Muxing;
+using BgRecorder.Audio.Thumbnails;
 using BgRecorder.Core;
 using BgRecorder.Core.Data;
 using BgRecorder.Data;
@@ -101,7 +102,8 @@ public sealed class CrashRecoveryTests : IDisposable
         IMatchRepository repository = new SqliteMatchRepository(_recoveryDbPath);
         await repository.InitializeAsync();
 
-        var recovery = new StartupRecovery(new MediaFoundationMuxer(), new MatchAssembler(), repository, settings);
+        var recovery = new StartupRecovery(
+            new MediaFoundationMuxer(), new MediaFoundationThumbnailExtractor(), new MatchAssembler(), repository, settings);
         var report = await recovery.RunAsync();
 
         var session = Assert.Single(report.Sessions);
