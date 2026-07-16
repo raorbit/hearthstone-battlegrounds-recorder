@@ -12,17 +12,17 @@ The desktop path records unattended end-to-end: log watcher → BG parser (fixtu
 
 The tray now opens a bundled TypeScript/Preact library in WebView2 with all/solo/duos/starred buckets, search/placement/date filters, starring, recorder controls, match detail, marker seeking, and real local VOD playback through opaque match URLs with HTTP byte-range responses. Recovered rows remain visible and are labeled explicitly.
 
-Still needed to close M2: wire the onboarding live test-feed verifier, run 3 consecutive hands-free real matches including a client restart, check A/V sync within ±100 ms over a long session, and complete Spike B's 30-minute PresentMon measurement. M3 still needs real multi-GB seek/scrub validation, marker timing checks across real matches, thumbnails, final-board/damage presentation, keyboard shortcuts, and virtual clips. v1 ships without automatic MMR (M1 licensing decision).
+Still needed to close M2: wire the onboarding live test-feed verifier, run 3 consecutive hands-free real matches including a client restart, check A/V sync within ±100 ms over a long session, and complete Spike B's 30-minute PresentMon measurement. M3 still needs real multi-GB seek/scrub validation, marker timing checks across real matches, thumbnails, final-board/damage presentation, keyboard shortcuts, and virtual clips. Automatic MMR now has a clean-room external memory reader, shipped **off by default** until its Mono struct offsets are verified against a live game (see [`docs/mmr-offset-verification.md`](docs/mmr-offset-verification.md)); manual rating entry remains the default source.
 
 - `design/` contains an interactive UI prototype of the Library and Settings screens — clone the repo and open [`design/BG Recorder - Library.dc.html`](<design/BG Recorder - Library.dc.html>) locally in a browser (GitHub shows only the source).
-- [`docs/technical-notes.md`](docs/technical-notes.md) — verified facts constraining the implementation: Power.log lives in per-session timestamped subfolders; hero/placement/turns/combats/final board are log-derivable; **rating (MMR) is not in any log** and is read from game memory via HearthMirror (HDT's approach), so it's designed as an optional, degradable subsystem.
+- [`docs/technical-notes.md`](docs/technical-notes.md) — verified facts constraining the implementation: Power.log lives in per-session timestamped subfolders; hero/placement/turns/combats/final board are log-derivable; **rating (MMR) is not in any log** and is read from game memory by a clean-room external reader (the technique deck trackers use, written from Mono's own headers — no HearthMirror code; see LICENSING), so it's designed as an optional, degradable subsystem.
 - [`docs/implementation-plan.md`](docs/implementation-plan.md) — stack decision (.NET 10 + WPF tray shell + WebView2 UI, ScreenRecorderLib capture), architecture, the resolved storage/retention policy, and six milestones starting with a de-risking spike sprint that includes a dependency-licensing gate.
 
 ## Planned features
 
 - Automatic recording per match with combat markers on the timeline, no manual start/stop
 - Library with filtering by hero, placement, rating, and date
-- Rating (MMR) tracking per mode (solo/duos): manual entry in v1; automatic memory-read tracking is post-v1, pending licensing (see `spikes/SpikeC.MmrRoute/LICENSING.md`)
+- Rating (MMR) tracking per mode (solo/duos): manual entry always available; automatic memory-read tracking via a clean-room external reader, shipped off by default until offsets are verified live (see `docs/mmr-offset-verification.md` and `spikes/SpikeC.MmrRoute/LICENSING.md`)
 - Storage management: max storage cap, output folder selection, archive drives, starred matches never auto-deleted
 - Game log parsing for match metadata
 
