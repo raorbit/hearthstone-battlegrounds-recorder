@@ -133,32 +133,35 @@ internal static class CompositionRoot
         // when the file is already compliant (which it is on this machine).
         var logConfigPath = LogConfigWriter.DefaultPath;
 
+        LogConfigResult result;
         try
         {
-            var result = LogConfigWriter.Ensure(logConfigPath);
+            result = LogConfigWriter.Ensure(logConfigPath);
             Log.Information("Onboarding: log.config ensure at {Path} -> {Result}", logConfigPath, result);
-
-            // The game reads log.config once at launch: a change made while it is running takes effect
-            // only after a restart, so recording would silently never arm. Surface that.
-            bool restartNeeded = result.Outcome is not LogConfigOutcome.AlreadyCompliant
-                && locator.FindGame() is not null;
-            return new OnboardingReport(result, null, restartNeeded);
         }
         catch (Exception ex)
         {
             Log.Warning(ex, "Onboarding: log.config ensure failed (non-fatal; recording still works if already set)");
-            return new OnboardingReport(null, ex.Message, GameRestartNeeded: false);
+            return OnboardingReport.Failed(ex.Message);
         }
+
+        // A process-enumeration hiccup must not masquerade as a config failure — the write above already
+        // succeeded. Degrade to "no restart hint" and keep the real outcome.
+        bool gameRunning;
+        try
+        {
+            gameRunning = locator.FindGame() is not null;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Onboarding: could not check whether Hearthstone is running; skipping the restart hint");
+            gameRunning = false;
+        }
+
+        return OnboardingReport.From(result, gameRunning);
     }
 
 }
-
-/// <summary>
-/// What onboarding did and what the shell should tell the user: the log.config ensure outcome (null with
-/// <see cref="LogConfigError"/> set when it threw), and whether Hearthstone must be restarted to pick a
-/// just-made config change up.
-/// </summary>
-internal sealed record OnboardingReport(LogConfigResult? LogConfig, string? LogConfigError, bool GameRestartNeeded);
 
 /// <summary>
 /// The composed, running application: its settings, the live coordinator, and the disposables that
