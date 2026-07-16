@@ -337,6 +337,30 @@ public sealed class UiBridgeTests
     }
 
     [Fact]
+    public async Task Library_list_emits_a_thumbnail_route_and_never_exposes_the_thumbnail_path()
+    {
+        var thumbnailPath = Path.GetTempFileName();
+        try
+        {
+            var match = SampleMatch(videoPath: null) with { ThumbnailPath = thumbnailPath };
+            var bridge = NewBridge(new FakeRepository(match));
+
+            var json = await bridge.HandleRequestAsync(Request("1", "library.list"));
+            using var document = JsonDocument.Parse(json);
+            var row = document.RootElement.GetProperty("result").GetProperty("matches")[0];
+
+            Assert.Equal("https://media.bgrecorder.local/thumbnails/42", row.GetProperty("thumbnailUrl").GetString());
+            Assert.DoesNotContain(thumbnailPath, json, StringComparison.OrdinalIgnoreCase); // path never leaves native
+            Assert.True(bridge.TryResolveThumbnailPath(42, out var resolved));
+            Assert.Equal(Path.GetFullPath(thumbnailPath), resolved);
+        }
+        finally
+        {
+            File.Delete(thumbnailPath);
+        }
+    }
+
+    [Fact]
     public async Task Storage_get_projects_the_current_retention_caps()
     {
         var settings = new FakeSettingsService(new AppSettings
