@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Clean-room MMR reader: an external, read-only Mono heap walker behind IRatingProvider.
+    Native (OpenProcess/ReadProcessMemory/psapi) lives here, not in Core, so Core stays
+    dependency-free; the pure walker sits behind the IProcessMemory seam so it is unit-testable
+    against a synthetic heap. Mirrors how BgRecorder.Storage isolates its subsystem.
+  -->
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BgRecorder.Rating.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>
