@@ -49,7 +49,11 @@ public sealed class CoordinatorThumbnailTests
         await h.StartMatchAsync();
 
         h.Source.Raise(new MatchEnded(Ev.T0.AddMinutes(12), 3, PlayState.Lost, Truncated: false));
-        await h.WaitUntilAsync(() => h.Repository.Inserted.Count == 1, what: "row still inserted despite the thumbnail fault");
+        // Wait for finalize to FULLY complete — the row insert AND the staging-folder reclaim, which is a
+        // later step — so the staging assertion below cannot race the coordinator's own cleanup.
+        await h.WaitUntilAsync(
+            () => h.Repository.Inserted.Count == 1 && Directory.GetDirectories(h.StagingDir).Length == 0,
+            what: "finalize to complete despite the thumbnail fault (row inserted, staging reclaimed)");
 
         // Finalize completed normally: the row committed with a null thumbnail and staging was reclaimed.
         Assert.Null(Assert.Single(h.Repository.Inserted).Match.ThumbnailPath);
