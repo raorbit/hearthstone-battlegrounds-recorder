@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using BgRecorder.Core.Session;
+using BgRecorder.Logs;
 using BgRecorder.Ui;
 using Serilog;
 
@@ -131,6 +132,9 @@ public partial class App : Application
             _services.Coordinator.Diagnostic += OnCoordinatorDiagnostic;
             ApplyState(_services.Coordinator.State);
             Log.Information("Bootstrap complete; coordinator state {State}", _services.Coordinator.State);
+
+            SurfaceOnboarding(_services.Onboarding);
+            _ = Task.Run(() => RunLiveFeedSelfTestAsync(_cts.Token));
         }
         catch (Exception ex)
         {
@@ -150,6 +154,66 @@ public partial class App : Application
             await Task.Delay(TimeSpan.FromSeconds(8));
             Log.Information("Smoke mode: 8s elapsed, requesting clean shutdown");
             RequestShutdown(0);
+        }
+    }
+
+    /// <summary>
+    /// Turn the onboarding report into user-visible signals. Both conditions mean matches would silently
+    /// never record — exactly the failure a tray-only app must not keep to its logs.
+    /// </summary>
+    private void SurfaceOnboarding(OnboardingReport report)
+    {
+        if (report.LogConfigError is not null)
+        {
+            _lastAttentionUtc = DateTimeOffset.UtcNow;
+            _tray?.ShowWarningBalloon(
+                "Match detection may not work",
+                "Hearthstone's log.config could not be updated. Unless it was already configured, " +
+                "matches will not be detected. Details in the logs.");
+        }
+        else if (report.GameRestartNeeded)
+        {
+            _lastAttentionUtc = DateTimeOffset.UtcNow;
+            _tray?.ShowWarningBalloon(
+                "Restart Hearthstone to enable match detection",
+                "Hearthstone's logging settings were just enabled, but the running game only reads them " +
+                "at launch. Restart Hearthstone once and recording will arm automatically.");
+        }
+    }
+
+    /// <summary>
+    /// Onboarding's live test-feed self-test, off the startup path: verifies discovery → tail → parse
+    /// against a synthetic feed and raises a balloon only on failure. A pass is just a log line.
+    /// </summary>
+    private async Task RunLiveFeedSelfTestAsync(CancellationToken ct)
+    {
+        try
+        {
+            var scratch = Path.Combine(Path.GetTempPath(), "bgrec-selftest-" + Guid.NewGuid().ToString("N"));
+            var verdict = await LiveFeedVerifier.RunAsync(scratch, TimeSpan.FromSeconds(10), ct);
+            if (verdict.Passed)
+            {
+                Log.Information("Live test-feed self-test passed: {Detail}", verdict.Detail);
+                return;
+            }
+
+            Log.Warning("Live test-feed self-test FAILED: {Detail}", verdict.Detail);
+            await Dispatcher.InvokeAsync(() =>
+            {
+                _lastAttentionUtc = DateTimeOffset.UtcNow;
+                _tray?.ShowWarningBalloon(
+                    "BG Recorder self-test failed",
+                    "The log-watcher pipeline did not verify on this machine; match detection may not work. " +
+                    "Details in the logs.");
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            // Shutting down mid-test — nothing to report.
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Live test-feed self-test crashed");
         }
     }
 

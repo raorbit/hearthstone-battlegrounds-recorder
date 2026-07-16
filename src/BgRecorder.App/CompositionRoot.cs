@@ -40,7 +40,8 @@ internal static class CompositionRoot
             settingsPath, message => Log.Warning("Settings: {Message}", message));
         var settings = settingsService.Current;
 
-        RunOnboarding();
+        IGameProcessLocator locator = new HearthstoneProcessLocator();
+        var onboarding = RunOnboarding(locator);
 
         Directory.CreateDirectory(settings.StagingDir);
         Directory.CreateDirectory(settings.LibraryDir);
@@ -63,7 +64,6 @@ internal static class CompositionRoot
 
         IMatchAssembler assembler = new MatchAssembler();
         IDiskSafety diskSafety = new DiskSafety(settings.StagingDir, repository);
-        IGameProcessLocator locator = new HearthstoneProcessLocator();
 
         // v1 ships without automatic MMR (M1 licensing decision): the null provider satisfies the
         // interface so the degradation UX renders, and the clean-room reader slots in post-v1.
@@ -123,29 +123,42 @@ internal static class CompositionRoot
             StoragePlanner = storageEngine,
             StorageEnforcer = storageEnforcer,
             LibraryDir = settings.LibraryDir,
+            Onboarding = onboarding,
         };
     }
 
-    private static void RunOnboarding()
+    private static OnboardingReport RunOnboarding(IGameProcessLocator locator)
     {
         // Enable the Power logger in Hearthstone's log.config. The writer is merge-safe and a no-op
         // when the file is already compliant (which it is on this machine).
-        var logConfigPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Blizzard", "Hearthstone", "log.config");
+        var logConfigPath = LogConfigWriter.DefaultPath;
 
         try
         {
             var result = LogConfigWriter.Ensure(logConfigPath);
             Log.Information("Onboarding: log.config ensure at {Path} -> {Result}", logConfigPath, result);
+
+            // The game reads log.config once at launch: a change made while it is running takes effect
+            // only after a restart, so recording would silently never arm. Surface that.
+            bool restartNeeded = result.Outcome is not LogConfigOutcome.AlreadyCompliant
+                && locator.FindGame() is not null;
+            return new OnboardingReport(result, null, restartNeeded);
         }
         catch (Exception ex)
         {
             Log.Warning(ex, "Onboarding: log.config ensure failed (non-fatal; recording still works if already set)");
+            return new OnboardingReport(null, ex.Message, GameRestartNeeded: false);
         }
     }
 
 }
+
+/// <summary>
+/// What onboarding did and what the shell should tell the user: the log.config ensure outcome (null with
+/// <see cref="LogConfigError"/> set when it threw), and whether Hearthstone must be restarted to pick a
+/// just-made config change up.
+/// </summary>
+internal sealed record OnboardingReport(LogConfigResult? LogConfig, string? LogConfigError, bool GameRestartNeeded);
 
 /// <summary>
 /// The composed, running application: its settings, the live coordinator, and the disposables that
@@ -161,6 +174,7 @@ internal sealed class AppServices : IAsyncDisposable
     public required IStoragePlanner StoragePlanner { get; init; }
     public required StorageEnforcer StorageEnforcer { get; init; }
     public required string LibraryDir { get; init; }
+    public required OnboardingReport Onboarding { get; init; }
 
     public async ValueTask DisposeAsync()
     {
