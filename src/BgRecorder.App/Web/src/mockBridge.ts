@@ -12,6 +12,7 @@ import type {
   SettingsResult,
   StoragePreview,
   StorageSettings,
+  StorageUpdate,
   StorageVolume,
 } from "./types";
 
@@ -173,15 +174,17 @@ let mockStorageSettings: StorageSettings = {
  * A rough retention projection over the mock matches, so the storage tab preview is interactive.
  * NOTE: this reads mockStorageSettings live, so the mock preview reacts to storage.set immediately —
  * the native engine instead captures its caps at startup and only applies changes after a restart, so
- * the two diverge here by design (the mock favours a responsive design-preview).
+ * the two diverge here by design (the mock favours a responsive design-preview). Proposed caps, when
+ * passed, override the saved ones — mirroring the native hypothetical preview.
  */
-function computeMockPreview(): StoragePreview {
+function computeMockPreview(proposed?: StorageUpdate): StoragePreview {
+  const caps = proposed ?? mockStorageSettings;
   const sized = mockMatches.filter((match) => match.videoSizeBytes !== null);
   const used = sized.reduce((sum, match) => sum + (match.videoSizeBytes ?? 0), 0);
-  const cap = mockStorageSettings.recordingCapBytes;
+  const cap = caps.recordingCapBytes;
 
   const newestFirst = [...sized].sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime());
-  const pinned = new Set(newestFirst.slice(0, mockStorageSettings.hotSetSize).map((match) => match.id));
+  const pinned = new Set(newestFirst.slice(0, caps.hotSetSize).map((match) => match.id));
   const oldestFirst = [...newestFirst].reverse();
 
   const plannedDeletes: PlannedEviction[] = [];
@@ -297,7 +300,8 @@ class MockRpcClient implements RpcClient {
       }
 
       case "storage.preview":
-        return computeMockPreview() as RpcMethodMap[M]["result"];
+        return computeMockPreview(
+          params as RpcMethodMap["storage.preview"]["params"]) as RpcMethodMap[M]["result"];
 
       case "recorder.stop":
         this.setState("finalizing");

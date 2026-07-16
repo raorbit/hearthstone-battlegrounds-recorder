@@ -1180,6 +1180,9 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
   const [reserveGiB, setReserveGiB] = useState(0);
   const [hotSet, setHotSet] = useState(0);
   const [totalCapGiB, setTotalCapGiB] = useState(""); // empty string = no whole-library cap
+  // "What would the caps I'm editing do" — fetched while the form is dirty, null otherwise.
+  const [proposedPreview, setProposedPreview] = useState<StoragePreview | null>(null);
+  const proposedFenceRef = useRef(0);
 
   const applySettings = (value: StorageSettings): void => {
     setSettings(value);
@@ -1223,6 +1226,39 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
     totalTrim !== (settings.totalCapBytes === null ? "" : String(bytesToGiB(settings.totalCapBytes)))
   );
   const canSave = dirty && formValid && !saving;
+
+  // The running engine only reads caps at launch, so this hypothetical preview is the user's ONE
+  // accurate look at what edited caps would evict — without it, tighter caps saved today delete
+  // recordings at the next start with no warning. Debounced; a stale response is fenced out.
+  useEffect(() => {
+    if (!dirty || !formValid) {
+      proposedFenceRef.current++;
+      setProposedPreview(null);
+      return;
+    }
+    const fence = ++proposedFenceRef.current;
+    const handle = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const hypothetical = await bridge.request("storage.preview", {
+            recordingCapBytes: giBToBytes(capGiB),
+            recordingReserveBytes: giBToBytes(reserveGiB),
+            hotSetSize: hotSet,
+            totalCapBytes: totalCapGiB.trim() === "" ? null : giBToBytes(Number(totalCapGiB.trim())),
+          });
+          if (proposedFenceRef.current === fence) {
+            setProposedPreview(hypothetical);
+          }
+        } catch {
+          // Best-effort: fall back to the in-force preview rather than blocking the editor.
+          if (proposedFenceRef.current === fence) {
+            setProposedPreview(null);
+          }
+        }
+      })();
+    }, 300);
+    return () => window.clearTimeout(handle);
+  }, [dirty, formValid, capGiB, reserveGiB, hotSet, totalCapGiB]);
 
   const save = async (): Promise<void> => {
     if (!canSave) {
@@ -1283,9 +1319,12 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
     );
   }
 
-  const moveBytes = sumBytes(preview.plannedMoves);
-  const deleteBytes = sumBytes(preview.plannedDeletes);
-  const nothingPlanned = preview.plannedMoves.length === 0 && preview.plannedDeletes.length === 0;
+  // The retention section shows the caps being edited when the form is dirty (so their consequences
+  // are visible BEFORE saving); the usage bars stay on the in-force preview — live physical facts.
+  const shownPreview = proposedPreview ?? preview;
+  const moveBytes = sumBytes(shownPreview.plannedMoves);
+  const deleteBytes = sumBytes(shownPreview.plannedDeletes);
+  const nothingPlanned = shownPreview.plannedMoves.length === 0 && shownPreview.plannedDeletes.length === 0;
 
   return (
     <main class="settings-view">
@@ -1320,23 +1359,33 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
 
         <section class="settings-section" aria-label="Retention preview">
           <h2 class="settings-section__title">Retention preview</h2>
+          {proposedPreview !== null && (
+            <p class="settings-note">
+              Previewing the caps you're editing below — they take effect after a restart. Until then the
+              running session keeps enforcing the saved caps.
+            </p>
+          )}
           {nothingPlanned ? (
-            <p class="settings-note">Nothing to clean up — the library is within its limits.</p>
+            <p class="settings-note">
+              {proposedPreview !== null
+                ? "Nothing would be cleaned up under these caps."
+                : "Nothing to clean up — the library is within its limits."}
+            </p>
           ) : (
             <ul class="preview-list">
-              {preview.plannedMoves.length > 0 && (
+              {shownPreview.plannedMoves.length > 0 && (
                 <li>
-                  <strong>{preview.plannedMoves.length}</strong> {preview.plannedMoves.length === 1 ? "recording" : "recordings"} ({formatBytes(moveBytes)}) would be archived to a drive with space.
+                  <strong>{shownPreview.plannedMoves.length}</strong> {shownPreview.plannedMoves.length === 1 ? "recording" : "recordings"} ({formatBytes(moveBytes)}) would be archived to a drive with space.
                 </li>
               )}
-              {preview.plannedDeletes.length > 0 && (
+              {shownPreview.plannedDeletes.length > 0 && (
                 <li class="preview-list__danger">
-                  <strong>{preview.plannedDeletes.length}</strong> {preview.plannedDeletes.length === 1 ? "recording" : "recordings"} ({formatBytes(deleteBytes)}) would be deleted to stay within the cap. Star a recording to keep it.
+                  <strong>{shownPreview.plannedDeletes.length}</strong> {shownPreview.plannedDeletes.length === 1 ? "recording" : "recordings"} ({formatBytes(deleteBytes)}) would be deleted to stay within the cap. Star a recording to keep it.
                 </li>
               )}
             </ul>
           )}
-          {preview.recordingBelowFloor && (
+          {shownPreview.recordingBelowFloor && (
             <p class="preview-floor">Free space is below the safety floor — the next match won't be armed until space is freed.</p>
           )}
         </section>

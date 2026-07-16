@@ -167,7 +167,8 @@ export interface RpcMethodMap {
     result: StorageSettings;
   };
   "storage.preview": {
-    params: undefined;
+    /** Omitted: the in-force plan. With caps (storage.set's shape): a hypothetical plan under them. */
+    params: StorageUpdate | undefined;
     result: StoragePreview;
   };
   "recorder.stop": {
@@ -194,7 +195,9 @@ export type RpcMethod = keyof RpcMethodMap;
 export type RpcNotification = keyof RpcNotificationMap;
 export type RpcArgs<M extends RpcMethod> = RpcMethodMap[M]["params"] extends undefined
   ? []
-  : [params: RpcMethodMap[M]["params"]];
+  : undefined extends RpcMethodMap[M]["params"]
+    ? [params?: RpcMethodMap[M]["params"]] // params declared `X | undefined` → optional argument
+    : [params: RpcMethodMap[M]["params"]];
 
 export interface RpcClient {
   readonly mode: "native" | "mock";
