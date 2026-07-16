@@ -45,27 +45,30 @@ internal sealed record MonoOffsets
     public int GSListData { get; init; } = 0x00;     // ROCK — glib
     public int GSListNext { get; init; } = 0x08;     // ROCK — glib
 
-    // ---- MonoClass (FRAGILE — unity-master x64; verify on the live DLL) ----
+    // ---- MonoClass (FRAGILE; VERIFIED live 2026-07-16 against Hearthstone's mono-2.0-bdwgc.dll) ----
     public int ClassInstanceSize { get; init; } = 0x1C; // FRAGILE — sanity gate (small positive)
     public int ClassParent { get; init; } = 0x30;    // FRAGILE — base class for inherited-field search
-    public int ClassName { get; init; } = 0x48;      // FRAGILE — const char*
+    public int ClassName { get; init; } = 0x48;      // VERIFIED live — const char*
     public int ClassNamespace { get; init; } = 0x50; // FRAGILE — const char*
     public int ClassVtableSize { get; init; } = 0x5C; // FRAGILE — int, drives the static-block formula
-    public int ClassFields { get; init; } = 0x98;    // FRAGILE — MonoClassField* array (stride 0x20)
+    public int ClassFields { get; init; } = 0x98;    // VERIFIED live — MonoClassField* array (stride 0x20)
     public int ClassRuntimeInfo { get; init; } = 0xD0; // FRAGILE — MonoClassRuntimeInfo*
 
     // ---- MonoClassDef trailing region (STABLE relative to SizeofMonoClass) ----
-    public int SizeofMonoClass { get; init; } = 0xF0; // FRAGILE — drives the two offsets below
-    public int ClassDefFieldCount => SizeofMonoClass + 0x10; // STABLE — guint32 field_count
-    public int ClassDefNextCache => SizeofMonoClass + 0x18;  // STABLE — MonoClass* next_class_cache (8-aligned after field_count)
+    // VERIFIED live: next_class_cache walked to exactly num_entries (13,911) at +0x108 => sizeof = 0xF0.
+    public int SizeofMonoClass { get; init; } = 0xF0; // VERIFIED live — drives the two offsets below
+    public int ClassDefFieldCount => SizeofMonoClass + 0x10; // VERIFIED live (0x100) — guint32 field_count
+    public int ClassDefNextCache => SizeofMonoClass + 0x18;  // VERIFIED live (0x108) — MonoClass* next_class_cache
 
-    // ---- MonoAssembly / MonoImage (FRAGILE) ----
-    public int AssemblyImage { get; init; } = 0x60;  // FRAGILE — MonoImage* after ref_count/basedir/MonoAssemblyName
-    public int ImageAssemblyName { get; init; } = 0x28; // FRAGILE — const char*, near the top of MonoImage (diagnostics)
-    public int ImageClassCache { get; init; } = 0x4A0; // FRAGILE — embedded MonoInternalHashTable, deep past tables[]
+    // ---- MonoAssembly / MonoImage (VERIFIED live 2026-07-16) ----
+    public int AssemblyImage { get; init; } = 0x60;  // VERIFIED live — MonoImage*
+    // MonoImage string slots observed live: 0x20=name(full path), 0x28=filename(full path),
+    // 0x30=assembly_name ("Assembly-CSharp"), 0x38=module_name. 0x28 reads a path — readable, but the wrong field.
+    public int ImageAssemblyName { get; init; } = 0x30; // VERIFIED live — const char* assembly_name
+    public int ImageClassCache { get; init; } = 0x4D0; // VERIFIED live — embedded MonoInternalHashTable
 
     // ---- MonoDomain (domain_assemblies discovered by calibration; see MonoImageReader) ----
-    public int DomainAssembliesSeed { get; init; } = 0xA8; // FRAGILE seed; the scan overrides it per build
+    public int DomainAssembliesSeed { get; init; } = 0xA0; // VERIFIED live (106 assemblies); the scan still overrides it
     public int DomainScanStart { get; init; } = 0x08;      // first slot the domain_assemblies scan probes
     public int DomainScanEnd { get; init; } = 0x400;       // last slot the scan probes
 
