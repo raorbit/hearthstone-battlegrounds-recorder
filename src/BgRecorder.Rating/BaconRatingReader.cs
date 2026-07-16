@@ -9,6 +9,13 @@ internal enum RatingReadState
     /// <summary>A class/field/static-data lookup or a metadata read failed — offsets wrong or class not yet built.</summary>
     NotResolvable,
 
+    /// <summary>
+    /// The once-and-cached resolution stage failed (root domain, class scan, or static data) — nothing is cached,
+    /// so the next read repeats the whole-domain class scan. Callers should cool down before retrying: the class
+    /// may still appear later (Mono builds it lazily, typically on first entering Battlegrounds).
+    /// </summary>
+    StaticsUnresolved,
+
     /// <summary>BaconRatingMgr.s_instance is null — the manager singleton hasn't been created yet.</summary>
     ManagerNull,
 
@@ -19,6 +26,7 @@ internal enum RatingReadState
 internal readonly record struct RatingReadResult(RatingReadState State, int Rating, int DuosRating)
 {
     public static RatingReadResult NotResolvable => new(RatingReadState.NotResolvable, 0, 0);
+    public static RatingReadResult StaticsUnresolved => new(RatingReadState.StaticsUnresolved, 0, 0);
     public static RatingReadResult ManagerNull => new(RatingReadState.ManagerNull, 0, 0);
     public static RatingReadResult ResponseNull => new(RatingReadState.ResponseNull, 0, 0);
     public static RatingReadResult Ok(int rating, int duos) => new(RatingReadState.Ok, rating, duos);
@@ -57,7 +65,7 @@ internal sealed class BaconRatingReader
 
         if (!_reader.TryGetRootDomain(out ulong domain) || !EnsureStaticsResolved(domain, ct))
         {
-            return RatingReadResult.NotResolvable;
+            return RatingReadResult.StaticsUnresolved;
         }
 
         if (!mem.TryReadPointer(_staticData + (ulong)_instanceOffset, out ulong manager))

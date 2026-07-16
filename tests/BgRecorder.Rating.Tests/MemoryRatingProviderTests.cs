@@ -10,14 +10,16 @@ public sealed class MemoryRatingProviderTests
         IProcessMemoryFactory factory,
         Func<DateTimeOffset> clock,
         TimeSpan? throttle = null,
-        TimeSpan? backoff = null) =>
+        TimeSpan? backoff = null,
+        TimeSpan? scanRetry = null) =>
         new(
             factory,
             MonoOffsets.UnityMasterDefault,
             _ => { },
             clock,
             throttle ?? TimeSpan.FromSeconds(2),
-            backoff ?? TimeSpan.FromSeconds(10));
+            backoff ?? TimeSpan.FromSeconds(10),
+            scanRetry ?? TimeSpan.FromSeconds(30));
 
     [Fact]
     public async Task Solo_and_duos_project_from_one_read_to_distinct_snapshots()
@@ -115,6 +117,53 @@ public sealed class MemoryRatingProviderTests
         now = now.AddSeconds(3); // past the throttle → a fresh poll
         await provider.TryGetAsync(BgGameType.Solo);
         Assert.True(scenario.Memory.ReadCount > afterFirst);
+    }
+
+    [Fact]
+    public async Task An_unresolved_class_scan_is_retried_on_the_scan_cadence_not_every_poll()
+    {
+        var scenario = BaconScenario.Build(includeBaconClass: false);
+        var now = DateTimeOffset.UnixEpoch;
+        var provider = Provider(
+            FakeProcessMemoryFactory.Attaches(scenario.Memory),
+            () => now,
+            throttle: TimeSpan.FromSeconds(2),
+            scanRetry: TimeSpan.FromSeconds(30));
+
+        await provider.TryGetAsync(BgGameType.Solo); // first poll runs the full (failing) class scan
+        Assert.Equal(RatingHealth.PatchBroken, provider.Health);
+        int afterFirst = scenario.Memory.ReadCount;
+
+        now = now.AddSeconds(3); // past the poll throttle but inside the scan-retry window
+        Assert.Null(await provider.TryGetAsync(BgGameType.Solo));
+        Assert.Equal(afterFirst, scenario.Memory.ReadCount); // no rescan
+        Assert.Equal(RatingHealth.PatchBroken, provider.Health);
+
+        now = now.AddSeconds(29); // past the scan-retry window → the scan runs again
+        await provider.TryGetAsync(BgGameType.Solo);
+        Assert.True(scenario.Memory.ReadCount > afterFirst);
+    }
+
+    [Fact]
+    public async Task A_resolved_reader_is_not_gated_by_an_expired_scan_backoff()
+    {
+        // The class is present: the first poll resolves and caches the statics. Later polls must keep
+        // refreshing on the ordinary throttle — the scan backoff only ever applies while unresolved.
+        var scenario = BaconScenario.Build(solo: 8421, duos: 6200);
+        var now = DateTimeOffset.UnixEpoch;
+        var provider = Provider(
+            FakeProcessMemoryFactory.Attaches(scenario.Memory),
+            () => now,
+            throttle: TimeSpan.FromSeconds(2),
+            scanRetry: TimeSpan.FromSeconds(30));
+
+        await provider.TryGetAsync(BgGameType.Solo);
+        Assert.Equal(RatingHealth.Ok, provider.Health);
+        int afterFirst = scenario.Memory.ReadCount;
+
+        now = now.AddSeconds(3); // past the throttle; well inside what a scan backoff would have been
+        Assert.NotNull(await provider.TryGetAsync(BgGameType.Solo));
+        Assert.True(scenario.Memory.ReadCount > afterFirst); // the poll ran — no scan gate in the way
     }
 
     [Fact]

@@ -36,11 +36,11 @@ public sealed class BaconRatingReaderTests
     }
 
     [Fact]
-    public void A_missing_manager_class_is_not_resolvable()
+    public void A_missing_manager_class_reports_statics_unresolved()
     {
         var reader = ReaderFor(BaconScenario.Build(includeBaconClass: false));
 
-        Assert.Equal(RatingReadState.NotResolvable, reader.Read().State);
+        Assert.Equal(RatingReadState.StaticsUnresolved, reader.Read().State);
     }
 
     [Fact]

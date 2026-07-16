@@ -67,8 +67,10 @@ app is closed:
 { "EnableMemoryRating": true }
 ```
 
-Relaunch with Hearthstone running. The provider attaches lazily and polls every ~2s. Diagnostics are logged via
-Serilog with the prefix `Rating reader:`.
+Relaunch with Hearthstone running. The provider attaches lazily and polls every ~2s. When the class scan fails
+(the class isn't built yet, or is missing on this build), the scan retries on a slower ~30s cadence instead of
+every poll — the scan is the one expensive read, so expect up to ~30s between `PatchBroken` and the flip toward
+`Ok` after you enter Battlegrounds. Diagnostics are logged via Serilog with the prefix `Rating reader:`.
 
 ## Reading the health signal
 

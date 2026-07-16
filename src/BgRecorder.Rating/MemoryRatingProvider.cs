@@ -23,6 +23,7 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
     private readonly Func<DateTimeOffset> _now;
     private readonly TimeSpan _pollThrottle;
     private readonly TimeSpan _reattachBackoff;
+    private readonly TimeSpan _scanRetryBackoff;
     private readonly object _gate = new();
 
     private IProcessMemory? _memory;
@@ -30,6 +31,7 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
     private bool _attached;
     private DateTimeOffset _lastAttachAttempt = DateTimeOffset.MinValue;
     private DateTimeOffset _lastPoll = DateTimeOffset.MinValue;
+    private DateTimeOffset _nextScanAttempt = DateTimeOffset.MinValue;
     private RatingSnapshot? _lastSolo;
     private RatingSnapshot? _lastDuos;
 
@@ -41,7 +43,8 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
             diagnostic,
             () => DateTimeOffset.UtcNow,
             TimeSpan.FromSeconds(2),
-            TimeSpan.FromSeconds(10))
+            TimeSpan.FromSeconds(10),
+            TimeSpan.FromSeconds(30))
     {
     }
 
@@ -51,7 +54,8 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
         Action<string> diagnostic,
         Func<DateTimeOffset> now,
         TimeSpan pollThrottle,
-        TimeSpan reattachBackoff)
+        TimeSpan reattachBackoff,
+        TimeSpan scanRetryBackoff)
     {
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         _offsets = offsets ?? throw new ArgumentNullException(nameof(offsets));
@@ -59,6 +63,7 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
         _now = now ?? throw new ArgumentNullException(nameof(now));
         _pollThrottle = pollThrottle;
         _reattachBackoff = reattachBackoff;
+        _scanRetryBackoff = scanRetryBackoff;
     }
 
     public RatingHealth Health { get; private set; } = RatingHealth.AttachFailed;
@@ -121,6 +126,14 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
             return; // throttled — serve the cached snapshot
         }
 
+        if (now < _nextScanAttempt)
+        {
+            // The last read died in the once-and-cached resolution stage, whose retry repeats the whole-domain
+            // class scan (up to MonoOffsets.MaxScanReads reads). The class may still appear later — Mono builds
+            // it lazily — so retry, but on this longer cadence rather than every poll.
+            return;
+        }
+
         _lastPoll = now;
         RatingReadResult result = _reader!.Read(ct);
         if (ct.IsCancellationRequested)
@@ -149,13 +162,22 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
                 _lastDuos = null;
                 break;
 
-            default: // NotResolvable
+            default: // NotResolvable / StaticsUnresolved
                 if (_memory is null || !_memory.TryReadPointer(_memory.ModuleBase, out _))
                 {
                     // The module base is unreadable → the process is gone, not a patch mismatch.
                     _diagnostic("target process no longer readable; detaching");
                     Detach(now);
                     Health = RatingHealth.AttachFailed;
+                }
+                else if (result.State == RatingReadState.StaticsUnresolved)
+                {
+                    _nextScanAttempt = now + _scanRetryBackoff;
+                    _diagnostic(
+                        $"class scan did not resolve; retrying in {_scanRetryBackoff.TotalSeconds:F0}s " +
+                        "(the class is built lazily — expected before the first Battlegrounds game — " +
+                        "otherwise offsets need verification against the live build)");
+                    Health = RatingHealth.PatchBroken;
                 }
                 else
                 {
@@ -183,6 +205,7 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
         _reader = null;
         _attached = false;
         _lastAttachAttempt = now; // start the re-attach backoff from here
+        _nextScanAttempt = DateTimeOffset.MinValue; // a fresh attach gets an immediate first scan
     }
 
     public void Dispose()
