@@ -224,32 +224,77 @@ public sealed class UiBridge
     /// <summary>
     /// Permanently removes a recording: its video file, then its library row (markers cascade). The file
     /// is resolved server-side from trusted repository state — the WebView only ever supplies the opaque
-    /// match id, never a path. File deletion is best-effort so an already-gone or briefly locked file
-    /// cannot strand the row; the row is the source of truth the retention engine reads.
+    /// match id, never a path. If the file cannot be removed and the row still expects one (its drive is
+    /// disconnected, or the file is locked), the delete is REFUSED rather than dropping the row and
+    /// orphaning a file the retention engine — which only enumerates rows — could never see or reclaim.
     /// </summary>
     private async Task<DeletedResult> DeleteMatchAsync(long matchId, CancellationToken ct)
     {
         var detail = await _repository.GetMatchAsync(matchId, ct).ConfigureAwait(false)
             ?? throw new RpcFault(-32004, $"Match {matchId} was not found.");
 
-        TryDeleteMatchFile(matchId, detail.Match.VideoPath, "video");
-        TryDeleteMatchFile(matchId, detail.Match.ThumbnailPath, "thumbnail");
+        // Attempt the video removal always (a Missing row whose file resurfaced still gets cleaned up),
+        // but only refuse the row deletion when a still-expected file could not be removed — otherwise a
+        // multi-GB file on a disconnected drive would be orphaned where retention can never reclaim it.
+        var removed = TryRemoveVideoFile(matchId, detail.Match.VideoPath);
+        if (!removed && detail.Match.VideoStatus != VideoStatus.Missing)
+        {
+            throw new RpcFault(-32010, "This recording's drive is unavailable; reconnect it, then delete again.");
+        }
+
+        // The thumbnail follows the video's fate; its removal is best-effort and never blocks the delete.
+        TryDeleteThumbnailFile(matchId, detail.Match.ThumbnailPath);
         await _repository.DeleteMatchAsync(matchId, ct).ConfigureAwait(false);
         _videoPaths.TryRemove(matchId, out _);
         _thumbnailPaths.TryRemove(matchId, out _);
         return new DeletedResult(matchId);
     }
 
-    private void TryDeleteMatchFile(long matchId, string? path, string kind)
+    /// <summary>
+    /// Removes the video file. Returns true when the file is confirmably gone from a reachable location
+    /// (deleted now, or already absent while its directory is reachable — <see cref="File.Delete(string)"/>
+    /// no-ops on a missing file), and false when it could not be removed (its drive/directory is
+    /// unreachable — a disconnected archive — or it is locked). A false return is the signal not to
+    /// orphan the file by dropping its row.
+    /// </summary>
+    private bool TryRemoveVideoFile(long matchId, string? videoPath)
     {
-        if (string.IsNullOrWhiteSpace(path))
+        if (string.IsNullOrWhiteSpace(videoPath))
+        {
+            return true; // nothing to remove
+        }
+
+        try
+        {
+            File.Delete(Path.GetFullPath(videoPath));
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // Unreachable drive (DirectoryNotFoundException derives from IOException) or a locked file:
+            // keep the row so the file is not orphaned; the user retries once the drive/file is available.
+            Diagnostic?.Invoke($"Could not delete the video file for match {matchId}: {ex.Message}");
+            return false;
+        }
+        catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+        {
+            // A malformed stored path can never point at a real file, so a stale row must stay deletable.
+            Diagnostic?.Invoke($"Ignored invalid video path for match {matchId}: {ex.Message}");
+            return true;
+        }
+    }
+
+    /// <summary>Best-effort removal of the thumbnail sibling; its absence never blocks the delete.</summary>
+    private void TryDeleteThumbnailFile(long matchId, string? thumbnailPath)
+    {
+        if (string.IsNullOrWhiteSpace(thumbnailPath))
         {
             return;
         }
 
         try
         {
-            var fullPath = Path.GetFullPath(path);
+            var fullPath = Path.GetFullPath(thumbnailPath);
             if (File.Exists(fullPath))
             {
                 File.Delete(fullPath);
@@ -261,7 +306,7 @@ public sealed class UiBridge
             or NotSupportedException
             or PathTooLongException)
         {
-            Diagnostic?.Invoke($"Could not delete the {kind} file for match {matchId}: {ex.Message}");
+            Diagnostic?.Invoke($"Could not delete the thumbnail file for match {matchId}: {ex.Message}");
         }
     }
 

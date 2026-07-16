@@ -305,6 +305,22 @@ public sealed class UiBridgeTests
     }
 
     [Fact]
+    public async Task Delete_is_refused_when_the_video_file_cannot_be_removed()
+    {
+        // A non-Missing match whose file lives under an unreachable directory (a stand-in for an
+        // unplugged archive drive: File.Delete throws DirectoryNotFoundException). The row must NOT be
+        // deleted, or the multi-GB file would be orphaned where retention can never reclaim it.
+        var unreachable = Path.Combine(Path.GetTempPath(), $"bgrec-gone-{Guid.NewGuid():N}", "video.mp4");
+        var repository = new FakeRepository(SampleMatch(unreachable));
+        var bridge = NewBridge(repository);
+
+        var json = await bridge.HandleRequestAsync(Request("del", "library.delete", new { matchId = 42 }));
+
+        Assert.Contains("\"code\":-32010", json);
+        Assert.Null(repository.DeletedId); // row preserved so the file is not orphaned
+    }
+
+    [Fact]
     public async Task Library_list_flags_a_recording_whose_drive_is_offline()
     {
         // VideoStatus is Complete but the file does not exist → its drive is unplugged (offline), which

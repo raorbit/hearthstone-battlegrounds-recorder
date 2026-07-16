@@ -169,7 +169,12 @@ let mockStorageSettings: StorageSettings = {
   archiveVolumes: [],
 };
 
-/** A rough retention projection over the mock matches, so the storage tab preview is interactive. */
+/**
+ * A rough retention projection over the mock matches, so the storage tab preview is interactive.
+ * NOTE: this reads mockStorageSettings live, so the mock preview reacts to storage.set immediately —
+ * the native engine instead captures its caps at startup and only applies changes after a restart, so
+ * the two diverge here by design (the mock favours a responsive design-preview).
+ */
 function computeMockPreview(): StoragePreview {
   const sized = mockMatches.filter((match) => match.videoSizeBytes !== null);
   const used = sized.reduce((sum, match) => sum + (match.videoSizeBytes ?? 0), 0);
