@@ -83,9 +83,18 @@ public sealed class StorageEngine : IStoragePlanner
         var deletes = 0;
         foreach (var delete in plan.Deletes)
         {
-            if (byId.TryGetValue(delete.MatchId, out var record) && record.VideoPath is not null)
+            if (byId.TryGetValue(delete.MatchId, out var record))
             {
-                _fileSystem.Delete(record.VideoPath);
+                if (record.VideoPath is not null)
+                {
+                    _fileSystem.Delete(record.VideoPath);
+                }
+                // Delete the thumbnail sibling too, matching the manual-delete path — otherwise every
+                // eviction would leave an orphaned .bmp the row no longer references.
+                if (record.ThumbnailPath is not null)
+                {
+                    _fileSystem.Delete(record.ThumbnailPath);
+                }
             }
             await _matches.DeleteMatchAsync(delete.MatchId, ct).ConfigureAwait(false);
             deletes++;

@@ -86,6 +86,31 @@ public sealed class StorageEngineTests
     }
 
     [Fact]
+    public async Task Deleting_an_evicted_match_also_removes_its_thumbnail()
+    {
+        var fs = new FakeFileSystem();
+        fs.Seed(@"C:\lib\m1.mp4", [1]);
+        fs.Seed(@"C:\lib\m1.bmp", [9]); // its thumbnail sibling
+        fs.Seed(@"C:\lib\m2.mp4", [2]);
+        var store = new FakeMatchStore(
+            Match(1, @"C:\lib\m1.mp4", 5, ageDays: 3) with { ThumbnailPath = @"C:\lib\m1.bmp" }, // oldest → evicted
+            Match(2, @"C:\lib\m2.mp4", 5, ageDays: 1));
+        var engine = BuildEngine(fs, store, new StorageOptions
+        {
+            RecordingCapBytes = 6 * GB, // 10 GB used over a 6 GB cap → evict the oldest unstarred match
+            RecordingReserveBytes = 1 * GB,
+            HotSetSize = 1,
+        });
+
+        var report = await engine.EnforceAsync();
+
+        Assert.Equal(1, report.DeletesExecuted);
+        Assert.False(fs.Has(@"C:\lib\m1.mp4")); // video removed
+        Assert.False(fs.Has(@"C:\lib\m1.bmp")); // thumbnail removed too, not orphaned
+        Assert.Null(store.TryGet(1));
+    }
+
+    [Fact]
     public async Task A_library_within_its_cap_changes_nothing()
     {
         var fs = new FakeFileSystem();
