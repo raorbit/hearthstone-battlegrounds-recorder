@@ -1180,8 +1180,15 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
   const [reserveGiB, setReserveGiB] = useState(0);
   const [hotSet, setHotSet] = useState(0);
   const [totalCapGiB, setTotalCapGiB] = useState(""); // empty string = no whole-library cap
-  // "What would the caps I'm editing do" — fetched while the form is dirty, null otherwise.
-  const [proposedPreview, setProposedPreview] = useState<StoragePreview | null>(null);
+  // "What would the caps I'm editing do" — tracked as an explicit tri-state so a pending or failed
+  // fetch is never mistaken for the reassuring in-force plan (this preview exists to warn, so its
+  // absence must look like absence, not like safety).
+  const [proposed, setProposed] = useState<
+    | { kind: "idle" }
+    | { kind: "pending" }
+    | { kind: "ready"; preview: StoragePreview }
+    | { kind: "failed" }
+  >({ kind: "idle" });
   const proposedFenceRef = useRef(0);
 
   const applySettings = (value: StorageSettings): void => {
@@ -1233,10 +1240,13 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
   useEffect(() => {
     if (!dirty || !formValid) {
       proposedFenceRef.current++;
-      setProposedPreview(null);
+      setProposed({ kind: "idle" });
       return;
     }
     const fence = ++proposedFenceRef.current;
+    // Pending from the first keystroke: the debounce window must never show the in-force numbers
+    // under freshly-typed caps — that would reassure the user about a plan they are replacing.
+    setProposed({ kind: "pending" });
     const handle = window.setTimeout(() => {
       void (async () => {
         try {
@@ -1247,12 +1257,13 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
             totalCapBytes: totalCapGiB.trim() === "" ? null : giBToBytes(Number(totalCapGiB.trim())),
           });
           if (proposedFenceRef.current === fence) {
-            setProposedPreview(hypothetical);
+            setProposed({ kind: "ready", preview: hypothetical });
           }
         } catch {
-          // Best-effort: fall back to the in-force preview rather than blocking the editor.
+          // Fail LOUD, not safe-looking: a broken preview must say so instead of quietly showing
+          // the in-force plan — the whole point of this fetch is to warn before a blind save.
           if (proposedFenceRef.current === fence) {
-            setProposedPreview(null);
+            setProposed({ kind: "failed" });
           }
         }
       })();
@@ -1321,7 +1332,7 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
 
   // The retention section shows the caps being edited when the form is dirty (so their consequences
   // are visible BEFORE saving); the usage bars stay on the in-force preview — live physical facts.
-  const shownPreview = proposedPreview ?? preview;
+  const shownPreview = proposed.kind === "ready" ? proposed.preview : preview;
   const moveBytes = sumBytes(shownPreview.plannedMoves);
   const deleteBytes = sumBytes(shownPreview.plannedDeletes);
   const nothingPlanned = shownPreview.plannedMoves.length === 0 && shownPreview.plannedDeletes.length === 0;
@@ -1359,15 +1370,22 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
 
         <section class="settings-section" aria-label="Retention preview">
           <h2 class="settings-section__title">Retention preview</h2>
-          {proposedPreview !== null && (
+          {proposed.kind !== "idle" && (
             <p class="settings-note">
               Previewing the caps you're editing below — they take effect after a restart. Until then the
               running session keeps enforcing the saved caps.
             </p>
           )}
-          {nothingPlanned ? (
+          {proposed.kind === "pending" ? (
+            <p class="settings-note">Computing what these caps would do…</p>
+          ) : proposed.kind === "failed" ? (
+            <p class="preview-floor">
+              Could not preview these caps. If you save anyway, their effects apply unseen at the next
+              launch — re-check before saving.
+            </p>
+          ) : nothingPlanned ? (
             <p class="settings-note">
-              {proposedPreview !== null
+              {proposed.kind === "ready"
                 ? "Nothing would be cleaned up under these caps."
                 : "Nothing to clean up — the library is within its limits."}
             </p>
@@ -1385,7 +1403,7 @@ function StorageView({ notify }: StorageViewProps): JSX.Element {
               )}
             </ul>
           )}
-          {shownPreview.recordingBelowFloor && (
+          {proposed.kind !== "pending" && proposed.kind !== "failed" && shownPreview.recordingBelowFloor && (
             <p class="preview-floor">Free space is below the safety floor — the next match won't be armed until space is freed.</p>
           )}
         </section>
