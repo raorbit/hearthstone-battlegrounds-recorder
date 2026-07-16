@@ -1,3 +1,4 @@
+using System.Globalization;
 using BgRecorder.Logs;
 using Xunit;
 
@@ -28,9 +29,31 @@ public sealed class LiveFeedVerifierTests
 
         Assert.False(verdict.Passed);
         // Which stage the zero timeout lands on depends on how fast initial discovery ran; either way
-        // the detail must name the failed stage so the log line is actionable.
-        Assert.Contains("failed", verdict.Detail, StringComparison.OrdinalIgnoreCase);
+        // the detail must NAME the failed stage so the log line is actionable.
+        Assert.True(
+            verdict.Detail.StartsWith("discovery/tail failed", StringComparison.Ordinal) ||
+            verdict.Detail.StartsWith("parse failed", StringComparison.Ordinal),
+            $"detail must name the broken stage, got: {verdict.Detail}");
         Assert.False(Directory.Exists(scratch)); // cleanup happens on failure too
+    }
+
+    [Fact]
+    public async Task Passes_under_a_culture_whose_time_separator_is_not_a_colon()
+    {
+        // fi-FI formats "HH:mm:ss" with '.' separators; the synthetic feed line must be written with the
+        // invariant culture or LogLine's invariant-culture parse rejects it and the self-test cries wolf.
+        var original = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = new CultureInfo("fi-FI");
+        try
+        {
+            LiveFeedVerdict verdict = await LiveFeedVerifier.RunAsync(ScratchPath(), TimeSpan.FromSeconds(10));
+
+            Assert.True(verdict.Passed, verdict.Detail);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
     }
 
     [Fact]

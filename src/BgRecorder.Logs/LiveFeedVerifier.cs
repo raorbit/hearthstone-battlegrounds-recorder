@@ -1,3 +1,4 @@
+using System.Globalization;
 using BgRecorder.Core.Events;
 
 namespace BgRecorder.Logs;
@@ -59,7 +60,12 @@ public static class LiveFeedVerifier
                         "(folder enumeration or shared-read open is not working here)");
                 }
 
-                writer.AppendLine("D " + seed.ToString("HH:mm:ss.fffffff") + " GameState.DebugPrintPower() - CREATE_GAME");
+                // Invariant culture is load-bearing: ':' in a custom format string is the CULTURE'S time
+                // separator, and LogLine parses with the invariant one — on a locale like fi-FI ('.') a
+                // culture-formatted line would never parse and the self-test would cry wolf on every launch.
+                writer.AppendLine(
+                    "D " + seed.ToString("HH:mm:ss.fffffff", CultureInfo.InvariantCulture) +
+                    " GameState.DebugPrintPower() - CREATE_GAME");
 
                 try
                 {
