@@ -210,42 +210,59 @@ public sealed class UiBridge
     /// <summary>
     /// Permanently removes a recording: its video file, then its library row (markers cascade). The file
     /// is resolved server-side from trusted repository state — the WebView only ever supplies the opaque
-    /// match id, never a path. File deletion is best-effort so an already-gone or briefly locked file
-    /// cannot strand the row; the row is the source of truth the retention engine reads.
+    /// match id, never a path. If the file cannot be removed and the row still expects one (its drive is
+    /// disconnected, or the file is locked), the delete is REFUSED rather than dropping the row and
+    /// orphaning a file the retention engine — which only enumerates rows — could never see or reclaim.
     /// </summary>
     private async Task<DeletedResult> DeleteMatchAsync(long matchId, CancellationToken ct)
     {
         var detail = await _repository.GetMatchAsync(matchId, ct).ConfigureAwait(false)
             ?? throw new RpcFault(-32004, $"Match {matchId} was not found.");
 
-        TryDeleteVideoFile(matchId, detail.Match.VideoPath);
+        // Attempt the file removal always (a Missing row whose file resurfaced still gets cleaned up),
+        // but only refuse the row deletion when a still-expected file could not be removed.
+        var removed = TryRemoveVideoFile(matchId, detail.Match.VideoPath);
+        if (!removed && detail.Match.VideoStatus != VideoStatus.Missing)
+        {
+            throw new RpcFault(-32010, "This recording's drive is unavailable; reconnect it, then delete again.");
+        }
+
         await _repository.DeleteMatchAsync(matchId, ct).ConfigureAwait(false);
         _videoPaths.TryRemove(matchId, out _);
         return new DeletedResult(matchId);
     }
 
-    private void TryDeleteVideoFile(long matchId, string? videoPath)
+    /// <summary>
+    /// Removes the video file. Returns true when the file is confirmably gone from a reachable location
+    /// (deleted now, or already absent while its directory is reachable — <see cref="File.Delete(string)"/>
+    /// no-ops on a missing file), and false when it could not be removed (its drive/directory is
+    /// unreachable — a disconnected archive — or it is locked). A false return is the signal not to
+    /// orphan the file by dropping its row.
+    /// </summary>
+    private bool TryRemoveVideoFile(long matchId, string? videoPath)
     {
         if (string.IsNullOrWhiteSpace(videoPath))
         {
-            return;
+            return true; // nothing to remove
         }
 
         try
         {
-            var fullPath = Path.GetFullPath(videoPath);
-            if (File.Exists(fullPath))
-            {
-                File.Delete(fullPath);
-            }
+            File.Delete(Path.GetFullPath(videoPath));
+            return true;
         }
-        catch (Exception ex) when (ex is IOException
-            or UnauthorizedAccessException
-            or ArgumentException
-            or NotSupportedException
-            or PathTooLongException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
+            // Unreachable drive (DirectoryNotFoundException derives from IOException) or a locked file:
+            // keep the row so the file is not orphaned; the user retries once the drive/file is available.
             Diagnostic?.Invoke($"Could not delete the video file for match {matchId}: {ex.Message}");
+            return false;
+        }
+        catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+        {
+            // A malformed stored path can never point at a real file, so a stale row must stay deletable.
+            Diagnostic?.Invoke($"Ignored invalid video path for match {matchId}: {ex.Message}");
+            return true;
         }
     }
 
