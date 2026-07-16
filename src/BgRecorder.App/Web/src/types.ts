@@ -56,6 +56,25 @@ export interface RecorderCommandResult {
   state: CoordinatorStateValue;
 }
 
+/** The settings projection returned by settings.get. Path fields are read-only in the UI. */
+export interface SettingsResult {
+  hearthstoneInstallDir: string | null;
+  libraryDir: string;
+  stagingDir: string;
+  fps: number;
+  bitrateMbps: number;
+  gameOnlyAudio: boolean;
+  mixMicrophone: boolean;
+}
+
+/** The editable recording fields settings.set writes. */
+export interface SettingsUpdate {
+  fps: number;
+  bitrateMbps: number;
+  gameOnlyAudio: boolean;
+  mixMicrophone: boolean;
+}
+
 export interface RpcMethodMap {
   "library.list": {
     params: undefined;
@@ -76,6 +95,14 @@ export interface RpcMethodMap {
   "rating.get": {
     params: { mode: "solo" | "duos" };
     result: { health: RatingHealth; rating: number | null; sampledAt: string | null };
+  };
+  "settings.get": {
+    params: undefined;
+    result: SettingsResult;
+  };
+  "settings.set": {
+    params: SettingsUpdate;
+    result: SettingsResult;
   };
   "recorder.stop": {
     params: undefined;

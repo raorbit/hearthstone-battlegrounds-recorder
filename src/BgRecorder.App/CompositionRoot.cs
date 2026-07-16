@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text.Json;
 using BgRecorder.Core;
 using BgRecorder.Core.Audio;
 using BgRecorder.Core.Capture;
@@ -29,8 +28,6 @@ namespace BgRecorder.App;
 /// </summary>
 internal static class CompositionRoot
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
-
     public static async Task<AppServices> BuildAsync(CancellationToken ct)
     {
         var appDataDir = Path.Combine(
@@ -38,7 +35,9 @@ internal static class CompositionRoot
         Directory.CreateDirectory(appDataDir);
 
         var settingsPath = Path.Combine(appDataDir, "settings.json");
-        var settings = LoadOrCreateSettings(settingsPath);
+        var settingsService = new JsonSettingsService(
+            settingsPath, message => Log.Warning("Settings: {Message}", message));
+        var settings = settingsService.Current;
 
         RunOnboarding();
 
@@ -114,7 +113,7 @@ internal static class CompositionRoot
 
         return new AppServices
         {
-            Settings = settings,
+            Settings = settingsService,
             Source = source,
             Coordinator = coordinator,
             Repository = repository,
@@ -143,38 +142,6 @@ internal static class CompositionRoot
         }
     }
 
-    private static AppSettings LoadOrCreateSettings(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                var loaded = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(path), JsonOptions);
-                if (loaded is not null)
-                {
-                    Log.Information("Loaded settings from {Path}", path);
-                    return loaded;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Warning(ex, "Settings load failed at {Path}; falling back to defaults", path);
-        }
-
-        var defaults = new AppSettings();
-        try
-        {
-            File.WriteAllText(path, JsonSerializer.Serialize(defaults, JsonOptions));
-            Log.Information("Wrote default settings to {Path}", path);
-        }
-        catch (Exception ex)
-        {
-            Log.Warning(ex, "Could not persist default settings to {Path}", path);
-        }
-
-        return defaults;
-    }
 }
 
 /// <summary>
@@ -183,7 +150,7 @@ internal static class CompositionRoot
 /// </summary>
 internal sealed class AppServices : IAsyncDisposable
 {
-    public required AppSettings Settings { get; init; }
+    public required ISettingsService Settings { get; init; }
     public required IGameEventSource Source { get; init; }
     public required ISessionCoordinator Coordinator { get; init; }
     public required IMatchRepository Repository { get; init; }

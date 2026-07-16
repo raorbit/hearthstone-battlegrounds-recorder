@@ -8,6 +8,7 @@ import type {
   RpcMethodMap,
   RpcNotification,
   RpcNotificationMap,
+  SettingsResult,
 } from "./types";
 
 const now = Date.now();
@@ -131,6 +132,16 @@ function cloneMatch(match: MatchSummary): MatchSummary {
   return { ...match };
 }
 
+let mockSettings: SettingsResult = {
+  hearthstoneInstallDir: "C:\\Program Files (x86)\\Hearthstone",
+  libraryDir: "C:\\Users\\Player\\Videos\\BG Recorder",
+  stagingDir: "C:\\Users\\Player\\Videos\\BG Recorder\\.staging",
+  fps: 60,
+  bitrateMbps: 12,
+  gameOnlyAudio: true,
+  mixMicrophone: false,
+};
+
 function wait(ms = 140): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
@@ -189,6 +200,15 @@ class MockRpcClient implements RpcClient {
       case "rating.get":
         // v1 ships the null provider: automatic MMR is disabled, ratings come from manual entry.
         return { health: "disabled", rating: null, sampledAt: null } as RpcMethodMap[M]["result"];
+
+      case "settings.get":
+        return { ...mockSettings } as RpcMethodMap[M]["result"];
+
+      case "settings.set": {
+        const update = params as RpcMethodMap["settings.set"]["params"];
+        mockSettings = { ...mockSettings, ...update };
+        return { ...mockSettings } as RpcMethodMap[M]["result"];
+      }
 
       case "recorder.stop":
         this.setState("finalizing");
