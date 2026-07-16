@@ -51,11 +51,11 @@ internal sealed class BaconRatingReader
     public BaconRatingReader(MonoImageReader reader) =>
         _reader = reader ?? throw new ArgumentNullException(nameof(reader));
 
-    public RatingReadResult Read()
+    public RatingReadResult Read(CancellationToken ct = default)
     {
         var mem = _reader.Memory;
 
-        if (!_reader.TryGetRootDomain(out ulong domain) || !EnsureStaticsResolved(domain))
+        if (!_reader.TryGetRootDomain(out ulong domain) || !EnsureStaticsResolved(domain, ct))
         {
             return RatingReadResult.NotResolvable;
         }
@@ -111,14 +111,14 @@ internal sealed class BaconRatingReader
         return RatingReadResult.Ok(rating, duos);
     }
 
-    private bool EnsureStaticsResolved(ulong domain)
+    private bool EnsureStaticsResolved(ulong domain, CancellationToken ct)
     {
         if (_managerClass != 0)
         {
             return true;
         }
 
-        if (!_reader.TryFindClass(domain, ManagerNamespace, ManagerName, out ulong klass) ||
+        if (!_reader.TryFindClass(domain, ManagerNamespace, ManagerName, out ulong klass, ct) ||
             !_reader.TryFindFieldOffset(klass, InstanceField, out int instanceOffset) ||
             !_reader.TryGetStaticData(klass, out ulong staticData))
         {

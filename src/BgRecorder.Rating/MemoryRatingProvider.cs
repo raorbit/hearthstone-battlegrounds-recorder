@@ -4,11 +4,17 @@ using BgRecorder.Core.Rating;
 namespace BgRecorder.Rating;
 
 /// <summary>
-/// <see cref="IRatingProvider"/> backed by the clean-room external Mono reader. Attaches lazily, polls the
+/// <see cref="IRatingProvider"/> backed by the clean-room external Mono reader. Attaches lazily, samples the
 /// live game on a throttle, projects the one read into per-mode snapshots, and — above all — never lets a
 /// memory fault escape: any surprise degrades to a health state with a null snapshot, so recording is
 /// wholly indifferent to it. Constructed only when <c>AppSettings.EnableMemoryRating</c> is on.
 /// </summary>
+/// <remarks>
+/// Reading is <b>on demand</b>: a read happens when <see cref="TryGetAsync"/> is called (the throttle just
+/// coalesces bursts). Capturing a per-match MMR <i>delta</i> — sample at match start, poll after the post-game
+/// update, persist the difference on the match record — is a deliberate follow-up that belongs to the session
+/// lifecycle (a coordinator-driven sampler plus a schema/DTO/SPA change), not to this reader.
+/// </remarks>
 public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
 {
     private readonly IProcessMemoryFactory _factory;
@@ -63,7 +69,7 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
         {
             try
             {
-                Poll();
+                Poll(ct);
             }
             catch (Exception ex)
             {
@@ -82,8 +88,13 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
         }
     }
 
-    private void Poll()
+    private void Poll(CancellationToken ct)
     {
+        if (ct.IsCancellationRequested)
+        {
+            return;
+        }
+
         DateTimeOffset now = _now();
 
         if (!_attached)
@@ -111,7 +122,13 @@ public sealed class MemoryRatingProvider : IRatingProvider, IDisposable
         }
 
         _lastPoll = now;
-        ApplyResult(_reader!.Read(), now);
+        RatingReadResult result = _reader!.Read(ct);
+        if (ct.IsCancellationRequested)
+        {
+            return; // a cancelled scan's result is not trustworthy — leave health/cache untouched
+        }
+
+        ApplyResult(result, now);
     }
 
     private void ApplyResult(RatingReadResult result, DateTimeOffset now)

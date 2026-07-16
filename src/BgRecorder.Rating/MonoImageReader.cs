@@ -256,7 +256,7 @@ internal sealed class MonoImageReader
     // ---- Class lookup ----
 
     /// <summary>Find a class by namespace + name across every image loaded in the domain.</summary>
-    public bool TryFindClass(ulong domain, string ns, string name, out ulong klass)
+    public bool TryFindClass(ulong domain, string ns, string name, out ulong klass, CancellationToken ct = default)
     {
         klass = 0;
         if (!TryGetDomainAssemblies(domain, out ulong node))
@@ -267,24 +267,25 @@ internal sealed class MonoImageReader
         // One shared read budget across all images: a wrong FRAGILE offset can make a bogus bucket count
         // (or unmapped table) look plausible, and empty buckets each still cost a read. Without a global cap
         // the scan could grind through millions of reads per poll under the provider lock. Exhaustion means
-        // the offsets are wrong — degrade to PatchBroken fast instead of hanging.
+        // the offsets are wrong — degrade to PatchBroken fast instead of hanging. The caller's token lets a
+        // request-scoped deadline abort a slow degraded scan even sooner.
         int budget = _off.MaxScanReads;
         int guard = 0;
         while (node != 0 && guard++ < _off.MaxAssemblies)
         {
-            if (!Followable(node))
+            if (ct.IsCancellationRequested || !Followable(node))
             {
                 return false;
             }
 
             if (_mem.TryReadPointer(node + (ulong)_off.GSListData, out ulong assembly) && Followable(assembly) &&
                 TryGetImageFromAssembly(assembly, out ulong image) &&
-                TryFindClassInImage(image, ns, name, ref budget, out klass))
+                TryFindClassInImage(image, ns, name, ref budget, ct, out klass))
             {
                 return true;
             }
 
-            if (budget <= 0 || !_mem.TryReadPointer(node + (ulong)_off.GSListNext, out node))
+            if (budget <= 0 || ct.IsCancellationRequested || !_mem.TryReadPointer(node + (ulong)_off.GSListNext, out node))
             {
                 return false;
             }
@@ -293,7 +294,7 @@ internal sealed class MonoImageReader
         return false;
     }
 
-    private bool TryFindClassInImage(ulong image, string ns, string name, ref int budget, out ulong klass)
+    private bool TryFindClassInImage(ulong image, string ns, string name, ref int budget, CancellationToken ct, out ulong klass)
     {
         klass = 0;
         ulong cache = image + (ulong)_off.ImageClassCache;
@@ -312,6 +313,12 @@ internal sealed class MonoImageReader
             if (--budget <= 0)
             {
                 return false; // global budget spent — offsets are almost certainly wrong; fail fast
+            }
+
+            // Cheap, periodic cooperative-cancellation check so a large degraded scan bails promptly.
+            if ((bucket & 0x3FF) == 0 && ct.IsCancellationRequested)
+            {
+                return false;
             }
 
             if (!_mem.TryReadPointer(table + (ulong)(bucket * 8), out ulong current))
@@ -382,9 +389,11 @@ internal sealed class MonoImageReader
             return false;
         }
 
+        // Scan from slot 0: the root domain is conventionally id 1, but domain_vtables[] is valid from 0 and
+        // the klass back-pointer check below selects the correct vtable regardless of which slot holds it.
         int cap = Math.Min(maxDomain, _off.MaxDomainScan);
         ulong vtable = 0;
-        for (int id = 1; id <= cap; id++)
+        for (int id = 0; id <= cap; id++)
         {
             if (!_mem.TryReadPointer(rti + (ulong)_off.RtiDomainVtables + (ulong)(id * 8), out ulong candidate) ||
                 !Followable(candidate))

@@ -147,6 +147,35 @@ public sealed class MonoImageReaderTests
     }
 
     [Fact]
+    public void Static_data_resolves_when_the_class_vtable_sits_at_domain_slot_zero()
+    {
+        // Some builds/classes hold the vtable at domain_vtables[0]; the back-pointer check selects it.
+        var offsets = MonoOffsets.UnityMasterDefault;
+        var b = new MonoHeapBuilder(offsets);
+        const int vtableSize = 2;
+        ulong staticBlock = b.AllocStaticBlock();
+        ulong klass = b.BuildClass("C", "", b.BuildFields(("s_instance", 0x10)), vtableSize: vtableSize);
+        ulong vtable = b.BuildVTable(klass, staticBlock, vtableSize);
+        b.SetRuntimeInfo(klass, b.BuildRuntimeInfo(vtable, domainId: 0, maxDomain: 0));
+        var reader = new MonoImageReader(b.Memory, offsets);
+
+        Assert.True(reader.TryGetStaticData(klass, out ulong staticData));
+        Assert.Equal(staticBlock, staticData);
+    }
+
+    [Fact]
+    public void Class_lookup_honors_cancellation()
+    {
+        var scenario = BaconScenario.Build();
+        var reader = ReaderFor(scenario);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        // The class exists, but a pre-cancelled token must abort the scan rather than resolve it.
+        Assert.False(reader.TryFindClass(scenario.Domain, "", "BaconRatingMgr", out _, cts.Token));
+    }
+
+    [Fact]
     public void A_bogus_class_cache_size_fails_fast_instead_of_grinding()
     {
         // Simulate a wrong FRAGILE offset: a plausible-but-huge bucket count over a followable-but-empty table,
