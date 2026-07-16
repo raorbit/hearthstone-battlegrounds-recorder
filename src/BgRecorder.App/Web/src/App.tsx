@@ -1692,6 +1692,11 @@ export function App(): JSX.Element {
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (target as HTMLElement | null)?.isContentEditable) {
         return;
       }
+      // When the video is focused, its native controls own the arrow keys (volume/seek) — don't hijack
+      // them to change the library selection, which would yank playback onto a different recording.
+      if (tag === "VIDEO") {
+        return;
+      }
       if (view !== "library") {
         return;
       }
