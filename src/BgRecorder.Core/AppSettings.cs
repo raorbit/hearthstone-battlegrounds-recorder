@@ -32,4 +32,11 @@ public sealed record AppSettings
 
     /// <summary>Retention and archive-drive configuration (M5). Defaults bound a single recording drive.</summary>
     public StorageOptions Storage { get; init; } = new();
+
+    /// <summary>
+    /// Post-v1 clean-room memory MMR reader. Default OFF — the Mono struct offsets it depends on are
+    /// unverified against the live mono-2.0-bdwgc.dll and the read is patch-fragile. Flip this in
+    /// settings.json to exercise the reader on a live game (see docs/mmr-offset-verification.md).
+    /// </summary>
+    public bool EnableMemoryRating { get; init; }
 }

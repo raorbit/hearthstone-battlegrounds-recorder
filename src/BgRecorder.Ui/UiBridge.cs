@@ -170,7 +170,7 @@ public sealed class UiBridge
             "rating.get" => await GetRatingAsync(RequiredMode(parameters, "mode"), ct).ConfigureAwait(false),
             "settings.get" => GetSettings(),
             "settings.set" => await SetSettingsAsync(parameters, ct).ConfigureAwait(false),
-            "storage.preview" => await GetStoragePreviewAsync(ct).ConfigureAwait(false),
+            "storage.preview" => await GetStoragePreviewAsync(parameters, ct).ConfigureAwait(false),
             "storage.get" => GetStorageSettings(),
             "storage.set" => await SetStorageSettingsAsync(parameters, ct).ConfigureAwait(false),
             "recorder.stop" => await StopRecordingAsync().ConfigureAwait(false),
@@ -358,9 +358,17 @@ public sealed class UiBridge
         settings.MixMicrophone,
         settings.LaunchAtLogin);
 
-    private async Task<StoragePreviewResult> GetStoragePreviewAsync(CancellationToken ct)
+    /// <summary>
+    /// Without params: the in-force plan (what the running engine would do now). With caps params (the
+    /// same shape storage.set writes): a hypothetical plan under those caps, so the UI can show what
+    /// values being edited WOULD evict before they are saved and take effect at the next launch.
+    /// </summary>
+    private async Task<StoragePreviewResult> GetStoragePreviewAsync(JsonElement parameters, CancellationToken ct)
     {
-        var preview = await _storagePlanner.PreviewAsync(ct).ConfigureAwait(false);
+        var preview = parameters.ValueKind == JsonValueKind.Object
+            ? await _storagePlanner.PreviewAsync(ParseStorageCaps(parameters, _settings.Current.Storage), ct)
+                .ConfigureAwait(false)
+            : await _storagePlanner.PreviewAsync(ct).ConfigureAwait(false);
         return new StoragePreviewResult(
             preview.Volumes.Select(v => new StorageVolumeResult(
                 MapVolumeRole(v.Role), v.UsedBytes, v.FreeBytes, v.CapBytes, v.IsOnline, v.MatchCount)).ToList(),
@@ -379,20 +387,21 @@ public sealed class UiBridge
     private async Task<StorageSettingsResult> SetStorageSettingsAsync(JsonElement parameters, CancellationToken ct)
     {
         var current = _settings.Current;
-        var next = current with
-        {
-            Storage = current.Storage with
-            {
-                RecordingCapBytes = RequiredInt64InRange(parameters, "recordingCapBytes", 1, long.MaxValue),
-                RecordingReserveBytes = RequiredInt64InRange(parameters, "recordingReserveBytes", 0, long.MaxValue),
-                HotSetSize = RequiredInt32InRange(parameters, "hotSetSize", 0, 1000),
-                TotalCapBytes = RequiredNullablePositiveInt64(parameters, "totalCapBytes"),
-            },
-        };
+        var next = current with { Storage = ParseStorageCaps(parameters, current.Storage) };
 
         var saved = await _settings.UpdateAsync(next, ct).ConfigureAwait(false);
         return MapStorage(saved.Storage);
     }
+
+    /// <summary>The editable caps applied onto <paramref name="baseline"/> (archive drives stay as-is).</summary>
+    private static StorageOptions ParseStorageCaps(JsonElement parameters, StorageOptions baseline) =>
+        baseline with
+        {
+            RecordingCapBytes = RequiredInt64InRange(parameters, "recordingCapBytes", 1, long.MaxValue),
+            RecordingReserveBytes = RequiredInt64InRange(parameters, "recordingReserveBytes", 0, long.MaxValue),
+            HotSetSize = RequiredInt32InRange(parameters, "hotSetSize", 0, 1000),
+            TotalCapBytes = RequiredNullablePositiveInt64(parameters, "totalCapBytes"),
+        };
 
     private static StorageSettingsResult MapStorage(StorageOptions storage) => new(
         storage.RecordingCapBytes,

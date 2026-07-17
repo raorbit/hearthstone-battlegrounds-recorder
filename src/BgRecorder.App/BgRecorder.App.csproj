@@ -17,6 +17,7 @@
     <ProjectReference Include="..\BgRecorder.Capture\BgRecorder.Capture.csproj" />
     <ProjectReference Include="..\BgRecorder.Audio\BgRecorder.Audio.csproj" />
     <ProjectReference Include="..\BgRecorder.Session\BgRecorder.Session.csproj" />
+    <ProjectReference Include="..\BgRecorder.Rating\BgRecorder.Rating.csproj" />
     <ProjectReference Include="..\BgRecorder.Data\BgRecorder.Data.csproj" />
     <ProjectReference Include="..\BgRecorder.Storage\BgRecorder.Storage.csproj" />
     <ProjectReference Include="..\BgRecorder.Ui\BgRecorder.Ui.csproj" />

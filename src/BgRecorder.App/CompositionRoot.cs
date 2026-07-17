@@ -19,6 +19,7 @@ using BgRecorder.Audio.Thumbnails;
 using BgRecorder.Data;
 using BgRecorder.Session;
 using BgRecorder.Storage;
+using BgRecorder.Rating;
 
 namespace BgRecorder.App;
 
@@ -40,7 +41,8 @@ internal static class CompositionRoot
             settingsPath, message => Log.Warning("Settings: {Message}", message));
         var settings = settingsService.Current;
 
-        RunOnboarding();
+        IGameProcessLocator locator = new HearthstoneProcessLocator();
+        var onboarding = RunOnboarding(locator);
 
         Directory.CreateDirectory(settings.StagingDir);
         Directory.CreateDirectory(settings.LibraryDir);
@@ -63,11 +65,13 @@ internal static class CompositionRoot
 
         IMatchAssembler assembler = new MatchAssembler();
         IDiskSafety diskSafety = new DiskSafety(settings.StagingDir, repository);
-        IGameProcessLocator locator = new HearthstoneProcessLocator();
 
-        // v1 ships without automatic MMR (M1 licensing decision): the null provider satisfies the
-        // interface so the degradation UX renders, and the clean-room reader slots in post-v1.
-        IRatingProvider ratingProvider = new NullRatingProvider();
+        // Automatic MMR is the clean-room external Mono reader, default OFF (EnableMemoryRating): its
+        // struct offsets are unverified against the live DLL, so until they are the null provider ships and
+        // the degradation UX renders. The reader degrades to a health state and never affects recording.
+        IRatingProvider ratingProvider = settings.EnableMemoryRating
+            ? new MemoryRatingProvider(message => Log.Warning("Rating reader: {Message}", message))
+            : new NullRatingProvider();
 
         var recovery = new StartupRecovery(muxer, thumbnailExtractor, assembler, repository, settings);
         var recoveryReport = await recovery.RunAsync(ct);
@@ -123,26 +127,42 @@ internal static class CompositionRoot
             StoragePlanner = storageEngine,
             StorageEnforcer = storageEnforcer,
             LibraryDir = settings.LibraryDir,
+            Onboarding = onboarding,
         };
     }
 
-    private static void RunOnboarding()
+    private static OnboardingReport RunOnboarding(IGameProcessLocator locator)
     {
         // Enable the Power logger in Hearthstone's log.config. The writer is merge-safe and a no-op
         // when the file is already compliant (which it is on this machine).
-        var logConfigPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Blizzard", "Hearthstone", "log.config");
+        var logConfigPath = LogConfigWriter.DefaultPath;
 
+        LogConfigResult result;
         try
         {
-            var result = LogConfigWriter.Ensure(logConfigPath);
+            result = LogConfigWriter.Ensure(logConfigPath);
             Log.Information("Onboarding: log.config ensure at {Path} -> {Result}", logConfigPath, result);
         }
         catch (Exception ex)
         {
             Log.Warning(ex, "Onboarding: log.config ensure failed (non-fatal; recording still works if already set)");
+            return OnboardingReport.Failed(ex.Message);
         }
+
+        // A process-enumeration hiccup must not masquerade as a config failure — the write above already
+        // succeeded. Degrade to "no restart hint" and keep the real outcome.
+        bool gameRunning;
+        try
+        {
+            gameRunning = locator.FindGame() is not null;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Onboarding: could not check whether Hearthstone is running; skipping the restart hint");
+            gameRunning = false;
+        }
+
+        return OnboardingReport.From(result, gameRunning);
     }
 
 }
@@ -161,6 +181,7 @@ internal sealed class AppServices : IAsyncDisposable
     public required IStoragePlanner StoragePlanner { get; init; }
     public required StorageEnforcer StorageEnforcer { get; init; }
     public required string LibraryDir { get; init; }
+    public required OnboardingReport Onboarding { get; init; }
 
     public async ValueTask DisposeAsync()
     {
@@ -183,6 +204,17 @@ internal sealed class AppServices : IAsyncDisposable
         catch (Exception ex)
         {
             Log.Warning(ex, "Event source dispose failed");
+        }
+
+        try
+        {
+            // The memory rating reader holds a live process handle when enabled; the null provider
+            // is not disposable and skips this. Last: nothing above depends on rating.
+            (RatingProvider as IDisposable)?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Rating provider dispose failed");
         }
     }
 }

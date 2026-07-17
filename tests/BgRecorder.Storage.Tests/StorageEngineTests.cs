@@ -111,6 +111,46 @@ public sealed class StorageEngineTests
     }
 
     [Fact]
+    public async Task Proposed_caps_preview_a_hypothetical_plan_without_changing_enforcement()
+    {
+        var fs = new FakeFileSystem();
+        fs.Seed(@"C:\lib\m1.mp4", [1]);
+        fs.Seed(@"C:\lib\m2.mp4", [2]);
+        fs.Seed(@"C:\lib\m3.mp4", [3]);
+        var store = new FakeMatchStore(
+            Match(1, @"C:\lib\m1.mp4", 5, ageDays: 3),
+            Match(2, @"C:\lib\m2.mp4", 5, ageDays: 2),
+            Match(3, @"C:\lib\m3.mp4", 5, ageDays: 1));
+        var inForce = new StorageOptions
+        {
+            RecordingCapBytes = 100 * GB, // roomy: the running engine plans nothing
+            RecordingReserveBytes = 1 * GB,
+            HotSetSize = 1,
+        };
+        var engine = BuildEngine(fs, store, inForce);
+
+        // In force: within cap, nothing planned.
+        var current = await engine.PreviewAsync();
+        Assert.Empty(current.PlannedDeletes);
+        Assert.Empty(current.PlannedMoves);
+
+        // Proposed tighter cap: the SAME projection now shows the deletes those caps would run —
+        // this is the "see the consequences before saving" path.
+        var proposed = await engine.PreviewAsync(inForce with { RecordingCapBytes = 10 * GB });
+        var delete = Assert.Single(proposed.PlannedDeletes);
+        Assert.Equal(1, delete.MatchId); // oldest unstarred
+        Assert.Equal(10 * GB, proposed.Volumes.Single(v => v.Role == VolumeRole.Recording).CapBytes);
+
+        // The hypothetical preview must leave the engine untouched: enforcement still runs the
+        // roomy in-force caps and does nothing.
+        var report = await engine.EnforceAsync();
+        Assert.Equal(0, report.MovesExecuted);
+        Assert.Equal(0, report.DeletesExecuted);
+        Assert.True(fs.Has(@"C:\lib\m1.mp4"));
+        Assert.NotNull(store.TryGet(1));
+    }
+
+    [Fact]
     public async Task A_library_within_its_cap_changes_nothing()
     {
         var fs = new FakeFileSystem();

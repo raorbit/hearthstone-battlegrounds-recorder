@@ -19,6 +19,9 @@
     <Project Path="src/BgRecorder.Logs/BgRecorder.Logs.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
+    <Project Path="src/BgRecorder.Rating/BgRecorder.Rating.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
     <Project Path="src/BgRecorder.Session/BgRecorder.Session.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
@@ -46,6 +49,9 @@
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
     <Project Path="tests/BgRecorder.Logs.Tests/BgRecorder.Logs.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="tests/BgRecorder.Rating.Tests/BgRecorder.Rating.Tests.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
     <Project Path="tests/BgRecorder.Session.Tests/BgRecorder.Session.Tests.csproj">
