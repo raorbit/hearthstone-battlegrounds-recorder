@@ -28,8 +28,10 @@ jobs:
           cache: npm
           cache-dependency-path: src/BgRecorder.App/Web/package-lock.json
 
+      # Keep in lockstep with the Velopack PackageReference in BgRecorder.App.csproj — the CLI and
+      # the in-app runtime must match, and an unpinned tool would float past the pinned library.
       - name: Install vpk
-        run: dotnet tool install --global vpk
+        run: dotnet tool install --global vpk --version 1.2.0
 
       - name: Pack
         run: powershell -File scripts/pack.ps1 -Version ("${{ github.ref_name }}".TrimStart("v"))
