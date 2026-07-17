@@ -226,7 +226,7 @@ public sealed class UiBridgeTests
         var json = await bridge.HandleRequestAsync(Request(
             "settings",
             "settings.set",
-            new { fps = 30, bitrateMbps = 24, gameOnlyAudio = false, mixMicrophone = true }));
+            new { fps = 30, bitrateMbps = 24, gameOnlyAudio = false, mixMicrophone = true, launchAtLogin = true }));
         using var document = JsonDocument.Parse(json);
         var result = document.RootElement.GetProperty("result");
 
@@ -235,7 +235,9 @@ public sealed class UiBridgeTests
         Assert.Equal(24, settings.LastSaved.BitrateMbps);
         Assert.False(settings.LastSaved.GameOnlyAudio);
         Assert.True(settings.LastSaved.MixMicrophone);
+        Assert.True(settings.LastSaved.LaunchAtLogin);
         Assert.Equal(30, result.GetProperty("fps").GetInt32());
+        Assert.True(result.GetProperty("launchAtLogin").GetBoolean());
     }
 
     [Theory]
@@ -249,7 +251,7 @@ public sealed class UiBridgeTests
         var json = await bridge.HandleRequestAsync(Request(
             "settings",
             "settings.set",
-            new { fps, bitrateMbps = 12, gameOnlyAudio = true, mixMicrophone = false }));
+            new { fps, bitrateMbps = 12, gameOnlyAudio = true, mixMicrophone = false, launchAtLogin = false }));
 
         Assert.Contains("\"code\":-32602", json);
         Assert.Null(settings.LastSaved);
@@ -264,7 +266,7 @@ public sealed class UiBridgeTests
         var json = await bridge.HandleRequestAsync(Request(
             "settings",
             "settings.set",
-            new { fps = 60, bitrateMbps = 0, gameOnlyAudio = true, mixMicrophone = false }));
+            new { fps = 60, bitrateMbps = 0, gameOnlyAudio = true, mixMicrophone = false, launchAtLogin = false }));
 
         Assert.Contains("\"code\":-32602", json);
         Assert.Null(settings.LastSaved);
@@ -442,6 +444,61 @@ public sealed class UiBridgeTests
         Assert.Equal(0, result.GetProperty("plannedMoves").GetArrayLength());
     }
 
+    [Fact]
+    public async Task Storage_preview_with_caps_previews_the_proposed_options_not_the_in_force_ones()
+    {
+        var baseline = new AppSettings
+        {
+            Storage = new StorageOptions
+            {
+                RecordingCapBytes = 200L << 30,
+                ArchiveVolumes = [new ArchiveVolumeOptions { Directory = @"D:\archive", CapBytes = 500L << 30 }],
+            },
+        };
+        var planner = new FakeStoragePlanner();
+        var bridge = NewBridge(
+            new FakeRepository(SampleMatch(null)),
+            settings: new FakeSettingsService(baseline),
+            storagePlanner: planner);
+
+        var json = await bridge.HandleRequestAsync(Request("s", "storage.preview", new
+        {
+            recordingCapBytes = 50L << 30,
+            recordingReserveBytes = 2L << 30,
+            hotSetSize = 3,
+            totalCapBytes = (long?)null,
+        }));
+
+        Assert.Contains("\"result\"", json);
+        Assert.Equal(0, planner.InForceCalls); // the hypothetical path, not the in-force one
+        Assert.NotNull(planner.LastProposed);
+        Assert.Equal(50L << 30, planner.LastProposed!.RecordingCapBytes);
+        Assert.Equal(2L << 30, planner.LastProposed.RecordingReserveBytes);
+        Assert.Equal(3, planner.LastProposed.HotSetSize);
+        Assert.Null(planner.LastProposed.TotalCapBytes);
+        // Archive drives are not editable caps: the proposal keeps the saved ones.
+        Assert.Equal(@"D:\archive", Assert.Single(planner.LastProposed.ArchiveVolumes).Directory);
+    }
+
+    [Fact]
+    public async Task Storage_preview_with_invalid_caps_is_rejected_without_touching_the_planner()
+    {
+        var planner = new FakeStoragePlanner();
+        var bridge = NewBridge(new FakeRepository(SampleMatch(null)), storagePlanner: planner);
+
+        var json = await bridge.HandleRequestAsync(Request("s", "storage.preview", new
+        {
+            recordingCapBytes = 0, // below the 1-byte minimum storage.set enforces
+            recordingReserveBytes = 0,
+            hotSetSize = 0,
+            totalCapBytes = (long?)null,
+        }));
+
+        Assert.Contains("\"code\":-32602", json);
+        Assert.Null(planner.LastProposed);
+        Assert.Equal(0, planner.InForceCalls);
+    }
+
     private static UiBridge NewBridge(
         IMatchRepository repository,
         ISessionCoordinator? coordinator = null,
@@ -598,10 +655,13 @@ public sealed class UiBridgeTests
 
         public AppSettings? LastSaved { get; private set; }
 
+        public event Action<AppSettings>? Changed;
+
         public Task<AppSettings> UpdateAsync(AppSettings settings, CancellationToken ct = default)
         {
             LastSaved = settings;
             Current = settings;
+            Changed?.Invoke(settings);
             return Task.FromResult(settings);
         }
     }
@@ -613,6 +673,20 @@ public sealed class UiBridgeTests
         public FakeStoragePlanner(StoragePreview? preview = null)
             => _preview = preview ?? new StoragePreview([], [], [], false);
 
-        public Task<StoragePreview> PreviewAsync(CancellationToken ct = default) => Task.FromResult(_preview);
+        public StorageOptions? LastProposed { get; private set; }
+
+        public int InForceCalls { get; private set; }
+
+        public Task<StoragePreview> PreviewAsync(CancellationToken ct = default)
+        {
+            InForceCalls++;
+            return Task.FromResult(_preview);
+        }
+
+        public Task<StoragePreview> PreviewAsync(StorageOptions proposed, CancellationToken ct = default)
+        {
+            LastProposed = proposed;
+            return Task.FromResult(_preview);
+        }
     }
 }

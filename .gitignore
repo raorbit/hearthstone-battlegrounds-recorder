@@ -33,3 +33,4 @@ fixtures/raw/
 *.db
 *.sqlite
 *.dmp
+artifacts/

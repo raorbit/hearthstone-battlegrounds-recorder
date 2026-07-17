@@ -25,5 +25,13 @@ public sealed record PlannedEviction(long MatchId, long SizeBytes);
 /// <summary>Computes what retention would do right now, without performing any move or deletion.</summary>
 public interface IStoragePlanner
 {
+    /// <summary>Preview under the in-force options the engine was constructed with.</summary>
     Task<StoragePreview> PreviewAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Preview under <paramref name="proposed"/> options instead — "what would these caps do". Lets the
+    /// settings UI show the eviction consequences of caps BEFORE they are saved and take effect at the
+    /// next launch; nothing about the running engine changes.
+    /// </summary>
+    Task<StoragePreview> PreviewAsync(StorageOptions proposed, CancellationToken ct = default);
 }

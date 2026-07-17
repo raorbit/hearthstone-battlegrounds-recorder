@@ -23,6 +23,20 @@ public sealed record AppSettings
     /// <summary>Default OFF per the plan's privacy-respecting defaults.</summary>
     public bool MixMicrophone { get; init; }
 
+    /// <summary>
+    /// Start with Windows (HKCU Run key). Default OFF: installing software that self-registers at login
+    /// without asking is hostile; the user opts in from Settings. Applied live via
+    /// <see cref="ISettingsService.Changed"/> — unlike recording settings, no restart needed.
+    /// </summary>
+    public bool LaunchAtLogin { get; init; }
+
     /// <summary>Retention and archive-drive configuration (M5). Defaults bound a single recording drive.</summary>
     public StorageOptions Storage { get; init; } = new();
+
+    /// <summary>
+    /// Post-v1 clean-room memory MMR reader. Default OFF — the Mono struct offsets it depends on are
+    /// unverified against the live mono-2.0-bdwgc.dll and the read is patch-fragile. Flip this in
+    /// settings.json to exercise the reader on a live game (see docs/mmr-offset-verification.md).
+    /// </summary>
+    public bool EnableMemoryRating { get; init; }
 }
