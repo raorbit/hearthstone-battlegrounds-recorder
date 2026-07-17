@@ -25,15 +25,33 @@ Derivable from the log:
 
 ## Rating (MMR): process-memory reading
 
-BG rating never appears in Power.log or any local file. Trackers read it from the running game's memory:
+BG rating never appears in Power.log or any local file. Trackers read it from the running game's memory,
+and this project ships its own clean-room, read-only, external reader (`src/BgRecorder.Rating/`, default
+OFF — runbook and live findings in [`mmr-offset-verification.md`](mmr-offset-verification.md)):
 
-- [HearthMirror](https://github.com/HearthSim/Hearthstone-Deck-Tracker) (C# library maintained by HearthSim, ships with HDT) attaches read-only (`ReadProcessMemory`, no injection) and walks the Unity/Mono managed heap.
-- Field path: `BaconRatingMgr.s_instance → m_lastRatingResponse → Rating / LeaderboardPlace`.
-- HDT usage: `HearthMirror.Reflection.Client.GetBattlegroundRatingInfo()` — see [GameV2.cs](https://github.com/HearthSim/Hearthstone-Deck-Tracker/blob/master/Hearthstone%20Deck%20Tracker/Hearthstone/GameV2.cs). **Solo `Rating` and `DuosRating` are separate fields** — solo and duos are independent ladders and must never be mixed into one series.
-- Per-match delta: sample rating at match start (HDT does an explicit `CacheBattlegroundsRatingInfo()`), read again after the post-game rating update, store the difference.
-- Fragility: game patches occasionally break memory reading until HearthSim ships a fix (e.g. [HSTracker #1419](https://github.com/HearthSim/HSTracker/issues/1419), June 2026 patch). MMR must therefore be an **optional rating-provider subsystem** — when it breaks, the app degrades to "recordings without MMR" and recording itself is unaffected.
-- Stack implication: HearthMirror is C#. A .NET app consumes it directly; any other stack needs a small C# sidecar process that polls rating and emits JSON (proven pattern: [OpenDeckTracker](https://github.com/ZJUxjy/OpenDeckTracker) built exactly this bridge for Electron).
-- **Licensing (unresolved)**: HDT's repository is ["All Rights Reserved"](https://github.com/HearthSim/Hearthstone-Deck-Tracker#license), and HearthMirror is published neither as a NuGet package nor as a standalone licensed repo (checked 2026-07-14). This MIT project cannot assume it may vendor or redistribute HearthMirror. Options, in preference order: ask HearthSim for permission, implement a minimal clean reader for the single documented field path above, or ship without MMR (manual entry / none). By contrast, [python-hearthstone/hslog](https://github.com/HearthSim/python-hearthstone) is MIT and safe as a log-parsing reference.
+- Technique: attach with `PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ` (no injection, no writes)
+  and walk the Unity/Mono managed heap via `ReadProcessMemory` — the same footprint deck trackers use.
+- **Field path (corrected by the 2026-07-16 live probe):** the long-documented
+  `BaconRatingMgr.s_instance → m_lastRatingResponse → Rating/DuosRating` is GONE — no `BaconRatingMgr`
+  class exists anywhere in the current build. The rating actually lives in `NetCacheBaconRatingInfo`
+  (`Rating` at 0x10 solo, `DuosRating` at 0x14 duos), reached through `NetCache.m_netCache`, and neither
+  `NetCache` nor `ServiceLocator` exposes a static instance — with no known static root, automatic MMR
+  stays off pending a field-path redesign. The Mono ABI offsets themselves are live-verified.
+- **Solo `Rating` and `DuosRating` are separate fields** — solo and duos are independent ladders and must
+  never be mixed into one series.
+- Per-match delta: sample rating at match start, read again after the post-game update, store the
+  difference — a deliberate follow-up; the reader currently surfaces health plus the latest values only.
+- Fragility: game patches occasionally break memory reading (e.g.
+  [HSTracker #1419](https://github.com/HearthSim/HSTracker/issues/1419), June 2026 patch) — and this
+  project hit the stronger form: the documented class vanished outright. MMR is therefore an **optional
+  rating-provider subsystem** — a break only degrades `IRatingProvider.Health`; recording is unaffected.
+- **Licensing (resolved)**: HDT's repository is ["All Rights Reserved"](https://github.com/HearthSim/Hearthstone-Deck-Tracker#license)
+  and HearthMirror has no usable public license; the HearthSim permission route was declined
+  (2026-07-16). The shipped reader is therefore clean-room: every struct layout derives from Mono's own
+  open-source headers (Unity-Technologies/mono), with no tracker source consulted — see
+  `spikes/SpikeC.MmrRoute/LICENSING.md` and the provenance section of `docs/mmr-offset-verification.md`.
+  [python-hearthstone/hslog](https://github.com/HearthSim/python-hearthstone) remains the MIT-safe
+  log-parsing reference.
 
 ## Video capture
 

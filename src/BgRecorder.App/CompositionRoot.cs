@@ -19,6 +19,7 @@ using BgRecorder.Audio.Thumbnails;
 using BgRecorder.Data;
 using BgRecorder.Session;
 using BgRecorder.Storage;
+using BgRecorder.Rating;
 
 namespace BgRecorder.App;
 
@@ -65,9 +66,12 @@ internal static class CompositionRoot
         IDiskSafety diskSafety = new DiskSafety(settings.StagingDir, repository);
         IGameProcessLocator locator = new HearthstoneProcessLocator();
 
-        // v1 ships without automatic MMR (M1 licensing decision): the null provider satisfies the
-        // interface so the degradation UX renders, and the clean-room reader slots in post-v1.
-        IRatingProvider ratingProvider = new NullRatingProvider();
+        // Automatic MMR is the clean-room external Mono reader, default OFF (EnableMemoryRating): its
+        // struct offsets are unverified against the live DLL, so until they are the null provider ships and
+        // the degradation UX renders. The reader degrades to a health state and never affects recording.
+        IRatingProvider ratingProvider = settings.EnableMemoryRating
+            ? new MemoryRatingProvider(message => Log.Warning("Rating reader: {Message}", message))
+            : new NullRatingProvider();
 
         var recovery = new StartupRecovery(muxer, thumbnailExtractor, assembler, repository, settings);
         var recoveryReport = await recovery.RunAsync(ct);
@@ -183,6 +187,17 @@ internal sealed class AppServices : IAsyncDisposable
         catch (Exception ex)
         {
             Log.Warning(ex, "Event source dispose failed");
+        }
+
+        try
+        {
+            // The memory rating reader holds a live process handle when enabled; the null provider
+            // is not disposable and skips this. Last: nothing above depends on rating.
+            (RatingProvider as IDisposable)?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Rating provider dispose failed");
         }
     }
 }
