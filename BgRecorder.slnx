@@ -30,6 +30,9 @@
     </Project>
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/BgRecorder.App.Tests/BgRecorder.App.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
     <Project Path="tests/BgRecorder.Audio.Tests/BgRecorder.Audio.Tests.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
