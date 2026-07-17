@@ -133,8 +133,13 @@ public partial class App : Application
             ApplyState(_services.Coordinator.State);
             Log.Information("Bootstrap complete; coordinator state {State}", _services.Coordinator.State);
 
-            ApplyLaunchAtLogin(_services.Settings.Current);
-            _services.Settings.Changed += ApplyLaunchAtLogin; // launch-at-login applies live, no restart
+            if (!_isSmoke)
+            {
+                // Smoke runs execute from throwaway paths (CI, bin dirs); reconciling there would
+                // rewrite the user's autostart command to a binary that is about to disappear.
+                ApplyLaunchAtLogin(_services.Settings.Current);
+                _services.Settings.Changed += ApplyLaunchAtLogin; // applies live, no restart
+            }
         }
         catch (Exception ex)
         {
