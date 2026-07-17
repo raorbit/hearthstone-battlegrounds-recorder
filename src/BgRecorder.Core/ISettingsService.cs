@@ -16,4 +16,10 @@ public interface ISettingsService
     /// so recording/storage changes take effect on the next launch — callers must not imply otherwise.
     /// </summary>
     Task<AppSettings> UpdateAsync(AppSettings settings, CancellationToken ct = default);
+
+    /// <summary>
+    /// Raised after <see cref="UpdateAsync"/> adopts a new value, with that value. For the few settings
+    /// that CAN apply live (e.g. launch-at-login); handlers must not throw and must tolerate any thread.
+    /// </summary>
+    event Action<AppSettings>? Changed;
 }

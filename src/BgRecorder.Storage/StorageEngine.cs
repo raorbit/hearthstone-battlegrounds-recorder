@@ -49,7 +49,7 @@ public sealed class StorageEngine : IStoragePlanner
     /// <summary>Brings the library within its caps and reserve floors for the current state.</summary>
     public async Task<EnforcementReport> EnforceAsync(CancellationToken ct = default)
     {
-        var context = await BuildPlanAsync(ct).ConfigureAwait(false);
+        var context = await BuildPlanAsync(_options, ct).ConfigureAwait(false);
         if (!context.RecordingOnline)
         {
             // The recording drive's free space could not be read. A phantom "0 bytes free" would look
@@ -108,9 +108,16 @@ public sealed class StorageEngine : IStoragePlanner
     /// state implies — without executing anything. Shares the exact projection <see cref="EnforceAsync"/>
     /// runs, so the preview matches what the next enforcement pass would actually do.
     /// </summary>
-    public async Task<StoragePreview> PreviewAsync(CancellationToken ct = default)
+    public Task<StoragePreview> PreviewAsync(CancellationToken ct = default) => PreviewAsync(_options, ct);
+
+    /// <summary>
+    /// Preview under <paramref name="proposed"/> options — the same projection, run against caps that are
+    /// not (yet) in force. Enforcement is untouched: it always runs the constructed options, so this can
+    /// never make the engine act on unsaved numbers.
+    /// </summary>
+    public async Task<StoragePreview> PreviewAsync(StorageOptions proposed, CancellationToken ct = default)
     {
-        var context = await BuildPlanAsync(ct).ConfigureAwait(false);
+        var context = await BuildPlanAsync(proposed, ct).ConfigureAwait(false);
 
         var byVolume = context.Stored
             .GroupBy(s => s.VolumeId)
@@ -135,12 +142,12 @@ public sealed class StorageEngine : IStoragePlanner
     /// <see cref="PreviewAsync"/>. When the recording drive's free space cannot be read the plan is left
     /// empty (never guess a low-space emergency), but the volume projection is still returned for preview.
     /// </summary>
-    private async Task<PlanContext> BuildPlanAsync(CancellationToken ct)
+    private async Task<PlanContext> BuildPlanAsync(StorageOptions options, CancellationToken ct)
     {
         var records = await _matches.ListMatchesAsync(ct).ConfigureAwait(false);
         var byId = records.ToDictionary(r => r.Id);
 
-        var (volumes, recordingOnline) = BuildVolumes();
+        var (volumes, recordingOnline) = BuildVolumes(options);
 
         var stored = new List<StoredMatch>();
         foreach (var record in records)
@@ -165,8 +172,8 @@ public sealed class StorageEngine : IStoragePlanner
             {
                 Volumes = volumes,
                 Matches = stored,
-                HotSetSize = _options.HotSetSize,
-                TotalCapBytes = _options.TotalCapBytes,
+                HotSetSize = options.HotSetSize,
+                TotalCapBytes = options.TotalCapBytes,
             })
             : new RetentionPlan();
 
@@ -180,7 +187,7 @@ public sealed class StorageEngine : IStoragePlanner
         Dictionary<long, MatchRecord> ById,
         bool RecordingOnline);
 
-    private (IReadOnlyList<ManagedVolume> Volumes, bool RecordingOnline) BuildVolumes()
+    private (IReadOnlyList<ManagedVolume> Volumes, bool RecordingOnline) BuildVolumes(StorageOptions options)
     {
         var (recordingOnline, recordingFree) = Probe(_recordingDir);
         var volumes = new List<ManagedVolume>
@@ -189,14 +196,14 @@ public sealed class StorageEngine : IStoragePlanner
             {
                 Id = NormalizeDir(_recordingDir),
                 Role = VolumeRole.Recording,
-                CapBytes = _options.RecordingCapBytes,
-                ReserveBytes = _options.RecordingReserveBytes,
+                CapBytes = options.RecordingCapBytes,
+                ReserveBytes = options.RecordingReserveBytes,
                 FreeBytes = recordingFree,
                 IsOnline = recordingOnline,
             },
         };
 
-        foreach (var archive in _options.ArchiveVolumes)
+        foreach (var archive in options.ArchiveVolumes)
         {
             var (online, free) = Probe(archive.Directory);
             volumes.Add(new ManagedVolume

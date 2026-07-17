@@ -115,6 +115,26 @@ public sealed class JsonSettingsServiceTests
     }
 
     [Fact]
+    public async Task The_memory_rating_flag_defaults_off_and_survives_a_round_trip()
+    {
+        var path = NewPath();
+        try
+        {
+            var service = new JsonSettingsService(path);
+            Assert.False(service.Current.EnableMemoryRating); // default OFF
+
+            await service.UpdateAsync(service.Current with { EnableMemoryRating = true });
+
+            var reloaded = new JsonSettingsService(path);
+            Assert.True(reloaded.Current.EnableMemoryRating);
+        }
+        finally
+        {
+            Cleanup(path);
+        }
+    }
+
+    [Fact]
     public async Task The_storage_subsection_survives_a_round_trip()
     {
         var path = NewPath();
