@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
+    <!-- Explicit Main (Program.cs) so Velopack's install/update hooks run before WPF starts. -->
+    <StartupObject>BgRecorder.App.Program</StartupObject>
     <WebProjectDir>$(MSBuildProjectDirectory)\Web</WebProjectDir>
     <DefaultItemExcludes>$(DefaultItemExcludes);Web\node_modules\**;Web\dist\**</DefaultItemExcludes>
   </PropertyGroup>
@@ -12,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Velopack" Version="1.2.0" />
     <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
     <ProjectReference Include="..\BgRecorder.Logs\BgRecorder.Logs.csproj" />
     <ProjectReference Include="..\BgRecorder.Capture\BgRecorder.Capture.csproj" />
@@ -37,19 +40,11 @@
     bundle when it is absent or stale. The committed npm lockfile makes dependency restoration
     reproducible; source-only changes rebuild the bundle without reinstalling node_modules.
   -->
-  <Target Name="RestoreWebDependencies"
-          Inputs="$(WebProjectDir)\package.json;$(WebProjectDir)\package-lock.json"
-          Outputs="$(WebProjectDir)\node_modules\.package-lock.json"
-          Condition="'$(DesignTimeBuild)' != 'true'">
+  <Target Name="RestoreWebDependencies" Inputs="$(WebProjectDir)\package.json;$(WebProjectDir)\package-lock.json" Outputs="$(WebProjectDir)\node_modules\.package-lock.json" Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec Command="npm.cmd ci --no-audit --no-fund" WorkingDirectory="$(WebProjectDir)" />
   </Target>
 
-  <Target Name="BuildWebAssets"
-          BeforeTargets="BeforeBuild"
-          DependsOnTargets="RestoreWebDependencies"
-          Inputs="@(WebSource)"
-          Outputs="$(WebProjectDir)\dist\index.html"
-          Condition="'$(DesignTimeBuild)' != 'true'">
+  <Target Name="BuildWebAssets" BeforeTargets="BeforeBuild" DependsOnTargets="RestoreWebDependencies" Inputs="@(WebSource)" Outputs="$(WebProjectDir)\dist\index.html" Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec Command="npm.cmd run build" WorkingDirectory="$(WebProjectDir)" />
   </Target>
 
@@ -58,9 +53,7 @@
       <_WebAsset Include="$(WebProjectDir)\dist\**\*" />
     </ItemGroup>
     <RemoveDir Directories="$(OutDir)Web" />
-    <Copy SourceFiles="@(_WebAsset)"
-          DestinationFiles="@(_WebAsset->'$(OutDir)Web\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_WebAsset)" DestinationFiles="@(_WebAsset->'$(OutDir)Web\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="CopyWebAssetsToPublish" AfterTargets="Publish" DependsOnTargets="BuildWebAssets">
@@ -68,8 +61,6 @@
       <_PublishedWebAsset Include="$(WebProjectDir)\dist\**\*" />
     </ItemGroup>
     <RemoveDir Directories="$(PublishDir)Web" />
-    <Copy SourceFiles="@(_PublishedWebAsset)"
-          DestinationFiles="@(_PublishedWebAsset->'$(PublishDir)Web\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_PublishedWebAsset)" DestinationFiles="@(_PublishedWebAsset->'$(PublishDir)Web\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 </Project>
