@@ -986,7 +986,7 @@ function SettingsView({ notify }: SettingsViewProps): JSX.Element {
       const result = await bridge.request("settings.set", form);
       setSettings(result);
       setForm(formToUpdate(result));
-      notify({ tone: "success", text: "Settings saved — recording changes apply after restart." });
+      notify({ tone: "success", text: "Settings saved — recording changes apply after restart; Start with Windows applies now." });
     } catch (err) {
       notify({ tone: "error", text: `Could not save settings: ${asErrorMessage(err)}` });
     } finally {
