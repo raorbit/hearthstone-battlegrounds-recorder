@@ -341,6 +341,7 @@ public sealed class UiBridge
             BitrateMbps = RequiredInt32InRange(parameters, "bitrateMbps", 1, 100),
             GameOnlyAudio = RequiredBoolean(parameters, "gameOnlyAudio"),
             MixMicrophone = RequiredBoolean(parameters, "mixMicrophone"),
+            LaunchAtLogin = RequiredBoolean(parameters, "launchAtLogin"),
         };
 
         var saved = await _settings.UpdateAsync(next, ct).ConfigureAwait(false);
@@ -354,7 +355,8 @@ public sealed class UiBridge
         settings.Fps,
         settings.BitrateMbps,
         settings.GameOnlyAudio,
-        settings.MixMicrophone);
+        settings.MixMicrophone,
+        settings.LaunchAtLogin);
 
     private async Task<StoragePreviewResult> GetStoragePreviewAsync(CancellationToken ct)
     {

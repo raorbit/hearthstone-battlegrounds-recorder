@@ -928,6 +928,7 @@ function formToUpdate(settings: SettingsResult): SettingsUpdate {
     bitrateMbps: settings.bitrateMbps,
     gameOnlyAudio: settings.gameOnlyAudio,
     mixMicrophone: settings.mixMicrophone,
+    launchAtLogin: settings.launchAtLogin,
   };
 }
 
@@ -971,7 +972,8 @@ function SettingsView({ notify }: SettingsViewProps): JSX.Element {
     form.fps !== settings.fps ||
     form.bitrateMbps !== settings.bitrateMbps ||
     form.gameOnlyAudio !== settings.gameOnlyAudio ||
-    form.mixMicrophone !== settings.mixMicrophone
+    form.mixMicrophone !== settings.mixMicrophone ||
+    form.launchAtLogin !== settings.launchAtLogin
   );
   const canSave = dirty && fpsValid && bitrateValid && !saving;
 
@@ -1096,6 +1098,22 @@ function SettingsView({ notify }: SettingsViewProps): JSX.Element {
             <span class="settings-toggle__body">
               <span class="settings-toggle__label">Mix in microphone</span>
               <span class="settings-toggle__hint">Off by default. When on, your microphone is mixed into the recording.</span>
+            </span>
+          </label>
+        </section>
+
+        <section class="settings-section" aria-label="Startup">
+          <h2 class="settings-section__title">Startup</h2>
+
+          <label class="settings-toggle">
+            <input
+              type="checkbox"
+              checked={form.launchAtLogin}
+              onChange={(event) => patch({ launchAtLogin: event.currentTarget.checked })}
+            />
+            <span class="settings-toggle__body">
+              <span class="settings-toggle__label">Start with Windows</span>
+              <span class="settings-toggle__hint">Launch BG Recorder in the tray when you sign in, so matches record without opening anything. Applies as soon as you save.</span>
             </span>
           </label>
         </section>
