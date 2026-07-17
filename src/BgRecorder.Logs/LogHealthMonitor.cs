@@ -1,35 +1,45 @@
 namespace BgRecorder.Logs;
 
 /// <summary>
-/// The game-patch tripwire (plan risk #2): raises one alert when the live log is clearly carrying
-/// game traffic that the parser no longer understands — a sustained run of <c>GameState.DebugPrint</c>
-/// lines yielding zero parsed events.
+/// The game-patch tripwire (plan risk #2): raises one alert when a game VISIBLY BEGAN in the raw log
+/// but the parser produced nothing for it — the "silently missing every match" failure.
 ///
-/// Why this cannot false-positive on ordinary play: GameState lines are only written while a game (any
-/// mode) is in progress, and every game's very first lines include <c>CREATE_GAME</c>, which parses to
-/// <see cref="Core.Events.MatchStarted"/> — so a healthy parser always produces an event within a few
-/// lines of GameState traffic starting. Menus and non-game log noise contain no GameState lines and
-/// can idle forever without tripping anything. The marker is a raw substring match on the logger name,
-/// deliberately independent of the line format the parser expects — a patch that reshapes the line
-/// prefix breaks the parser but not this detector.
+/// The detector must first ARM: it arms only on a raw line that carries both the
+/// <c>GameState.DebugPrint</c> logger name and the <c>CREATE_GAME</c> token yet yielded no event. A
+/// healthy parser turns exactly that line into <see cref="Core.Events.MatchStarted"/> (so it is never
+/// reported here as silent), which is what makes the rule effectively false-positive-free:
+/// <list type="bullet">
+/// <item>Mid/late-match silent stretches CANNOT trip it — measured against the raw Spike A corpus, a
+/// healthy late-game recruit phase runs up to ~19,000 event-free GameState lines over ~4 minutes, so
+/// any threshold on "silent traffic" alone cries wolf; those stretches never contain CREATE_GAME and
+/// so never arm the detector.</item>
+/// <item>Attaching mid-match (recorder started while a game is running; the tail seeks to end and the
+/// parser never sees the game's start) stays silent until the NEXT game — which either parses
+/// (healthy) or arms the detector (a true positive).</item>
+/// </list>
+/// Accepted blind spot: a patch that renames the CREATE_GAME token itself leaves this detector blind —
+/// it watches for the far more common case (line-prefix / surrounding-format changes) where the token
+/// text survives but the line no longer parses.
 /// </summary>
 public sealed class LogHealthMonitor
 {
     private const string GameStateMarker = "GameState.DebugPrint";
+    private const string GameStartMarker = "CREATE_GAME";
 
     private readonly int _minLines;
     private readonly TimeSpan _window;
 
-    private int _unparsedGameStateLines;
-    private DateTimeOffset _windowStart;
+    private bool _armed;
+    private int _silentLinesSinceArmed;
+    private DateTimeOffset _armedAt;
     private bool _latched;
 
     /// <param name="minLines">
-    /// GameState lines that must accumulate, event-free, before alerting. A real match produces
-    /// thousands; a couple hundred rules out stray fragments while still alerting within the first
-    /// minute of a broken match.
+    /// GameState lines that must follow the unparsed game start, still event-free, before alerting —
+    /// a healthy game yields within a handful of lines of CREATE_GAME, so a few hundred silent ones
+    /// after it is already damning; this floor just rules out a stray fragment.
     /// </param>
-    /// <param name="window">Minimum event-free duration, so a burst alone cannot trip it.</param>
+    /// <param name="window">Minimum event-free time after arming, so one burst cannot trip it alone.</param>
     public LogHealthMonitor(int minLines = 200, TimeSpan? window = null)
     {
         _minLines = minLines;
@@ -47,26 +57,35 @@ public sealed class LogHealthMonitor
             return null;
         }
 
-        if (_unparsedGameStateLines == 0)
+        if (!_armed)
         {
-            _windowStart = now;
+            if (rawLine.Contains(GameStartMarker, StringComparison.Ordinal))
+            {
+                // A game just started in the raw stream and the parser said nothing — that exact line
+                // must yield MatchStarted on a healthy parser. Start the clock.
+                _armed = true;
+                _armedAt = now;
+                _silentLinesSinceArmed = 0;
+            }
+
+            return null;
         }
 
-        _unparsedGameStateLines++;
+        _silentLinesSinceArmed++;
 
-        if (_latched || _unparsedGameStateLines < _minLines || now - _windowStart < _window)
+        if (_latched || _silentLinesSinceArmed < _minLines || now - _armedAt < _window)
         {
             return null;
         }
 
         _latched = true;
-        return $"The game is writing match traffic ({_unparsedGameStateLines} GameState lines over " +
-               $"{(now - _windowStart).TotalMinutes:F0}+ minutes) but none of it parses — a game patch " +
+        return $"A game started in the log but nothing parsed ({_silentLinesSinceArmed} GameState lines over " +
+               $"{(now - _armedAt).TotalMinutes:F0}+ minutes since an unrecognized game start) — a game patch " +
                "likely changed the log format. Matches will NOT be detected or recorded until the parser " +
                "is updated.";
     }
 
-    /// <summary>Any parsed event proves the pipeline healthy: reset the window and clear the latch.</summary>
+    /// <summary>Any parsed event proves the pipeline healthy: disarm and clear the latch.</summary>
     public void OnEvents(int count)
     {
         if (count <= 0)
@@ -74,7 +93,15 @@ public sealed class LogHealthMonitor
             return;
         }
 
-        _unparsedGameStateLines = 0;
+        Reset();
+    }
+
+    /// <summary>Forget everything — called when the watch switches to a new log session/stream, so
+    /// state observed on one file never colors judgement of the next.</summary>
+    public void Reset()
+    {
+        _armed = false;
+        _silentLinesSinceArmed = 0;
         _latched = false;
     }
 }

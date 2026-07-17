@@ -145,6 +145,7 @@ public sealed class GameEventSource : IGameEventSource
                             partial.Clear();
                             fs = newFs;
                             pos = newPos;
+                            _health.Reset(); // a new session gets a clean verdict
                             Emit(new LogSessionChanged(SeedStamp(disc), disc.Chosen.Path));
                         }
                         else
@@ -184,6 +185,7 @@ public sealed class GameEventSource : IGameEventSource
                             partial.Clear();
                             fs = newFs;
                             pos = newPos;
+                            _health.Reset(); // a new session gets a clean verdict
                             Emit(new LogSessionChanged(SeedStamp(again), again.Chosen.Path));
                             if (ct.WaitHandle.WaitOne(_poll)) break;
                             continue;
