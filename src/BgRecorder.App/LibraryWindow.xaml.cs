@@ -32,12 +32,13 @@ public partial class LibraryWindow : Window
     private bool _initialized;
 
     /// <summary>
-    /// M6 idle budget: a minimized library must not keep a Chromium process resident indefinitely.
-    /// After this long minimized the window closes outright — OnClosed already tears down WebView2 and
-    /// the media pool, and the tray recreates the window on the next open. The grace period keeps a
-    /// quick alt-tab from repaying the full WebView2 startup cost.
+    /// M6 idle budget: a minimized library must not keep a Chromium renderer burning CPU indefinitely.
+    /// After this long minimized the WebView is SUSPENDED (not closed): suspension zeroes renderer
+    /// activity and trims memory while preserving the page, so a playback position or an unsaved
+    /// settings edit survives a long minimize. Full teardown still happens on close. The grace period
+    /// keeps a quick alt-tab from paying the suspend/resume cost.
     /// </summary>
-    private static readonly TimeSpan MinimizedTeardownDelay = TimeSpan.FromSeconds(60);
+    private static readonly TimeSpan MinimizedSuspendDelay = TimeSpan.FromSeconds(60);
     private System.Windows.Threading.DispatcherTimer? _minimizedTimer;
 
     public LibraryWindow(UiBridge bridge, ISessionCoordinator coordinator, string assetsDirectory)
@@ -323,8 +324,8 @@ public partial class LibraryWindow : Window
         {
             if (_minimizedTimer is null)
             {
-                _minimizedTimer = new System.Windows.Threading.DispatcherTimer { Interval = MinimizedTeardownDelay };
-                _minimizedTimer.Tick += OnMinimizedTeardown;
+                _minimizedTimer = new System.Windows.Threading.DispatcherTimer { Interval = MinimizedSuspendDelay };
+                _minimizedTimer.Tick += OnMinimizedSuspend;
             }
 
             _minimizedTimer.Start();
@@ -332,14 +333,53 @@ public partial class LibraryWindow : Window
         else
         {
             _minimizedTimer?.Stop();
+            TryResumeWebView();
         }
     }
 
-    private void OnMinimizedTeardown(object? sender, EventArgs e)
+    private async void OnMinimizedSuspend(object? sender, EventArgs e)
     {
-        Log.Information("Library window minimized for {Seconds}s; closing to release WebView2 (reopen from the tray)",
-            MinimizedTeardownDelay.TotalSeconds);
-        Close();
+        _minimizedTimer?.Stop();
+        if (WindowState != WindowState.Minimized || WebView.CoreWebView2 is not { } core)
+        {
+            return;
+        }
+
+        try
+        {
+            // TrySuspendAsync refuses while the document is playing audio — exactly the case where
+            // teardown would hurt (listening to a VOD minimized) — so a refusal just re-arms the timer.
+            if (await core.TrySuspendAsync())
+            {
+                Log.Information("Library window minimized {Seconds}s: WebView2 suspended", MinimizedSuspendDelay.TotalSeconds);
+            }
+            else
+            {
+                Log.Debug("WebView2 suspension refused (audio playing or view still visible); retrying later");
+                _minimizedTimer?.Start();
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Debug(ex, "WebView2 suspension failed; leaving the page live");
+        }
+    }
+
+    private void TryResumeWebView()
+    {
+        try
+        {
+            if (WebView.CoreWebView2 is { IsSuspended: true } core)
+            {
+                core.Resume();
+                // Notifications posted while suspended may have been dropped; re-sync the recorder pill.
+                core.PostWebMessageAsJson(UiBridge.CreateStateNotification(_coordinator.State));
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Debug(ex, "WebView2 resume failed; the next navigation will wake it");
+        }
     }
 
     private void OnClosed(object? sender, EventArgs e)
