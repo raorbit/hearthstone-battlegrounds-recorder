@@ -82,6 +82,8 @@ public sealed class JsonSettingsService : ISettingsService
         }
     }
 
+    public event Action<AppSettings>? Changed;
+
     public Task<AppSettings> UpdateAsync(AppSettings settings, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(settings);
@@ -91,8 +93,10 @@ public sealed class JsonSettingsService : ISettingsService
         {
             Write(settings); // let a write failure surface; a settings.set that could not persist must fail
             _current = settings;
-            return Task.FromResult(settings);
         }
+
+        Changed?.Invoke(settings); // outside the lock: a slow handler must not block Current readers
+        return Task.FromResult(settings);
     }
 
     private AppSettings Load(string path, out LoadOutcome outcome)

@@ -23,6 +23,13 @@ public sealed record AppSettings
     /// <summary>Default OFF per the plan's privacy-respecting defaults.</summary>
     public bool MixMicrophone { get; init; }
 
+    /// <summary>
+    /// Start with Windows (HKCU Run key). Default OFF: installing software that self-registers at login
+    /// without asking is hostile; the user opts in from Settings. Applied live via
+    /// <see cref="ISettingsService.Changed"/> — unlike recording settings, no restart needed.
+    /// </summary>
+    public bool LaunchAtLogin { get; init; }
+
     /// <summary>Retention and archive-drive configuration (M5). Defaults bound a single recording drive.</summary>
     public StorageOptions Storage { get; init; } = new();
 }
