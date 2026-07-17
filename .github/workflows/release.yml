@@ -1,0 +1,42 @@
+name: Release
+
+# Packs a Velopack installer when a version tag is pushed (e.g. v0.1.0) and attaches it to a DRAFT
+# GitHub release — publishing the release stays a human decision. Unsigned by design for v1.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  pack:
+    name: Velopack installer (win-x64)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: src/BgRecorder.App/Web/package-lock.json
+
+      - name: Install vpk
+        run: dotnet tool install --global vpk
+
+      - name: Pack
+        run: powershell -File scripts/pack.ps1 -Version ("${{ github.ref_name }}".TrimStart("v"))
+
+      - name: Attach to a draft release
+        run: >
+          gh release create "${{ github.ref_name }}" --draft --generate-notes
+          (Get-ChildItem artifacts/releases | ForEach-Object { $_.FullName })
+        env:
+          GH_TOKEN: ${{ github.token }}
