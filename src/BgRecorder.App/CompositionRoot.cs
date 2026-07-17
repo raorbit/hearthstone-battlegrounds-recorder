@@ -188,5 +188,16 @@ internal sealed class AppServices : IAsyncDisposable
         {
             Log.Warning(ex, "Event source dispose failed");
         }
+
+        try
+        {
+            // The memory rating reader holds a live process handle when enabled; the null provider
+            // is not disposable and skips this. Last: nothing above depends on rating.
+            (RatingProvider as IDisposable)?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Rating provider dispose failed");
+        }
     }
 }
