@@ -129,6 +129,7 @@ public partial class App : Application
             _services = await CompositionRoot.BuildAsync(_cts.Token);
             _services.Coordinator.StateChanged += OnCoordinatorStateChanged;
             _services.Coordinator.Diagnostic += OnCoordinatorDiagnostic;
+            _services.LogWatcher.HealthAlert += OnLogHealthAlert;
             ApplyState(_services.Coordinator.State);
             Log.Information("Bootstrap complete; coordinator state {State}", _services.Coordinator.State);
         }
@@ -161,6 +162,17 @@ public partial class App : Application
         {
             _lastAttentionUtc = DateTimeOffset.UtcNow;
             _tray?.ShowWarningBalloon("BG Recorder needs attention", message);
+        });
+
+    /// <summary>
+    /// The patch-day tripwire: game traffic is flowing but nothing parses, so every match would be
+    /// silently missed. That deserves a balloon, not just a log line.
+    /// </summary>
+    private void OnLogHealthAlert(string message)
+        => Dispatcher.InvokeAsync(() =>
+        {
+            _lastAttentionUtc = DateTimeOffset.UtcNow;
+            _tray?.ShowWarningBalloon("Matches are not being detected", message);
         });
 
     private void ApplyState(CoordinatorState state)

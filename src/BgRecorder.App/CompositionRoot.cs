@@ -51,6 +51,7 @@ internal static class CompositionRoot
         var gameEventSource = new GameEventSource(installDir);
         // Surface log-watcher errors (a transient IO fault no longer kills the loop silently).
         gameEventSource.Diagnostic += message => Log.Warning("Log watcher: {Message}", message);
+        gameEventSource.HealthAlert += message => Log.Warning("Log health: {Message}", message);
         IGameEventSource source = gameEventSource;
         IRecorder recorder = new ScreenRecorderLibRecorder();
         IAudioCapture audio = new AudioCaptureEngine();
@@ -117,6 +118,7 @@ internal static class CompositionRoot
         {
             Settings = settingsService,
             Source = source,
+            LogWatcher = gameEventSource,
             Coordinator = coordinator,
             Repository = repository,
             RatingProvider = ratingProvider,
@@ -155,6 +157,10 @@ internal sealed class AppServices : IAsyncDisposable
 {
     public required ISettingsService Settings { get; init; }
     public required IGameEventSource Source { get; init; }
+
+    /// <summary>Same instance as <see cref="Source"/>, concretely typed: the shell subscribes signals
+    /// (like <see cref="GameEventSource.HealthAlert"/>) that are deliberately not on the interface.</summary>
+    public required GameEventSource LogWatcher { get; init; }
     public required ISessionCoordinator Coordinator { get; init; }
     public required IMatchRepository Repository { get; init; }
     public required IRatingProvider RatingProvider { get; init; }
