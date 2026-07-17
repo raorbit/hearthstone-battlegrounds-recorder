@@ -69,6 +69,7 @@ export interface SettingsResult {
   bitrateMbps: number;
   gameOnlyAudio: boolean;
   mixMicrophone: boolean;
+  launchAtLogin: boolean;
 }
 
 /** The editable recording fields settings.set writes. */
@@ -77,6 +78,7 @@ export interface SettingsUpdate {
   bitrateMbps: number;
   gameOnlyAudio: boolean;
   mixMicrophone: boolean;
+  launchAtLogin: boolean;
 }
 
 export interface ArchiveVolume {

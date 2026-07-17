@@ -31,6 +31,16 @@ public partial class LibraryWindow : Window
     private readonly MediaStreamLeasePool _mediaStreams = new();
     private bool _initialized;
 
+    /// <summary>
+    /// M6 idle budget: a minimized library must not keep a Chromium renderer burning CPU indefinitely.
+    /// After this long minimized the WebView is SUSPENDED (not closed): suspension zeroes renderer
+    /// activity and trims memory while preserving the page, so a playback position or an unsaved
+    /// settings edit survives a long minimize. Full teardown still happens on close. The grace period
+    /// keeps a quick alt-tab from paying the suspend/resume cost.
+    /// </summary>
+    private static readonly TimeSpan MinimizedSuspendDelay = TimeSpan.FromSeconds(60);
+    private System.Windows.Threading.DispatcherTimer? _minimizedTimer;
+
     public LibraryWindow(UiBridge bridge, ISessionCoordinator coordinator, string assetsDirectory)
     {
         _bridge = bridge ?? throw new ArgumentNullException(nameof(bridge));
@@ -306,8 +316,91 @@ public partial class LibraryWindow : Window
     private static void OnNewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs e)
         => e.Handled = true;
 
+    protected override void OnStateChanged(EventArgs e)
+    {
+        base.OnStateChanged(e);
+
+        if (WindowState == WindowState.Minimized)
+        {
+            if (_minimizedTimer is null)
+            {
+                _minimizedTimer = new System.Windows.Threading.DispatcherTimer { Interval = MinimizedSuspendDelay };
+                _minimizedTimer.Tick += OnMinimizedSuspend;
+            }
+
+            _minimizedTimer.Start();
+        }
+        else
+        {
+            _minimizedTimer?.Stop();
+            TryResumeWebView();
+        }
+    }
+
+    private async void OnMinimizedSuspend(object? sender, EventArgs e)
+    {
+        _minimizedTimer?.Stop();
+        if (WindowState != WindowState.Minimized || WebView.CoreWebView2 is not { } core)
+        {
+            return;
+        }
+
+        try
+        {
+            // TrySuspendAsync demands the controller be hidden first (it THROWS on a visible view),
+            // and a WPF element stays IsVisible=true while its window is merely minimized — so hide
+            // the element explicitly; the WPF wrapper propagates that to the controller. Without this
+            // the suspend never fires and the idle budget is a silent no-op.
+            WebView.Visibility = Visibility.Hidden;
+
+            // TrySuspendAsync also refuses (returns false) while the document plays audio — exactly
+            // the case where teardown would hurt (listening to a VOD minimized) — so re-arm and retry.
+            if (await core.TrySuspendAsync())
+            {
+                Log.Information("Library window minimized {Seconds}s: WebView2 suspended", MinimizedSuspendDelay.TotalSeconds);
+            }
+            else
+            {
+                WebView.Visibility = Visibility.Visible;
+                Log.Debug("WebView2 suspension refused (likely audio playing); retrying later");
+                _minimizedTimer?.Start();
+            }
+        }
+        catch (Exception ex)
+        {
+            // Unexpected (visibility is handled above): restore the view and retry on the same cadence
+            // rather than silently giving the budget up for the rest of the session.
+            WebView.Visibility = Visibility.Visible;
+            Log.Debug(ex, "WebView2 suspension failed; will retry");
+            _minimizedTimer?.Start();
+        }
+    }
+
+    private void TryResumeWebView()
+    {
+        try
+        {
+            if (WebView.Visibility != Visibility.Visible)
+            {
+                WebView.Visibility = Visibility.Visible; // un-hide first: a visible controller auto-resumes
+            }
+
+            if (WebView.CoreWebView2 is { IsSuspended: true } core)
+            {
+                core.Resume();
+                // Notifications posted while suspended may have been dropped; re-sync the recorder pill.
+                core.PostWebMessageAsJson(UiBridge.CreateStateNotification(_coordinator.State));
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Debug(ex, "WebView2 resume failed; the next navigation will wake it");
+        }
+    }
+
     private void OnClosed(object? sender, EventArgs e)
     {
+        _minimizedTimer?.Stop();
         _coordinator.StateChanged -= OnCoordinatorStateChanged;
         _closed.Cancel();
 

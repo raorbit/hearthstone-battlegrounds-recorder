@@ -53,7 +53,8 @@ public sealed record SettingsResult(
     int Fps,
     int BitrateMbps,
     bool GameOnlyAudio,
-    bool MixMicrophone);
+    bool MixMicrophone,
+    bool LaunchAtLogin);
 
 /// <summary>Confirms a match was removed from the library.</summary>
 public sealed record DeletedResult(long MatchId);

@@ -157,6 +157,7 @@ let mockSettings: SettingsResult = {
   bitrateMbps: 12,
   gameOnlyAudio: true,
   mixMicrophone: false,
+  launchAtLogin: false,
 };
 
 const GiB = 1024 ** 3;

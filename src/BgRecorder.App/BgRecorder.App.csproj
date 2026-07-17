@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="BgRecorder.App.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BgRecorder.Core\BgRecorder.Core.csproj" />
     <ProjectReference Include="..\BgRecorder.Logs\BgRecorder.Logs.csproj" />
     <ProjectReference Include="..\BgRecorder.Capture\BgRecorder.Capture.csproj" />

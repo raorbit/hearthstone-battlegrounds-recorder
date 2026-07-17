@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using BgRecorder.Core;
 using BgRecorder.Core.Session;
 using BgRecorder.Logs;
 using BgRecorder.Ui;
@@ -135,6 +136,14 @@ public partial class App : Application
 
             SurfaceOnboarding(_services.Onboarding);
             _ = Task.Run(() => RunLiveFeedSelfTestAsync(_cts.Token));
+
+            if (!_isSmoke)
+            {
+                // Smoke runs execute from throwaway paths (CI, bin dirs); reconciling there would
+                // rewrite the user's autostart command to a binary that is about to disappear.
+                ApplyLaunchAtLogin(_services.Settings.Current);
+                _services.Settings.Changed += ApplyLaunchAtLogin; // applies live, no restart
+            }
         }
         catch (Exception ex)
         {
@@ -214,6 +223,30 @@ public partial class App : Application
         catch (Exception ex)
         {
             Log.Warning(ex, "Live test-feed self-test crashed");
+        }
+    }
+
+    /// <summary>
+    /// Reconciles the HKCU Run key with the setting — at startup (heals a stale command after the app
+    /// moves) and live on every settings save. Never fatal: a registry failure only costs this feature.
+    /// </summary>
+    private static void ApplyLaunchAtLogin(AppSettings settings)
+    {
+        try
+        {
+            var exePath = Environment.ProcessPath;
+            if (exePath is null)
+            {
+                Log.Warning("Launch-at-login: process path unavailable; skipping");
+                return;
+            }
+
+            var outcome = LaunchAtLogin.Reconcile(new WindowsRunKey(), settings.LaunchAtLogin, exePath);
+            Log.Information("Launch-at-login: enabled={Enabled} -> {Outcome}", settings.LaunchAtLogin, outcome);
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Launch-at-login: could not reconcile the Run key");
         }
     }
 
