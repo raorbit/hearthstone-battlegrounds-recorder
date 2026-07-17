@@ -347,21 +347,32 @@ public partial class LibraryWindow : Window
 
         try
         {
-            // TrySuspendAsync refuses while the document is playing audio — exactly the case where
-            // teardown would hurt (listening to a VOD minimized) — so a refusal just re-arms the timer.
+            // TrySuspendAsync demands the controller be hidden first (it THROWS on a visible view),
+            // and a WPF element stays IsVisible=true while its window is merely minimized — so hide
+            // the element explicitly; the WPF wrapper propagates that to the controller. Without this
+            // the suspend never fires and the idle budget is a silent no-op.
+            WebView.Visibility = Visibility.Hidden;
+
+            // TrySuspendAsync also refuses (returns false) while the document plays audio — exactly
+            // the case where teardown would hurt (listening to a VOD minimized) — so re-arm and retry.
             if (await core.TrySuspendAsync())
             {
                 Log.Information("Library window minimized {Seconds}s: WebView2 suspended", MinimizedSuspendDelay.TotalSeconds);
             }
             else
             {
-                Log.Debug("WebView2 suspension refused (audio playing or view still visible); retrying later");
+                WebView.Visibility = Visibility.Visible;
+                Log.Debug("WebView2 suspension refused (likely audio playing); retrying later");
                 _minimizedTimer?.Start();
             }
         }
         catch (Exception ex)
         {
-            Log.Debug(ex, "WebView2 suspension failed; leaving the page live");
+            // Unexpected (visibility is handled above): restore the view and retry on the same cadence
+            // rather than silently giving the budget up for the rest of the session.
+            WebView.Visibility = Visibility.Visible;
+            Log.Debug(ex, "WebView2 suspension failed; will retry");
+            _minimizedTimer?.Start();
         }
     }
 
@@ -369,6 +380,11 @@ public partial class LibraryWindow : Window
     {
         try
         {
+            if (WebView.Visibility != Visibility.Visible)
+            {
+                WebView.Visibility = Visibility.Visible; // un-hide first: a visible controller auto-resumes
+            }
+
             if (WebView.CoreWebView2 is { IsSuspended: true } core)
             {
                 core.Resume();
