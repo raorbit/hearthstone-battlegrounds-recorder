@@ -31,6 +31,15 @@ public partial class LibraryWindow : Window
     private readonly MediaStreamLeasePool _mediaStreams = new();
     private bool _initialized;
 
+    /// <summary>
+    /// M6 idle budget: a minimized library must not keep a Chromium process resident indefinitely.
+    /// After this long minimized the window closes outright — OnClosed already tears down WebView2 and
+    /// the media pool, and the tray recreates the window on the next open. The grace period keeps a
+    /// quick alt-tab from repaying the full WebView2 startup cost.
+    /// </summary>
+    private static readonly TimeSpan MinimizedTeardownDelay = TimeSpan.FromSeconds(60);
+    private System.Windows.Threading.DispatcherTimer? _minimizedTimer;
+
     public LibraryWindow(UiBridge bridge, ISessionCoordinator coordinator, string assetsDirectory)
     {
         _bridge = bridge ?? throw new ArgumentNullException(nameof(bridge));
@@ -306,8 +315,36 @@ public partial class LibraryWindow : Window
     private static void OnNewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs e)
         => e.Handled = true;
 
+    protected override void OnStateChanged(EventArgs e)
+    {
+        base.OnStateChanged(e);
+
+        if (WindowState == WindowState.Minimized)
+        {
+            if (_minimizedTimer is null)
+            {
+                _minimizedTimer = new System.Windows.Threading.DispatcherTimer { Interval = MinimizedTeardownDelay };
+                _minimizedTimer.Tick += OnMinimizedTeardown;
+            }
+
+            _minimizedTimer.Start();
+        }
+        else
+        {
+            _minimizedTimer?.Stop();
+        }
+    }
+
+    private void OnMinimizedTeardown(object? sender, EventArgs e)
+    {
+        Log.Information("Library window minimized for {Seconds}s; closing to release WebView2 (reopen from the tray)",
+            MinimizedTeardownDelay.TotalSeconds);
+        Close();
+    }
+
     private void OnClosed(object? sender, EventArgs e)
     {
+        _minimizedTimer?.Stop();
         _coordinator.StateChanged -= OnCoordinatorStateChanged;
         _closed.Cancel();
 
