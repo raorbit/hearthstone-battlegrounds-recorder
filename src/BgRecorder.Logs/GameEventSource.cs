@@ -22,6 +22,7 @@ public sealed class GameEventSource : IGameEventSource
     private readonly TimeSpan _poll;
     private readonly TimeSpan _rediscover;
     private readonly Func<string, FileStream> _open;
+    private readonly LogHealthMonitor _health;
 
     private CancellationTokenSource? _cts;
     private Task? _loop;
@@ -35,18 +36,32 @@ public sealed class GameEventSource : IGameEventSource
     /// </summary>
     public event Action<string>? Diagnostic;
 
+    /// <summary>
+    /// Raised at most once per broken stretch when <see cref="LogHealthMonitor"/> concludes the log
+    /// format no longer parses (game traffic flowing, zero events). Distinct from <see cref="Diagnostic"/>
+    /// so the shell can surface it loudly — this is the "silently missing every match" failure.
+    /// </summary>
+    public event Action<string>? HealthAlert;
+
     public GameEventSource(string installDir, TimeSpan? pollInterval = null, TimeSpan? rediscoverInterval = null)
         : this(installDir, pollInterval, rediscoverInterval, DefaultOpen)
     {
     }
 
-    /// <summary>Test seam: overrides how <c>Power.log</c> is opened so a transient open failure can be simulated.</summary>
-    internal GameEventSource(string installDir, TimeSpan? pollInterval, TimeSpan? rediscoverInterval, Func<string, FileStream> open)
+    /// <summary>Test seam: overrides how <c>Power.log</c> is opened so a transient open failure can be simulated,
+    /// and the health monitor so its thresholds can be shrunk.</summary>
+    internal GameEventSource(
+        string installDir,
+        TimeSpan? pollInterval,
+        TimeSpan? rediscoverInterval,
+        Func<string, FileStream> open,
+        LogHealthMonitor? health = null)
     {
         _installDir = installDir;
         _poll = pollInterval ?? DefaultPoll;
         _rediscover = rediscoverInterval ?? DefaultRediscover;
         _open = open;
+        _health = health ?? new LogHealthMonitor();
     }
 
     public Task StartAsync(CancellationToken ct)
@@ -130,6 +145,7 @@ public sealed class GameEventSource : IGameEventSource
                             partial.Clear();
                             fs = newFs;
                             pos = newPos;
+                            _health.Reset(); // a new session gets a clean verdict
                             Emit(new LogSessionChanged(SeedStamp(disc), disc.Chosen.Path));
                         }
                         else
@@ -169,6 +185,7 @@ public sealed class GameEventSource : IGameEventSource
                             partial.Clear();
                             fs = newFs;
                             pos = newPos;
+                            _health.Reset(); // a new session gets a clean verdict
                             Emit(new LogSessionChanged(SeedStamp(again), again.Chosen.Path));
                             if (ct.WaitHandle.WaitOne(_poll)) break;
                             continue;
@@ -236,7 +253,21 @@ public sealed class GameEventSource : IGameEventSource
             {
                 string line = text[..nl].TrimEnd('\r');
                 text = text[(nl + 1)..];
-                foreach (var e in parser.Feed(line)) Emit(e);
+                int emitted = 0;
+                foreach (var e in parser.Feed(line))
+                {
+                    Emit(e);
+                    emitted++;
+                }
+
+                if (emitted > 0)
+                {
+                    _health.OnEvents(emitted);
+                }
+                else if (_health.OnSilentLine(line, DateTimeOffset.Now) is { } alert)
+                {
+                    HealthAlert?.Invoke(alert);
+                }
             }
             partial.Clear();
             partial.Append(text);
