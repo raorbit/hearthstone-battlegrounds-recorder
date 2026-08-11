@@ -10,7 +10,7 @@ namespace BgRecorder.Audio.Interop;
 // "ApplicationLoopback" C++ sample and the audioclientactivationparams /
 // mmdeviceapi headers. These are OS APIs; the C# port here is original.
 //
-// The one API NAudio 2.2.1 does NOT wrap is ActivateAudioInterfaceAsync with
+// The one API NAudio 2.3.0 still does NOT wrap (NAudio 3.0 adds it) is ActivateAudioInterfaceAsync with
 // AUDIOCLIENT_ACTIVATION_TYPE_PROCESS_LOOPBACK, so we declare the minimal COM
 // surface ourselves and reuse NAudio only for WAV plumbing.
 // ---------------------------------------------------------------------------

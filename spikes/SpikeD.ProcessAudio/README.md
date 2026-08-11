@@ -65,7 +65,7 @@ code stays alive and measured.
 
 ## How it works (interop)
 
-NAudio 2.2.1 (MIT) does **not** expose process loopback, so the one missing API is
+NAudio 2.3.0 (MIT) does **not** expose process loopback, so the one missing API is
 hand-ported:
 
 - `Interop.cs` declares the minimal COM surface: `ActivateAudioInterfaceAsync`
@@ -86,7 +86,7 @@ Behaviour pattern is from Microsoft's public **ApplicationLoopback** C++ sample 
 `audioclientactivationparams` headers — those are OS APIs; the C# here is original. No
 HDT / HearthMirror code is referenced (this path doesn't touch either).
 
-**Licensing:** the only NuGet dependency is **NAudio 2.2.1 — MIT** (used for WAV writing
+**Licensing:** the only NuGet dependency is **NAudio 2.3.0 — MIT** (used for WAV writing
 and the `WasapiLoopbackCapture` fallback). Compatible with this MIT project. GO.
 
 ## Measured on this machine (build 26200, RTX 3090, live game at menu)

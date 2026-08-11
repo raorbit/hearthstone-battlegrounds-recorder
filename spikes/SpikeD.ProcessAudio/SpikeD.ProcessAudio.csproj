@@ -15,10 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- NAudio 2.2.1 — MIT. Used for WAV writing and the Windows-10 fallback
+    <!-- NAudio 2.3.0 — MIT. Used for WAV writing and the Windows-10 fallback
          (WasapiLoopbackCapture). NAudio does NOT expose process loopback, so the
          AUDIOCLIENT_ACTIVATION_TYPE_PROCESS_LOOPBACK path is hand-ported interop. -->
-    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="NAudio" Version="2.3.0" />
   </ItemGroup>
 
 </Project>
