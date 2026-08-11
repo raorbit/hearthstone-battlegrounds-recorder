@@ -7,15 +7,15 @@ verdicts and provenance were recorded in [`spikes/SpikeC.MmrRoute/LICENSING.md`]
 | Component | Version | License | Project |
 |---|---|---|---|
 | ScreenRecorderLib | 6.6.0 | MIT | <https://github.com/sskodje/ScreenRecorderLib> |
-| NAudio | 2.2.1 | MIT | <https://github.com/naudio/NAudio> |
-| Microsoft.Data.Sqlite | 10.0.9 | MIT | <https://github.com/dotnet/efcore> |
-| SQLitePCLRaw (bundle_e_sqlite3) | 3.0.3 | Apache-2.0 (SQLite engine: public domain) | <https://github.com/ericsink/SQLitePCL.raw> |
-| Dapper | 2.1.66 | Apache-2.0 | <https://github.com/DapperLib/Dapper> |
-| Serilog | 4.2.0 | Apache-2.0 | <https://github.com/serilog/serilog> |
+| NAudio | 2.3.0 | MIT | <https://github.com/naudio/NAudio> |
+| Microsoft.Data.Sqlite | 10.0.10 | MIT | <https://github.com/dotnet/efcore> |
+| SQLitePCLRaw (bundle_e_sqlite3) | 3.0.5 | Apache-2.0 (SQLite engine: public domain) | <https://github.com/ericsink/SQLitePCL.raw> |
+| Dapper | 2.1.79 | Apache-2.0 | <https://github.com/DapperLib/Dapper> |
+| Serilog | 4.4.0 | Apache-2.0 | <https://github.com/serilog/serilog> |
 | Serilog.Sinks.File | 6.0.0 | Apache-2.0 | <https://github.com/serilog/serilog-sinks-file> |
 | Velopack | 1.2.0 | MIT | <https://github.com/velopack/velopack> |
-| H.NotifyIcon.Wpf | 2.3.0 | MIT | <https://github.com/HavenDV/H.NotifyIcon> |
-| Microsoft.Web.WebView2 | 1.0.4078.44 | Microsoft redistribution license (BSD-style) | <https://www.nuget.org/packages/Microsoft.Web.WebView2> |
+| H.NotifyIcon.Wpf | 2.4.1 | MIT | <https://github.com/HavenDV/H.NotifyIcon> |
+| Microsoft.Web.WebView2 | 1.0.4129.50 | Microsoft redistribution license (BSD-style) | <https://www.nuget.org/packages/Microsoft.Web.WebView2> |
 | Preact | 10.29.7 | MIT | <https://github.com/preactjs/preact> |
 
 The WebView2 **runtime** is not bundled: it is the Evergreen runtime installed and updated by
@@ -68,7 +68,7 @@ language governing permissions and limitations under the License.
 
 © Microsoft Corporation. All rights reserved. Redistribution and use in source and binary forms are
 permitted under the conditions of Microsoft's WebView2 SDK license
-(<https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.4078.44/License>): redistributions must
+(<https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.4129.50/License>): redistributions must
 reproduce Microsoft's copyright notice and conditions, and neither Microsoft's name nor those of
 contributors may be used to endorse or promote products derived from this software without
 permission. This software is provided by Microsoft "as is", without express or implied warranties.
